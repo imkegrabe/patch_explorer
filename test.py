@@ -1,8 +1,9 @@
 from .main import load, run
-from .interventions.ablate import AblateIntervention
+from .interventions.ablate import AblationIntervention
+from .interventions.encoder import EncoderIntervention
+from .util import encode_prompt
 
 model = load()
-
 
 image = run(model, "blue elephant")
 
@@ -12,18 +13,29 @@ image = run(model, "blue elephant")
 
 image.save('control2.png')
 
-envoys = model.modules(lambda envoy : envoy._module_path.endswith('attn1') or envoy._module_path.endswith('attn2'))
+envoys = model.modules(lambda envoy : envoy._module_path.endswith('attn2') and 'mid' not in envoy._module_path)
 
-int1 = AblateIntervention(envoys[0:3])
-
-increase_module = model.modules(lambda envoy : envoy._module_path == 'module_we_care_about')
-all_others = model.modules(lambda envoy : envoy._module_path != 'module_we_care_about')
+int1 = AblationIntervention(envoys)
 
 
-increase_intevention = IncreaseIntevnetion(2, increase_module)
-decrease_intevention = DecreaseIntevnetion(.1, all_others)
-
-
-image = run(model, "blue elephant", interventions=[increase_intevention, decrease_intevention])
+image = run(model, "blue elephant", interventions=[int1])
 
 image.save('int1.png')
+
+
+blank_embeds = encode_prompt("", model)
+
+
+int2 = EncoderIntervention(blank_embeds, envoys)
+
+image = run(model, "blue elephant", interventions=[int2])
+
+image.save('int2.png')
+
+
+image = run(model, "", interventions=[int2])
+
+image.save('blank.png')
+
+
+
