@@ -1,15 +1,14 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <SDExplorer/>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import SDExplorer from './components/SDExplorer.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    SDExplorer
   }
 }
 </script>
