@@ -3,7 +3,7 @@ from nnsight.models.DiffusionModel import DiffusionModel
 from typing import List
 import torch
 
-from .interventions import DiffusionIntervention
+from interventions import DiffusionIntervention
 def load(id: str = "CompVis/stable-diffusion-v1-4"):
     
     return DiffusionModel(id, dispatch=True).to('cuda:0')
