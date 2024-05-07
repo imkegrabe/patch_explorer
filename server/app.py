@@ -1,22 +1,15 @@
-import logging
-from datetime import datetime
-
-
 import uvicorn
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
-from fastapi_socketio import SocketManager
+from .Request import RequestModel
+from . import util
+from nnsight.util import fetch_attr
+from io import BytesIO
+from PIL.Image import Image
+import importlib
 
-from nnsight.pydantics import RequestModel
-
-
-# Attache to gunicorn logger
-logger = logging.getLogger("gunicorn.error")
-
-# Init FastAPI app
 app = FastAPI()
-# Add middleware for CORS
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -26,39 +19,41 @@ app.add_middleware(
 )
 
 
+model = util.load()
+
+
 @app.post("/generate")
-async def request(
-    request: RequestModel, api_key=Depends(api_key_auth)
-) -> ResponseModel:
-    """Endpoint to submit request.
+async def request(request: RequestModel):
+    interventions = []
 
-    Args:
-        request (RequestModel): _description_
+    for intervention_model in request.interventions:
 
-    Returns:
-        ResponseModel: _description_
-    """
-    try:
-        # Set the id and time received of request.
-        request.received = datetime.now()
-        request.id = str(ObjectId())
+        envoys = [
+            fetch_attr(model, module_path) for module_path in intervention_model.modules
+        ]
+        
+        intervention_atoms = intervention_model.name.split('.')
+        
+        intervention_module = importlib.import_module(f".{'.'.join(intervention_atoms[:-1])}", package="interventions")
 
-        # Send to request workers waiting to process requests on the "request" queue.
-        # Forget as we don't care about the response.
-        process_request.apply_async([request], queue="request").forget()
+        intervention_type = getattr(intervention_module, intervention_atoms[-1])
 
-        # Create response object.
-        # Log and save to data backend.
-        response = (
-            ResponseModel(
-                id=request.id,
-                received=request.received,
-                session_id=request.session_id,
-                status=ResponseModel.JobStatus.RECEIVED,
-                description="Your job has been received and is waiting approval.",
-            )
-            .log(logger)
-            .save(celery_app.backend._get_connection())
+        intervention = intervention_type(envoys, *intervention_model.args)
+
+        interventions.append(intervention)
+
+    image: Image = util.run(
+        model,
+        request.prompt,
+        n_steps=request.timesteps,
+        seed=request.seed,
+        interventions=interventions,
+    )
+    stream = BytesIO()
+    
+    image.save(stream, "png")
+
+    return Response(content=stream.read()\\, media_type="image/png")
 
 
 if __name__ == "__main__":
