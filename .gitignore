@@ -1,0 +1,7 @@
+
+*.egg-info/
+.installed.cfg
+.vscode
+__pycache__/
+.DS_STORE
+.nfs*
