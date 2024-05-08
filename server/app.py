@@ -1,12 +1,16 @@
+import importlib
+from io import BytesIO
+
 import uvicorn
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
-from .Request import RequestModel
-from . import util
-from nnsight.util import fetch_attr
-from io import BytesIO
+from PIL import Image as MImage
 from PIL.Image import Image
-import importlib
+
+from nnsight.util import fetch_attr
+
+from . import util
+from .Request import RequestModel
 
 app = FastAPI()
 
@@ -31,10 +35,12 @@ async def request(request: RequestModel):
         envoys = [
             fetch_attr(model, module_path) for module_path in intervention_model.modules
         ]
-        
-        intervention_atoms = intervention_model.name.split('.')
-        
-        intervention_module = importlib.import_module(f".{'.'.join(intervention_atoms[:-1])}", package="interventions")
+
+        intervention_atoms = intervention_model.name.split(".")
+
+        intervention_module = importlib.import_module(
+            f".{'.'.join(intervention_atoms[:-1])}", package="interventions"
+        )
 
         intervention_type = getattr(intervention_module, intervention_atoms[-1])
 
@@ -49,11 +55,14 @@ async def request(request: RequestModel):
         seed=request.seed,
         interventions=interventions,
     )
-    stream = BytesIO()
-    
-    image.save(stream, "png")
 
-    return Response(content=stream.read()\\, media_type="image/png")
+    bytes = BytesIO()
+
+    image.save(bytes, format="png")
+
+    bytes.seek(0)
+
+    return Response(content=bytes.read(), media_type="image/png")
 
 
 if __name__ == "__main__":

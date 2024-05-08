@@ -12,6 +12,12 @@ response = requests.post(
     f"http://localhost:8001/generate",
     json=request,
 )
+
+from io import BytesIO
+
+bytes = BytesIO(response.content)
 from PIL import Image
 
-zzz = Image.open(response.raw)
+zzz = Image.open(bytes)
+
+zzz.save('test.png')
