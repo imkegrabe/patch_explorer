@@ -1,213 +1,224 @@
 // HTML/MARKUP FOR CONTENT
 <template>
+    <div class="main-container">
+        <div class="input-container">
 
-    <div class="container">
-
-        <div class ="cross-attn-viz"> 
-            <div class="level-1-row">
-                <div class="down-1">
-                    
-                    <div class="level-1-rec"
-                    :style= " {backgroundColor: modules.c1.isClicked ? modules.c1.color : modules.c1.defaultColor }"
-                    @click="toggleColor('c1')"
-                    > 1 </div>    
-                    <div class="level-1-rec"
-                    :style= " {backgroundColor: modules.c2.isClicked ? modules.c2.color : modules.c2.defaultColor }"
-                    @click="toggleColor('c2')"
-                    > 2 </div>          
-
-                </div>
-                <div class="up-3">
-                    <div class="level-1-rec"
-                    :style= " {backgroundColor: modules.c14.isClicked ? modules.c14.color : modules.c14.defaultColor }"
-                    @click="toggleColor('c14')"
-                    > 14 </div>
-                    <div class="level-1-rec"
-                    :style= " {backgroundColor: modules.c15.isClicked ? modules.c15.color : modules.c15.defaultColor }"
-                    @click="toggleColor('c15')"
-                    > 15 </div>
-                    <div class="level-1-rec"
-                    :style= " {backgroundColor: modules.c16.isClicked ? modules.c16.color : modules.c16.defaultColor }"
-                    @click="toggleColor('c16')"
-                    > 14 </div>
-                </div>
+            <div class="prompt">
+            <label >Prompt:</label>
+            <InputText type="text" v-model="prompt_value" />
+            <small></small>
             </div>
             
-            <div class="level-2-row">
-                <div class="down-2">
-                    <div class="level-2-rec"
-                    :style= " {backgroundColor: modules.c3.isClicked ? modules.c3.color : modules.c3.defaultColor }"
-                    @click="toggleColor('c3')"
-                    > 3</div>
-                    <div class="level-2-rec"
-                    :style= " {backgroundColor: modules.c4.isClicked ? modules.c4.color : modules.c4.defaultColor }"
-                    @click="toggleColor('c4')"
-                    > 4</div>
-                </div>
-                <div class="up-2">
-                    <div class="level-2-rec"
-                    :style= " {backgroundColor: modules.c11.isClicked ? modules.c11.color : modules.c11.defaultColor }"
-                    @click="toggleColor('c11')"
-                    > 11</div>
-                    <div class="level-2-rec"
-                    :style= " {backgroundColor: modules.c12.isClicked ? modules.c12.color : modules.c12.defaultColor }"
-                    @click="toggleColor('c12')"
-                    > 12</div>
-                    <div class="level-2-rec"
-                    :style= " {backgroundColor: modules.c13.isClicked ? modules.c13.color : modules.c13.defaultColor }"
-                    @click="toggleColor('c13')"
-                    > 13</div>
-                </div>
+            <div class="seed">
+                <label >Seed: </label>
+                <InputNumber v-model="seed_value" />
+                <small></small>
             </div>
             
-            <div class="level-3-row">
-                <div class="down-3">
-                    <div class="level-3-rec"
-                    :style= " {backgroundColor: modules.c5.isClicked ? modules.c5.color : modules.c5.defaultColor }"
-                    @click="toggleColor('c5')"
-                    > 5 </div>
-                    <div class="level-3-rec"
-                    :style= " {backgroundColor: modules.c6.isClicked ? modules.c6.color : modules.c6.defaultColor }"
-                    @click="toggleColor('c6')"
-                    >  6 </div>
+            <div class="button-test">
+                <Button label="Generate" @click="generate" />
+            </div>
+
+        </div>
+
+        <div class="attn-container">
+
+            <div class ="cross-attn-viz"> 
+                <div class="level-1-row">
+                    <div class="down-1">
+                        
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.c1.isClicked ? modules.c1.color : modules.c1.defaultColor }"
+                        @click="toggleColor('c1')"
+                        > 1 </div>    
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.c2.isClicked ? modules.c2.color : modules.c2.defaultColor }"
+                        @click="toggleColor('c2')"
+                        > 2 </div>          
+
+                    </div>
+                    <div class="up-3">
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.c14.isClicked ? modules.c14.color : modules.c14.defaultColor }"
+                        @click="toggleColor('c14')"
+                        > 14 </div>
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.c15.isClicked ? modules.c15.color : modules.c15.defaultColor }"
+                        @click="toggleColor('c15')"
+                        > 15 </div>
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.c16.isClicked ? modules.c16.color : modules.c16.defaultColor }"
+                        @click="toggleColor('c16')"
+                        > 14 </div>
+                    </div>
                 </div>
-                <div class="up-1">
-                    <div class="level-3-rec"
-                    :style= " {backgroundColor: modules.c8.isClicked ? modules.c8.color : modules.c8.defaultColor }"
-                    @click="toggleColor('c8')"
-                    > 8 </div>
-                    <div class="level-3-rec"
-                    :style= " {backgroundColor: modules.c9.isClicked ? modules.c9.color : modules.c9.defaultColor }"
-                    @click="toggleColor('c9')"
-                    > 9 </div>
-                    <div class="level-3-rec"
-                    :style= " {backgroundColor: modules.c10.isClicked ? modules.c10.color : modules.c10.defaultColor }"
-                    @click="toggleColor('c10')"
-                    > 10 </div>
+                
+                <div class="level-2-row">
+                    <div class="down-2">
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.c3.isClicked ? modules.c3.color : modules.c3.defaultColor }"
+                        @click="toggleColor('c3')"
+                        > 3</div>
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.c4.isClicked ? modules.c4.color : modules.c4.defaultColor }"
+                        @click="toggleColor('c4')"
+                        > 4</div>
+                    </div>
+                    <div class="up-2">
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.c11.isClicked ? modules.c11.color : modules.c11.defaultColor }"
+                        @click="toggleColor('c11')"
+                        > 11</div>
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.c12.isClicked ? modules.c12.color : modules.c12.defaultColor }"
+                        @click="toggleColor('c12')"
+                        > 12</div>
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.c13.isClicked ? modules.c13.color : modules.c13.defaultColor }"
+                        @click="toggleColor('c13')"
+                        > 13</div>
+                    </div>
+                </div>
+                
+                <div class="level-3-row">
+                    <div class="down-3">
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.c5.isClicked ? modules.c5.color : modules.c5.defaultColor }"
+                        @click="toggleColor('c5')"
+                        > 5 </div>
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.c6.isClicked ? modules.c6.color : modules.c6.defaultColor }"
+                        @click="toggleColor('c6')"
+                        >  6 </div>
+                    </div>
+                    <div class="up-1">
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.c8.isClicked ? modules.c8.color : modules.c8.defaultColor }"
+                        @click="toggleColor('c8')"
+                        > 8 </div>
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.c9.isClicked ? modules.c9.color : modules.c9.defaultColor }"
+                        @click="toggleColor('c9')"
+                        > 9 </div>
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.c10.isClicked ? modules.c10.color : modules.c10.defaultColor }"
+                        @click="toggleColor('c10')"
+                        > 10 </div>
+                    </div>
+                </div>
+                
+                <div class="level-4-row">
+                    <div class="mid">
+                        <div class="level-4-rec"
+                        :style= " {backgroundColor: modules.c7.isClicked ? modules.c7.color : modules.c7.defaultColor }"
+                        @click="toggleColor('c7')"
+                        > 7 </div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="level-4-row">
-                <div class="mid">
-                    <div class="level-4-rec"
-                    :style= " {backgroundColor: modules.c7.isClicked ? modules.c7.color : modules.c7.defaultColor }"
-                    @click="toggleColor('c7')"
-                    > 7 </div>
+
+            <div class ="self-attn-viz">
+                
+                <div class="level-1-row">
+                    <div class="down-1">
+                        
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.s1.isClicked ? modules.s1.color : modules.s1.defaultColor }"
+                        @click="toggleColor('s1')"
+                        > 1 </div>    
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.s2.isClicked ? modules.s2.color : modules.s2.defaultColor }"
+                        @click="toggleColor('s2')"
+                        > 2 </div>          
+
+                    </div>
+                    <div class="up-3">
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.s14.isClicked ? modules.s14.color : modules.s14.defaultColor }"
+                        @click="toggleColor('s14')"
+                        > 14 </div>
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.s15.isClicked ? modules.s15.color : modules.s15.defaultColor }"
+                        @click="toggleColor('s15')"
+                        > 15 </div>
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.s16.isClicked ? modules.s16.color : modules.s16.defaultColor }"
+                        @click="toggleColor('s16')"
+                        > 14 </div>
+                    </div>
                 </div>
+                
+                <div class="level-2-row">
+                    <div class="down-2">
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.s3.isClicked ? modules.s3.color : modules.s3.defaultColor }"
+                        @click="toggleColor('s3')"
+                        > 3</div>
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.s4.isClicked ? modules.s4.color : modules.s4.defaultColor }"
+                        @click="toggleColor('s4')"
+                        > 4</div>
+                    </div>
+                    <div class="up-2">
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.s11.isClicked ? modules.s11.color : modules.s11.defaultColor }"
+                        @click="toggleColor('s11')"
+                        > 11</div>
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.s12.isClicked ? modules.s12.color : modules.s12.defaultColor }"
+                        @click="toggleColor('s12')"
+                        > 12</div>
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.s13.isClicked ? modules.s13.color : modules.s13.defaultColor }"
+                        @click="toggleColor('s13')"
+                        > 13</div>
+                    </div>
+                </div>
+                
+                <div class="level-3-row">
+                    <div class="down-3">
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.s5.isClicked ? modules.s5.color : modules.s5.defaultColor }"
+                        @click="toggleColor('s5')"
+                        > 5 </div>
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.s6.isClicked ? modules.s6.color : modules.s6.defaultColor }"
+                        @click="toggleColor('s6')"
+                        >  6 </div>
+                    </div>
+                    <div class="up-1">
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.s8.isClicked ? modules.s8.color : modules.s8.defaultColor }"
+                        @click="toggleColor('s8')"
+                        > 8 </div>
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.s9.isClicked ? modules.s9.color : modules.s9.defaultColor }"
+                        @click="toggleColor('s9')"
+                        > 9 </div>
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.s10.isClicked ? modules.s10.color : modules.s10.defaultColor }"
+                        @click="toggleColor('s10')"
+                        > 10 </div>
+                    </div>
+                </div>
+                <div class="level-4-row">
+                    <div class="mid">
+                        <div class="level-4-rec"
+                        :style= " {backgroundColor: modules.s7.isClicked ? modules.s7.color : modules.s7.defaultColor }"
+                        @click="toggleColor('s7')"
+                        > 7 </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    
+        <div class="image-container">
+            <div class="image">
+                <img :src="imageUrl" alt="Image" style="max-width: 100%; max-height: 300px;" />
             </div>
         </div>
 
-        <div class ="self-attn-viz">
-            
-            <div class="level-1-row">
-                <div class="down-1">
-                    
-                    <div class="level-1-rec"
-                    :style= " {backgroundColor: modules.s1.isClicked ? modules.s1.color : modules.s1.defaultColor }"
-                    @click="toggleColor('s1')"
-                    > 1 </div>    
-                    <div class="level-1-rec"
-                    :style= " {backgroundColor: modules.s2.isClicked ? modules.s2.color : modules.s2.defaultColor }"
-                    @click="toggleColor('s2')"
-                    > 2 </div>          
-
-                </div>
-                <div class="up-3">
-                    <div class="level-1-rec"
-                    :style= " {backgroundColor: modules.s14.isClicked ? modules.s14.color : modules.s14.defaultColor }"
-                    @click="toggleColor('s14')"
-                    > 14 </div>
-                    <div class="level-1-rec"
-                    :style= " {backgroundColor: modules.s15.isClicked ? modules.s15.color : modules.s15.defaultColor }"
-                    @click="toggleColor('s15')"
-                    > 15 </div>
-                    <div class="level-1-rec"
-                    :style= " {backgroundColor: modules.s16.isClicked ? modules.s16.color : modules.s16.defaultColor }"
-                    @click="toggleColor('s16')"
-                    > 14 </div>
-                </div>
-            </div>
-            
-            <div class="level-2-row">
-                <div class="down-2">
-                    <div class="level-2-rec"
-                    :style= " {backgroundColor: modules.s3.isClicked ? modules.s3.color : modules.s3.defaultColor }"
-                    @click="toggleColor('s3')"
-                    > 3</div>
-                    <div class="level-2-rec"
-                    :style= " {backgroundColor: modules.s4.isClicked ? modules.s4.color : modules.s4.defaultColor }"
-                    @click="toggleColor('s4')"
-                    > 4</div>
-                </div>
-                <div class="up-2">
-                    <div class="level-2-rec"
-                    :style= " {backgroundColor: modules.s11.isClicked ? modules.s11.color : modules.s11.defaultColor }"
-                    @click="toggleColor('s11')"
-                    > 11</div>
-                    <div class="level-2-rec"
-                    :style= " {backgroundColor: modules.s12.isClicked ? modules.s12.color : modules.s12.defaultColor }"
-                    @click="toggleColor('s12')"
-                    > 12</div>
-                    <div class="level-2-rec"
-                    :style= " {backgroundColor: modules.s13.isClicked ? modules.s13.color : modules.s13.defaultColor }"
-                    @click="toggleColor('s13')"
-                    > 13</div>
-                </div>
-            </div>
-            
-            <div class="level-3-row">
-                <div class="down-3">
-                    <div class="level-3-rec"
-                    :style= " {backgroundColor: modules.s5.isClicked ? modules.s5.color : modules.s5.defaultColor }"
-                    @click="toggleColor('s5')"
-                    > 5 </div>
-                    <div class="level-3-rec"
-                    :style= " {backgroundColor: modules.s6.isClicked ? modules.s6.color : modules.s6.defaultColor }"
-                    @click="toggleColor('s6')"
-                    >  6 </div>
-                </div>
-                <div class="up-1">
-                    <div class="level-3-rec"
-                    :style= " {backgroundColor: modules.s8.isClicked ? modules.s8.color : modules.s8.defaultColor }"
-                    @click="toggleColor('s8')"
-                    > 8 </div>
-                    <div class="level-3-rec"
-                    :style= " {backgroundColor: modules.s9.isClicked ? modules.s9.color : modules.s9.defaultColor }"
-                    @click="toggleColor('s9')"
-                    > 9 </div>
-                    <div class="level-3-rec"
-                    :style= " {backgroundColor: modules.s10.isClicked ? modules.s10.color : modules.s10.defaultColor }"
-                    @click="toggleColor('s10')"
-                    > 10 </div>
-                </div>
-            </div>
-            <div class="level-4-row">
-                <div class="mid">
-                    <div class="level-4-rec"
-                    :style= " {backgroundColor: modules.s7.isClicked ? modules.s7.color : modules.s7.defaultColor }"
-                    @click="toggleColor('s7')"
-                    > 7 </div>
-                </div>
-            </div>
-            
-        </div>
-    </div>
-    <div class="image-container">
-
-    </div>
-
-    <div class="input-row">
-        <label >Prompt</label>
-        <InputText type="text" v-model="prompt_value" />
-        <small>Provide a prompt pls.</small>
-
-        <label >Seed</label>
-        <InputNumber v-model="seed_value" />
-        <small>Give a seed.</small>
-    </div>
-
-    <div class="button-test">
-        <Button label="Generate" @click="generate" />
     </div>
 
 </template>
@@ -227,17 +238,29 @@
     width: calc(64px*5 + 32px*5 + 16px*5 + 8px + 4px);
     height: calc(64px + 32px + 16px + 8px + 4px);
 } */
-
-.big-row{
+.main-container {
     display: flex;
-    justify-content: flex-between;
-    width: calc(5680px + 4400px);
-    height: 4400px;
-}.image-container{
+    flex-direction: row;
+}
+.attn-container {
     display: flex;
-    justify-content: flex-between;
-    width: 40px;
-    height: 40px;
+    flex-direction: column;
+    width: calc(64px*5 + 32px*5 + 16px*5 + 8px);
+}
+.image-container {
+    display: flex;
+    margin: 10px;
+}
+.input-container {
+    display: flex;
+    flex-direction: column;
+    margin: 30px;
+}
+.prompt {
+    margin: 30px;
+}
+.seed {
+    margin: 30px
 }
 .cross-attn-viz {
     display: flex;
@@ -258,10 +281,6 @@
     position: relative;
 }
 
-.input_row{
-    height: 10px;
-    align-items: left;
-}
 .level-1-row{
     display: flex;
     flex-direction: row;
@@ -445,7 +464,8 @@ export default {
             s14: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.1.transformer_blocks.0.attn2'},
             s15: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.2.transformer_blocks.0.attn2'},
             s16: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.3.transformer_blocks.0.attn2'}
-            }
+            },
+            imageUrl: require('@/assets/hidden-unicorn.png')
         };
         
     },
@@ -457,32 +477,32 @@ export default {
 
     },
     methods:{
-        generate(){
-            const cross_modules = []
-            const self_modules = []
-            for (const [key, value] of Object.entries(this.modules)) {
-                if (value.isClicked) {
-                    if (key[0] == "c") {
-                        cross_modules.push(value.name)
-                    }
-                    else {
-                        self_modules.push(value.name)
-                    }
-                }
-            }
-            const cross_intervention = { name: "ablate.AblationIntervention", args: [], modules: cross_modules }
-            const self_intervention = { name: "ablate.AblationIntervention", args: [], modules: self_modules }
-            const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: [cross_intervention, self_intervention]}
-            //request
+        // generate(){
+        //     const cross_modules = []
+        //     const self_modules = []
+        //     for (const [key, value] of Object.entries(this.modules)) {
+        //         if (value.isClicked) {
+        //             if (key[0] == "c") {
+        //                 cross_modules.push(value.name)
+        //             }
+        //             else {
+        //                 self_modules.push(value.name)
+        //             }
+        //         }
+        //     }
+        //     const cross_intervention = { name: "ablate.AblationIntervention", args: [], modules: cross_modules }
+        //     const self_intervention = { name: "ablate.AblationIntervention", args: [], modules: self_modules }
+        //     const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: [cross_intervention, self_intervention]}
+        //     //request
 
-            fetch('localhost:8001/generate', {
-                method: 'POST',
-                body: JSON.stringify(request)
-            }).then(response => 
+        //     fetch('localhost:8001/generate', {
+        //         method: 'POST',
+        //         body: JSON.stringify(request)
+        //     }).then(response => 
             
-            )
-            // alert(this.prompt_value)
-        },
+        //     )
+        //     // alert(this.prompt_value)
+        // },
         handleRectangleClick() {
             console.log('layer was clicked :P');
         },
