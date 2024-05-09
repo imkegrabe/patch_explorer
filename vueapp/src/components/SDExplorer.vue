@@ -4,10 +4,10 @@
         <div class="input-container">
 
             <div class="prompt">
-            <label >Prompt:</label>
-            <InputText type="text" v-model="prompt_value" />
-            <small></small>
-            </div>
+                <label >Prompt:</label>
+                <InputText type="text" v-model="prompt_value" />
+                <small></small>
+                </div>
             
             <div class="seed">
                 <label >Seed: </label>
@@ -477,32 +477,44 @@ export default {
 
     },
     methods:{
-        // generate(){
-        //     const cross_modules = []
-        //     const self_modules = []
-        //     for (const [key, value] of Object.entries(this.modules)) {
-        //         if (value.isClicked) {
-        //             if (key[0] == "c") {
-        //                 cross_modules.push(value.name)
-        //             }
-        //             else {
-        //                 self_modules.push(value.name)
-        //             }
-        //         }
-        //     }
-        //     const cross_intervention = { name: "ablate.AblationIntervention", args: [], modules: cross_modules }
-        //     const self_intervention = { name: "ablate.AblationIntervention", args: [], modules: self_modules }
-        //     const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: [cross_intervention, self_intervention]}
-        //     //request
+        generate(){
+            const cross_modules = []
+            const self_modules = []
+            for (const [key, value] of Object.entries(this.modules)) {
+                if (value.isClicked) {
+                    if (key[0] == "c") {
+                        cross_modules.push(value.name)
+                    }
+                    else {
+                        self_modules.push(value.name)
+                    }
+                }
+            }
+            const cross_intervention = { name: "ablate.AblationIntervention", args: [], modules: cross_modules }
+            const self_intervention = { name: "ablate.AblationIntervention", args: [], modules: self_modules }
+            const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: [cross_intervention, self_intervention]}
+            //request
 
-        //     fetch('localhost:8001/generate', {
-        //         method: 'POST',
-        //         body: JSON.stringify(request)
-        //     }).then(response => 
+            fetch('http://localhost:8002/generate', {
+                method: 'POST',
+                body: JSON.stringify(request),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                    },
+            // }).then(response =>
+            // console.log(response)
             
-        //     )
-        //     // alert(this.prompt_value)
-        // },
+            // )
+                }).then(res=>{return res.blob()})
+            .then(blob=>{ console.log(blob)
+                var img = URL.createObjectURL(blob);
+    // Do whatever with the img
+    this.imageUrl = img
+
+  })
+            // alert(this.prompt_value)
+        },
         handleRectangleClick() {
             console.log('layer was clicked :P');
         },
