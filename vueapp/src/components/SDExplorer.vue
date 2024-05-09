@@ -2,7 +2,7 @@
 <template>
     <div class="main-container">
         <div class="input-container">
-
+            
             <div class="prompt">
                 <label >Prompt:</label>
                 <InputText type="text" v-model="prompt_value" />
@@ -11,7 +11,7 @@
             
             <div class="seed">
                 <label >Seed: </label>
-                <InputNumber v-model="seed_value" />
+                <InputNumber v-model="seed_value" inputId="integeronly" />
                 <small></small>
             </div>
             
@@ -23,7 +23,103 @@
 
         <div class="attn-container">
 
+            <div class ="self-attn-viz">
+                <h2 style="text-align: left;">self-attentions (click to place intervention):</h2>
+                <div class="level-1-row">
+                    <div class="down-1">
+                        
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.s1.isClicked ? modules.s1.color : modules.s1.defaultColor }"
+                        @click="toggleColor('s1')"
+                        > 1 </div>    
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.s2.isClicked ? modules.s2.color : modules.s2.defaultColor }"
+                        @click="toggleColor('s2')"
+                        > 2 </div>          
+
+                    </div>
+                    <div class="up-3">
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.s14.isClicked ? modules.s14.color : modules.s14.defaultColor }"
+                        @click="toggleColor('s14')"
+                        > 14 </div>
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.s15.isClicked ? modules.s15.color : modules.s15.defaultColor }"
+                        @click="toggleColor('s15')"
+                        > 15 </div>
+                        <div class="level-1-rec"
+                        :style= " {backgroundColor: modules.s16.isClicked ? modules.s16.color : modules.s16.defaultColor }"
+                        @click="toggleColor('s16')"
+                        > 16 </div>
+                    </div>
+                </div>
+                
+                <div class="level-2-row">
+                    <div class="down-2">
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.s3.isClicked ? modules.s3.color : modules.s3.defaultColor }"
+                        @click="toggleColor('s3')"
+                        > 3</div>
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.s4.isClicked ? modules.s4.color : modules.s4.defaultColor }"
+                        @click="toggleColor('s4')"
+                        > 4</div>
+                    </div>
+                    <div class="up-2">
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.s11.isClicked ? modules.s11.color : modules.s11.defaultColor }"
+                        @click="toggleColor('s11')"
+                        > 11 </div>
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.s12.isClicked ? modules.s12.color : modules.s12.defaultColor }"
+                        @click="toggleColor('s12')"
+                        > 12 </div>
+                        <div class="level-2-rec"
+                        :style= " {backgroundColor: modules.s13.isClicked ? modules.s13.color : modules.s13.defaultColor }"
+                        @click="toggleColor('s13')"
+                        > 13 </div>
+                    </div>
+                </div>
+                
+                <div class="level-3-row">
+                    <div class="down-3">
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.s5.isClicked ? modules.s5.color : modules.s5.defaultColor }"
+                        @click="toggleColor('s5')"
+                        > 5 </div>
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.s6.isClicked ? modules.s6.color : modules.s6.defaultColor }"
+                        @click="toggleColor('s6')"
+                        >  6 </div>
+                    </div>
+                    <div class="up-1">
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.s8.isClicked ? modules.s8.color : modules.s8.defaultColor }"
+                        @click="toggleColor('s8')"
+                        > 8 </div>
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.s9.isClicked ? modules.s9.color : modules.s9.defaultColor }"
+                        @click="toggleColor('s9')"
+                        > 9 </div>
+                        <div class="level-3-rec"
+                        :style= " {backgroundColor: modules.s10.isClicked ? modules.s10.color : modules.s10.defaultColor }"
+                        @click="toggleColor('s10')"
+                        > 10 </div>
+                    </div>
+                </div>
+                <div class="level-4-row">
+                    <div class="mid">
+                        <div class="level-4-rec"
+                        :style= " {backgroundColor: modules.s7.isClicked ? modules.s7.color : modules.s7.defaultColor }"
+                        @click="toggleColor('s7')"
+                        > 7 </div>
+                    </div>
+                </div>
+                
+            </div>
+
             <div class ="cross-attn-viz"> 
+                <h2 style="text-align: left;">cross-attentions (click to place intervention):</h2>
                 <div class="level-1-row">
                     <div class="down-1">
                         
@@ -49,7 +145,7 @@
                         <div class="level-1-rec"
                         :style= " {backgroundColor: modules.c16.isClicked ? modules.c16.color : modules.c16.defaultColor }"
                         @click="toggleColor('c16')"
-                        > 14 </div>
+                        > 16 </div>
                     </div>
                 </div>
                 
@@ -116,101 +212,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class ="self-attn-viz">
-                
-                <div class="level-1-row">
-                    <div class="down-1">
-                        
-                        <div class="level-1-rec"
-                        :style= " {backgroundColor: modules.s1.isClicked ? modules.s1.color : modules.s1.defaultColor }"
-                        @click="toggleColor('s1')"
-                        > 1 </div>    
-                        <div class="level-1-rec"
-                        :style= " {backgroundColor: modules.s2.isClicked ? modules.s2.color : modules.s2.defaultColor }"
-                        @click="toggleColor('s2')"
-                        > 2 </div>          
-
-                    </div>
-                    <div class="up-3">
-                        <div class="level-1-rec"
-                        :style= " {backgroundColor: modules.s14.isClicked ? modules.s14.color : modules.s14.defaultColor }"
-                        @click="toggleColor('s14')"
-                        > 14 </div>
-                        <div class="level-1-rec"
-                        :style= " {backgroundColor: modules.s15.isClicked ? modules.s15.color : modules.s15.defaultColor }"
-                        @click="toggleColor('s15')"
-                        > 15 </div>
-                        <div class="level-1-rec"
-                        :style= " {backgroundColor: modules.s16.isClicked ? modules.s16.color : modules.s16.defaultColor }"
-                        @click="toggleColor('s16')"
-                        > 14 </div>
-                    </div>
-                </div>
-                
-                <div class="level-2-row">
-                    <div class="down-2">
-                        <div class="level-2-rec"
-                        :style= " {backgroundColor: modules.s3.isClicked ? modules.s3.color : modules.s3.defaultColor }"
-                        @click="toggleColor('s3')"
-                        > 3</div>
-                        <div class="level-2-rec"
-                        :style= " {backgroundColor: modules.s4.isClicked ? modules.s4.color : modules.s4.defaultColor }"
-                        @click="toggleColor('s4')"
-                        > 4</div>
-                    </div>
-                    <div class="up-2">
-                        <div class="level-2-rec"
-                        :style= " {backgroundColor: modules.s11.isClicked ? modules.s11.color : modules.s11.defaultColor }"
-                        @click="toggleColor('s11')"
-                        > 11</div>
-                        <div class="level-2-rec"
-                        :style= " {backgroundColor: modules.s12.isClicked ? modules.s12.color : modules.s12.defaultColor }"
-                        @click="toggleColor('s12')"
-                        > 12</div>
-                        <div class="level-2-rec"
-                        :style= " {backgroundColor: modules.s13.isClicked ? modules.s13.color : modules.s13.defaultColor }"
-                        @click="toggleColor('s13')"
-                        > 13</div>
-                    </div>
-                </div>
-                
-                <div class="level-3-row">
-                    <div class="down-3">
-                        <div class="level-3-rec"
-                        :style= " {backgroundColor: modules.s5.isClicked ? modules.s5.color : modules.s5.defaultColor }"
-                        @click="toggleColor('s5')"
-                        > 5 </div>
-                        <div class="level-3-rec"
-                        :style= " {backgroundColor: modules.s6.isClicked ? modules.s6.color : modules.s6.defaultColor }"
-                        @click="toggleColor('s6')"
-                        >  6 </div>
-                    </div>
-                    <div class="up-1">
-                        <div class="level-3-rec"
-                        :style= " {backgroundColor: modules.s8.isClicked ? modules.s8.color : modules.s8.defaultColor }"
-                        @click="toggleColor('s8')"
-                        > 8 </div>
-                        <div class="level-3-rec"
-                        :style= " {backgroundColor: modules.s9.isClicked ? modules.s9.color : modules.s9.defaultColor }"
-                        @click="toggleColor('s9')"
-                        > 9 </div>
-                        <div class="level-3-rec"
-                        :style= " {backgroundColor: modules.s10.isClicked ? modules.s10.color : modules.s10.defaultColor }"
-                        @click="toggleColor('s10')"
-                        > 10 </div>
-                    </div>
-                </div>
-                <div class="level-4-row">
-                    <div class="mid">
-                        <div class="level-4-rec"
-                        :style= " {backgroundColor: modules.s7.isClicked ? modules.s7.color : modules.s7.defaultColor }"
-                        @click="toggleColor('s7')"
-                        > 7 </div>
-                    </div>
-                </div>
-                
-            </div>
         </div>
     
         <div class="image-container">
@@ -266,7 +267,7 @@
     display: flex;
     flex-direction: column;
     width: calc(64px*5 + 32px*5 + 16px*5 + 8px);
-    height: calc(64px + 32px + 16px + 8px);
+    /* height: calc(64px + 32px + 16px + 8px); */
     font-size: 6px;
     position: relative;
     /* left: 4px;
@@ -276,7 +277,7 @@
     display: flex;
     flex-direction: column;
     width: calc(64px*5 + 32px*5 + 16px*5 + 8px);
-    height: calc(64px + 32px + 16px + 8px);
+    /* height: calc(64px + 32px + 16px + 8px); */
     font-size: 6px;
     position: relative;
 }
@@ -428,42 +429,42 @@ export default {
     },
     data() {
         return {
-            prompt_value: "default",
-            seed_value: 40,
+            prompt_value: "unicorn",
+            seed_value: 79,
             value: '',  // Initialize 'value' with an empty string or appropriate initial value
             modules: {
-            c1: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.0.attentions.0.transformer_blocks.0.attn1'},
-            c2: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.0.attentions.1.transformer_blocks.0.attn1'},
-            c3: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.1.attentions.0.transformer_blocks.0.attn1'},
-            c4: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.1.attentions.1.transformer_blocks.0.attn1'},
-            c5: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.2.attentions.0.transformer_blocks.0.attn1'},
-            c6: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.2.attentions.1.transformer_blocks.0.attn1'},
-            c7: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.mid_block.attentions.0.transformer_blocks.0.attn1'},
-            c8: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.1.attentions.0.transformer_blocks.0.attn1'},
-            c9: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.1.attentions.1.transformer_blocks.0.attn1'},
-            c10: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.1.attentions.2.transformer_blocks.0.attn1'},
-            c11: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.2.attentions.0.transformer_blocks.0.attn1'},
-            c12: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.2.attentions.1.transformer_blocks.0.attn1'},
-            c13: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.2.attentions.2.transformer_blocks.0.attn1'},
-            c14: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.0.transformer_blocks.0.attn1'},
-            c15: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.1.transformer_blocks.0.attn1'},
-            c16: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.2.transformer_blocks.0.attn1'},
-            s1: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.0.attentions.0.transformer_blocks.0.attn2'},
-            s2: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.0.attentions.1.transformer_blocks.0.attn2'},
-            s3: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.1.attentions.0.transformer_blocks.0.attn2'},
-            s4: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.1.attentions.1.transformer_blocks.0.attn2'},
-            s5: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.2.attentions.0.transformer_blocks.0.attn2'},
-            s6: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.2.attentions.1.transformer_blocks.0.attn2'},
-            s7: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.mid_block.attentions.0.transformer_blocks.0.attn2'},
-            s8: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.1.transformer_blocks.0.attn2'},
-            s9: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.2.transformer_blocks.0.attn2'},
-            s10: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.3.transformer_blocks.0.attn2'},
-            s11: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.2.attentions.1.transformer_blocks.0.attn2'},
-            s12: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.2.attentions.2.transformer_blocks.0.attn2'},
-            s13: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.2.attentions.3.transformer_blocks.0.attn2'},
-            s14: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.1.transformer_blocks.0.attn2'},
-            s15: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.2.transformer_blocks.0.attn2'},
-            s16: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.3.transformer_blocks.0.attn2'}
+            s1: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.0.attentions.0.transformer_blocks.0.attn1'},
+            s2: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.0.attentions.1.transformer_blocks.0.attn1'},
+            s3: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.1.attentions.0.transformer_blocks.0.attn1'},
+            s4: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.1.attentions.1.transformer_blocks.0.attn1'},
+            s5: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.2.attentions.0.transformer_blocks.0.attn1'},
+            s6: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.2.attentions.1.transformer_blocks.0.attn1'},
+            s7: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.mid_block.attentions.0.transformer_blocks.0.attn1'},
+            s8: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.1.attentions.0.transformer_blocks.0.attn1'},
+            s9: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.1.attentions.1.transformer_blocks.0.attn1'},
+            s10: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.1.attentions.2.transformer_blocks.0.attn1'},
+            s11: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.2.attentions.0.transformer_blocks.0.attn1'},
+            s12: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.2.attentions.1.transformer_blocks.0.attn1'},
+            s13: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.2.attentions.2.transformer_blocks.0.attn1'},
+            s14: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.0.transformer_blocks.0.attn1'},
+            s15: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.1.transformer_blocks.0.attn1'},
+            s16: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.2.transformer_blocks.0.attn1'},
+            c1: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.0.attentions.0.transformer_blocks.0.attn2'},
+            c2: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.0.attentions.1.transformer_blocks.0.attn2'},
+            c3: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.1.attentions.0.transformer_blocks.0.attn2'},
+            c4: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.1.attentions.1.transformer_blocks.0.attn2'},
+            c5: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.2.attentions.0.transformer_blocks.0.attn2'},
+            c6: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.2.attentions.1.transformer_blocks.0.attn2'},
+            c7: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.mid_block.attentions.0.transformer_blocks.0.attn2'},
+            c8: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.1.attentions.0.transformer_blocks.0.attn2'},
+            c9: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.1.attentions.1.transformer_blocks.0.attn2'},
+            c10: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.1.attentions.2.transformer_blocks.0.attn2'},
+            c11: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.2.attentions.0.transformer_blocks.0.attn2'},
+            c12: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.2.attentions.1.transformer_blocks.0.attn2'},
+            c13: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.2.attentions.2.transformer_blocks.0.attn2'},
+            c14: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.0.transformer_blocks.0.attn2'},
+            c15: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.1.transformer_blocks.0.attn2'},
+            c16: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.2.transformer_blocks.0.attn2'}
             },
             imageUrl: require('@/assets/hidden-unicorn.png')
         };
