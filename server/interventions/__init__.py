@@ -28,3 +28,7 @@ class DiffusionIntervention:
                 self.intervene(envoy)
 
                 envoy.next()
+                
+    @classmethod
+    def fields(cls):
+        return []

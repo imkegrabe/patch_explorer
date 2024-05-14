@@ -1,16 +1,21 @@
 import importlib
 from io import BytesIO
+from typing import Dict
 
 import uvicorn
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
-from PIL import Image as MImage
 from PIL.Image import Image
 
 from nnsight.util import fetch_attr
 
 from . import util
-from .Request import RequestModel
+from .interventions import DiffusionIntervention
+from .interventions.ablate import AblationIntervention
+from .interventions.scale import ScalingIntervention
+from .pydantics.Configuration import ConfigurationModel
+from .pydantics.Intervention import InterventionModel
+from .pydantics.Request import RequestModel
 
 app = FastAPI()
 
@@ -22,8 +27,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 model = util.load()
+
+
+interventions: Dict[str, DiffusionIntervention] = {
+    "Ablation": AblationIntervention,
+    "Scaling": ScalingIntervention,
+}
+
+
+@app.get("/init")
+async def init() -> ConfigurationModel:
+
+    return ConfigurationModel(
+        interventions=[
+            InterventionModel(name=name, fields=intervention.fields())
+            for name, intervention in interventions.items()
+        ],
+        architecture=model,
+    )
 
 
 @app.post("/generate")

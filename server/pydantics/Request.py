@@ -3,7 +3,7 @@ from typing import Any, List
 from pydantic import BaseModel
 
 
-class InterventionModel(BaseModel):
+class InterventionRequestModel(BaseModel):
 
     name: str
 
@@ -18,4 +18,4 @@ class RequestModel(BaseModel):
     seed: int = 42
     timesteps: int = 50
 
-    interventions: List[InterventionModel]
+    interventions: List[InterventionRequestModel]
