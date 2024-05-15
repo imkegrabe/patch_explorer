@@ -28,7 +28,7 @@ app.add_middleware(
 )
 
 model = util.load()
-
+model._model.pipeline.safety_checker = None
 
 interventions: Dict[str, DiffusionIntervention] = {
     "Ablation": AblationIntervention,
@@ -88,4 +88,4 @@ async def request(request: RequestModel):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001, workers=1)
+    uvicorn.run(app, host="0.0.0.0", port=8002, workers=1)
