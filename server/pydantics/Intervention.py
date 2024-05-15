@@ -10,6 +10,7 @@ class FieldModel(BaseModel):
         
         string = 'string'
         float = 'float'
+        integer = 'integer'
     
     name: str
     

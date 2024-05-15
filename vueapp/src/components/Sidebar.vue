@@ -1,4 +1,26 @@
-<template></template>
+<template>
+    
+</template>
 <style></style>
-<script></script>
+<script>
+
+
+
+export default {
+    components: {
+  
+    },
+    props: {
+  
+    },
+    data() {
+        return {
+            
+        }
+    },
+    methods: {
+
+    }
+
+}</script>
 
