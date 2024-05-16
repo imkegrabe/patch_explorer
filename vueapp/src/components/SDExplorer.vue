@@ -22,7 +22,7 @@
         </div>
 
         <div class="attn-container">
-
+            
             <div class ="self-attn-viz">
                 <h2 style="text-align: left;">self-attentions (click to place intervention):</h2>
                 <div class="level-1-row">
@@ -491,8 +491,8 @@ export default {
                     }
                 }
             }
-            const cross_intervention = { name: "ablate.AblationIntervention", args: [], modules: cross_modules }
-            const self_intervention = { name: "ablate.AblationIntervention", args: [], modules: self_modules }
+            const cross_intervention = { name: "scale.ScalingIntervention", args: [2], modules: cross_modules }
+            const self_intervention = { name: "scale.ScalingIntervention", args: [2], modules: self_modules }
             const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: [cross_intervention, self_intervention]}
             //request
 
