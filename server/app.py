@@ -44,7 +44,7 @@ async def request(request: RequestModel):
 
         intervention_type = getattr(intervention_module, intervention_atoms[-1])
 
-        intervention = intervention_type(envoys, *intervention_model.args)
+        intervention = intervention_type(*intervention_model.args, envoys)
 
         interventions.append(intervention)
 
