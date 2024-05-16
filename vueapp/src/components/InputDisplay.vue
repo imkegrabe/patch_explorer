@@ -14,7 +14,7 @@
         </div>
 
         <div class="button-test">
-            <Button label="Generate" @click="generate" />
+            <Button label="Generate" @click="generate" :disabled="loading" />
         </div>
 
     </div>
@@ -57,8 +57,9 @@ export default {
         InputText
     },
     props: {
-        imageUrl: String,
-        host: String
+        host: String,
+        modules: Object,
+        loading: Boolean
     },
     data() {
         return {
@@ -83,7 +84,8 @@ export default {
             const cross_intervention = { name: "ablate.AblationIntervention", args: [], modules: cross_modules }
             const self_intervention = { name: "ablate.AblationIntervention", args: [], modules: self_modules }
             const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: [cross_intervention, self_intervention] }
-            //request
+            
+            this.$emit('loading')
 
             fetch(this.host + '/generate', {
                 method: 'POST',
@@ -92,20 +94,14 @@ export default {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                // }).then(response =>
-                // console.log(response)
-
-                // )
+          
             }).then(res => { return res.blob() })
                 .then(blob => {
-                    console.log(blob)
                     var img = URL.createObjectURL(blob);
-                    // Do whatever with the img
-                    // eslint-disable-next-line vue/no-mutating-props
-                    this.imageUrl = img
+
+                    this.$emit('updateImage', img)
 
                 })
-            // alert(this.prompt_value)
         }
     }
 

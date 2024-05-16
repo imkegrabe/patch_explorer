@@ -2,12 +2,12 @@
 <template>
     <div class="main-container">
 
-        <InputDisplay :imageUrl="imageUrl" :host="host"></InputDisplay>
-
+        <InputDisplay @loading="loading = true" @updateImage="(url) => updateImage(url)" :host="host" :modules="modules"
+            :loading="loading"></InputDisplay>
 
         <ModelDisplay :modules="modules"></ModelDisplay>
 
-        <ImageDisplay :imageUrl="imageUrl"></ImageDisplay>
+        <ImageDisplay :loading="loading" :imageUrl="imageUrl"></ImageDisplay>
 
         <SidebarDisplay :interventions="interventions"></SidebarDisplay>
 
@@ -19,31 +19,11 @@
 
 // CSS FOR STYLING
 <style scoped>
-:root {
-    /* --scale: 1; */
-    /* --dim1: calc(64 * var(--scale))px;
-    --dim2: calc(32px * var(--scale));
-    --dim3: calc(16px * var(--scale));
-    --dim4: calc(8px * var(--scale)); */
-}
-
-/* .container{
-    display: flex;
-    justify-content: flex-between;
-    width: calc(64px*5 + 32px*5 + 16px*5 + 8px + 4px);
-    height: calc(64px + 32px + 16px + 8px + 4px);
-} */
 .main-container {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-}
-
-
-.button-test {
-    width: 200px;
-    height: 50px;
 }
 </style>
 
@@ -64,7 +44,7 @@ export default {
     },
     data() {
         return {
-
+            loading: false,
             modules: {
                 s1: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.0.attentions.0.transformer_blocks.0.attn1' },
                 s2: { isClicked: false, color: 'rgba(236, 255, 0, 0.6)', defaultColor: 'white', name: '.unet.down_blocks.0.attentions.1.transformer_blocks.0.attn1' },
@@ -113,6 +93,10 @@ export default {
 
     },
     methods: {
+        updateImage(url) {
+            this.imageUrl = url;
+            this.loading = false;
+        },
         init() {
             fetch(this.host + '/init', {
                 method: 'GET',
