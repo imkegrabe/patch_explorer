@@ -4,7 +4,15 @@
         <img v-show="!loading" :src="imageUrl" alt="Image" />
     </div>
 </template>
-<style></style>
+<style>
+
+
+.image-container{
+    padding:50px;
+    background-image: v-bind('frame');
+    background-size:cover;
+}
+</style>
 <script>
 
 import Skeleton from 'primevue/skeleton';
@@ -20,7 +28,7 @@ export default {
     },
     data() {
         return {
-
+            frame: "url(" + require('@/assets/frame.jpg') + ")",
         }
     },
     methods: {
