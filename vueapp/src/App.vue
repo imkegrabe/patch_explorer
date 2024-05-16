@@ -1,5 +1,5 @@
 <template>
-  <SDExplorer/>
+  <SDExplorer :host="'http://localhost:8002'"/>
 </template>
 
 <script>

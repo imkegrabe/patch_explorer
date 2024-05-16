@@ -1,6 +1,6 @@
 <template>
-    <Panel header="{{ name }}" toggleable>
-        <div v-for="(field, index) in fields">
+    <Panel :header="name" toggleable>
+        <div v-for="(field, index) in fields" :key="'field_' + index">
             <span>{{ field.name }}</span>
             <InputText v-if="field.type === 'string'" v-model="field_values[index]"></InputText>
             <InputNumber v-else-if="field.type === 'float'" :minFractionDigits="2" :maxFractionDigits="5"
@@ -19,6 +19,7 @@ import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
 
 export default {
+    name: "InterventionDisplay",
     components: {
         Panel,
         InputText,
