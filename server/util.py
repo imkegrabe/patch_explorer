@@ -23,3 +23,10 @@ def run(model:DiffusionModel, prompt:str, n_steps:int = 50, seed:int=40, interve
         output = model.output.save()
         
     return output.images[0]
+
+
+def encode_prompt(prompt:str, model:DiffusionModel):  
+    prompt_embeds, negative_prompt_embeds = model.pipeline.encode_prompt("", torch.device("cuda"), 1, True, None) #tokens for empty prompt
+    prompt_embeds = torch.cat([negative_prompt_embeds, prompt_embeds])
+    
+    return prompt_embeds

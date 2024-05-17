@@ -13,9 +13,11 @@ from . import util
 from .interventions import DiffusionIntervention
 from .interventions.ablate import AblationIntervention
 from .interventions.scale import ScalingIntervention
+from .interventions.encoder import EncoderIntervention
 from .pydantics.Configuration import ConfigurationModel
 from .pydantics.Intervention import InterventionModel
 from .pydantics.Request import RequestModel
+
 
 app = FastAPI()
 
@@ -33,6 +35,7 @@ model._model.pipeline.safety_checker = None
 interventions: Dict[str, DiffusionIntervention] = {
     "Ablation": AblationIntervention,
     "Scaling": ScalingIntervention,
+    "Encoder" : EncoderIntervention
 }
 
 
@@ -66,7 +69,7 @@ async def request(request: RequestModel):
 
         intervention_type = getattr(intervention_module, intervention_atoms[-1])
 
-        intervention = intervention_type(envoys, *intervention_model.args)
+        intervention = intervention_type(*intervention_model.args, model, envoys)
 
         interventions.append(intervention)
 

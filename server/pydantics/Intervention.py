@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Any, List
+from typing import Any, List, Dict
 
 from pydantic import BaseModel
 from enum import Enum
@@ -22,4 +22,8 @@ class InterventionModel(BaseModel):
     name: str
 
     fields: List[FieldModel] = []
+    
+    num_instances: int = 0
+    
+    instances: List = []
 
