@@ -340,7 +340,7 @@ export default {
 
     },
     props: {
-        modules: Object
+        modules: Object,
     },
     data() {
         return {
@@ -349,9 +349,8 @@ export default {
     },
     methods: {
 
-        toggleColor(rectKey) {
-            // eslint-disable-next-line vue/no-mutating-props
-            this.modules[rectKey].isClicked = !this.modules[rectKey].isClicked;
+        toggleColor(module_key) {
+            this.$emit('selectModule', module_key)
         }
     }
 

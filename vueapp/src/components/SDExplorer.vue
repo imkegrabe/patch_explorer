@@ -2,15 +2,18 @@
 <template>
     <div class="main-container">
 
-        <InputDisplay @loading="loading = true" @updateImage="(url) => updateImage(url)" :host="host" :modules="modules"
-            :loading="loading"></InputDisplay>
+        <InputDisplay @loading="loading = true" @updateImage="(url) => updateImage(url)" :host="host"
+            :interventions="interventions" :loading="loading"></InputDisplay>
 
 
         <ImageDisplay :loading="loading" :imageUrl="imageUrl"></ImageDisplay>
 
-        <SidebarDisplay :interventions="interventions"></SidebarDisplay>
+        <SidebarDisplay @updateInterventionInstance="(ii) => current_intervention_instance_applying = ii"
+            :current_intervention_instance_applying="current_intervention_instance_applying"
+            :interventions="interventions"></SidebarDisplay>
 
-        <ModelDisplay :modules="modules"></ModelDisplay>
+        <ModelDisplay :current_intervention_instance_applying="current_intervention_instance_applying"
+            :modules="modules" @selectModule="selectModule"></ModelDisplay>
 
 
 
@@ -83,7 +86,8 @@ export default {
             },
             imageUrl: require('@/assets/hidden-unicorn.png'),
             interventions: {},
-            architecture: {}
+            architecture: {},
+            current_intervention_instance_applying: null
         };
 
     },
@@ -98,6 +102,27 @@ export default {
         updateImage(url) {
             this.imageUrl = url;
             this.loading = false;
+        },
+        selectModule(module_key) {
+            if (this.current_intervention_instance_applying !== null) {
+                this.modules[module_key].isClicked = !this.modules[module_key].isClicked;
+                if (this.modules[module_key].isClicked) {
+                    this.modules[module_key].color = this.current_intervention_instance_applying.color;
+                    this.current_intervention_instance_applying.envoys.add(this.modules[module_key].name)
+                }
+                else {
+
+                    for (const intervention in this.interventions) {
+                        for (const intervention_instance in intervention.instances) {
+                            intervention_instance.envoys.delete(this.modules[module_key].name)
+                        }
+                    }
+
+                    this.current_intervention_instance_applying.envoys.delete(this.modules[module_key].name)
+
+                }
+
+            }
         },
         init() {
             fetch(this.host + '/init', {

@@ -32,7 +32,7 @@ app.add_middleware(
 model = util.load()
 model._model.pipeline.safety_checker = None
 
-interventions: Dict[str, DiffusionIntervention] = {
+interventions_types: Dict[str, DiffusionIntervention] = {
     "Ablation": AblationIntervention,
     "Scaling": ScalingIntervention,
     "Encoder" : EncoderIntervention
@@ -45,7 +45,7 @@ async def init() -> ConfigurationModel:
     return ConfigurationModel(
         interventions=[
             InterventionModel(name=name, fields=intervention.fields())
-            for name, intervention in interventions.items()
+            for name, intervention in interventions_types.items()
         ],
         architecture=model,
     )
@@ -61,15 +61,9 @@ async def request(request: RequestModel):
             fetch_attr(model, module_path) for module_path in intervention_model.modules
         ]
 
-        intervention_atoms = intervention_model.name.split(".")
-
-        intervention_module = importlib.import_module(
-            f".{'.'.join(intervention_atoms[:-1])}", package="interventions"
-        )
-
-        intervention_type = getattr(intervention_module, intervention_atoms[-1])
-
-        intervention = intervention_type(*intervention_model.args, model, envoys)
+       
+        print(intervention_model.args)
+        intervention = interventions_types[intervention_model.name](*intervention_model.args, model, envoys)
 
         interventions.append(intervention)
 

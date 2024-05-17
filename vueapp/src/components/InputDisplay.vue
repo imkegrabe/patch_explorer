@@ -40,6 +40,7 @@
     border-top-left-radius: 20px;
 
     margin:0px !important;
+    z-index: 999;
 
     height:10%;
 }
@@ -58,7 +59,7 @@ export default {
     },
     props: {
         host: String,
-        modules: Object,
+        interventions: Array,
         loading: Boolean
     },
     data() {
@@ -69,21 +70,26 @@ export default {
     },
     methods: {
         generate() {
-            const cross_modules = []
-            const self_modules = []
-            for (const [key, value] of Object.entries(this.modules)) {
-                if (value.isClicked) {
-                    if (key[0] == "c") {
-                        cross_modules.push(value.name)
+            const interventions_to_apply = [] 
+
+
+            for (const intervention of this.interventions) {
+          
+                for (const intervention_instance of intervention.instances){
+
+                    const intervention_instance_to_apply = {
+                        name: intervention.name,
+                        args: Array.from(intervention_instance.field_values),
+                        modules: Array.from(intervention_instance.envoys)
                     }
-                    else {
-                        self_modules.push(value.name)
-                    }
+
+                    interventions_to_apply.push(intervention_instance_to_apply)
                 }
-            }
-            const cross_intervention = { name: "ablate.AblationIntervention", args: [], modules: cross_modules }
-            const self_intervention = { name: "ablate.AblationIntervention", args: [], modules: self_modules }
-            const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: [cross_intervention, self_intervention] }
+            }  
+  
+            const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: interventions_to_apply }
+
+            console.log(request)
             
             this.$emit('loading')
 

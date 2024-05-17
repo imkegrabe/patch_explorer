@@ -3,7 +3,10 @@
         <Sidebar v-model:visible="sidebar_visible" header="Menu" style="width:fit-content;">
             <Panel header="Interventions" toggleable>
                 <InterventionDisplay v-for="intervention in interventions" :key="'intervention_' + intervention.name"
-                    :name="intervention.name" :fields="intervention.fields" />
+                    :intervention="intervention"
+                    :current_intervention_instance_applying="current_intervention_instance_applying"
+                    @updateInterventionInstance="(ii) => $emit('updateInterventionInstance', ii)"
+                    @addInterventionInstance="addInterventionInstance" />
 
             </Panel>
         </Sidebar>
@@ -31,15 +34,21 @@ export default {
         InterventionDisplay
     },
     props: {
-        interventions: Array
+        interventions: Array,
+        current_intervention_instance_applying: Object
     },
     data() {
         return {
-            sidebar_visible: false
+            sidebar_visible: false,
+            
         }
     },
     methods: {
+        addInterventionInstance(instance, intervention){
+            intervention.instances.push(instance)
 
+            intervention.num_instances += 1;
+        }
     }
 
 }</script>

@@ -1,5 +1,5 @@
 <template>
-    <Panel header="Image" toggleable class="not-zoomable" style="position: fixed; top: 0px; right: 0px">
+    <Panel header="Image" toggleable class="not-zoomable" style="position: fixed; top: 0px; right: 0px; z-index: 999;">
         <div class="image-container" style="width: 40vh; height:40vh;">
             <Skeleton v-show="loading" style="width: 100%; height:100%;"></Skeleton>
             <img v-show="!loading" :src="imageUrl" alt="Image" />
