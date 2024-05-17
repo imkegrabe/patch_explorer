@@ -1,26 +1,22 @@
 <template>
-    <div class="image-container" style="width: 40vh; height:40vh;">
-        <Skeleton v-show="loading" style="width: 100%; height:100%;"></Skeleton>
-        <img v-show="!loading" :src="imageUrl" alt="Image" />
-    </div>
+    <Panel header="Image" toggleable class="not-zoomable" style="position: fixed; top: 0px; right: 0px">
+        <div class="image-container" style="width: 40vh; height:40vh;">
+            <Skeleton v-show="loading" style="width: 100%; height:100%;"></Skeleton>
+            <img v-show="!loading" :src="imageUrl" alt="Image" />
+        </div>
+    </Panel>
 </template>
-<style>
-
-
-.image-container{
-    padding:50px;
-    background-image: v-bind('frame');
-    background-size:cover;
-}
-</style>
+<style></style>
 <script>
 
 import Skeleton from 'primevue/skeleton';
+import Panel from 'primevue/panel';
 
 export default {
     name: "ImageDisplay",
     components: {
-        Skeleton
+        Skeleton,
+        Panel
     },
     props: {
         imageUrl: String,
@@ -28,7 +24,6 @@ export default {
     },
     data() {
         return {
-            frame: "url(" + require('@/assets/frame.jpg') + ")",
         }
     },
     methods: {

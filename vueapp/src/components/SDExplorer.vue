@@ -5,11 +5,13 @@
         <InputDisplay @loading="loading = true" @updateImage="(url) => updateImage(url)" :host="host" :modules="modules"
             :loading="loading"></InputDisplay>
 
-        <ModelDisplay :modules="modules"></ModelDisplay>
 
         <ImageDisplay :loading="loading" :imageUrl="imageUrl"></ImageDisplay>
 
         <SidebarDisplay :interventions="interventions"></SidebarDisplay>
+
+        <ModelDisplay :modules="modules"></ModelDisplay>
+
 
 
 

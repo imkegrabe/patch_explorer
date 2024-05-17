@@ -1,0 +1,93 @@
+diff --git a/node_modules/vue-panzoom/.browserslistrc b/node_modules/vue-panzoom/.browserslistrc
+old mode 100644
+new mode 100755
+diff --git a/node_modules/vue-panzoom/CHANGELOG.md b/node_modules/vue-panzoom/CHANGELOG.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/vue-panzoom/LICENSE b/node_modules/vue-panzoom/LICENSE
+old mode 100644
+new mode 100755
+diff --git a/node_modules/vue-panzoom/README.md b/node_modules/vue-panzoom/README.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/vue-panzoom/babel.config.js b/node_modules/vue-panzoom/babel.config.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/vue-panzoom/build/rollup.config.js b/node_modules/vue-panzoom/build/rollup.config.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/vue-panzoom/dist/vue-panzoom.esm.js b/node_modules/vue-panzoom/dist/vue-panzoom.esm.js
+old mode 100644
+new mode 100755
+index 0d5a7fe..61e3101
+--- a/node_modules/vue-panzoom/dist/vue-panzoom.esm.js
++++ b/node_modules/vue-panzoom/dist/vue-panzoom.esm.js
+@@ -9,7 +9,7 @@ var PanZoomComponent = {
+     },
+     data: function data() {
+         return {
+-            $panZoomInstance: null,
++            panZoomInstance: null,
+             instanceId: null,
+             defaultOptions: {
+                 autocenter: true,
+diff --git a/node_modules/vue-panzoom/dist/vue-panzoom.min.js b/node_modules/vue-panzoom/dist/vue-panzoom.min.js
+old mode 100644
+new mode 100755
+index cd7ebfa..185e5de
+--- a/node_modules/vue-panzoom/dist/vue-panzoom.min.js
++++ b/node_modules/vue-panzoom/dist/vue-panzoom.min.js
+@@ -11,7 +11,7 @@ var VuePanZoom = (function (panZoom, vue) {
+         },
+         data: function data() {
+             return {
+-                $panZoomInstance: null,
++                panZoomInstance: null,
+                 instanceId: null,
+                 defaultOptions: {
+                     autocenter: true,
+diff --git a/node_modules/vue-panzoom/dist/vue-panzoom.umd.js b/node_modules/vue-panzoom/dist/vue-panzoom.umd.js
+old mode 100644
+new mode 100755
+index e459ae4..4624c2b
+--- a/node_modules/vue-panzoom/dist/vue-panzoom.umd.js
++++ b/node_modules/vue-panzoom/dist/vue-panzoom.umd.js
+@@ -14,7 +14,7 @@
+         },
+         data: function data() {
+             return {
+-                $panZoomInstance: null,
++                panZoomInstance: null,
+                 instanceId: null,
+                 defaultOptions: {
+                     autocenter: true,
+diff --git a/node_modules/vue-panzoom/postcss.config.js b/node_modules/vue-panzoom/postcss.config.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/vue-panzoom/src/components/pan-zoom/component.vue b/node_modules/vue-panzoom/src/components/pan-zoom/component.vue
+old mode 100644
+new mode 100755
+diff --git a/node_modules/vue-panzoom/src/components/pan-zoom/script.js b/node_modules/vue-panzoom/src/components/pan-zoom/script.js
+old mode 100644
+new mode 100755
+index 4fbcc8f..837a113
+--- a/node_modules/vue-panzoom/src/components/pan-zoom/script.js
++++ b/node_modules/vue-panzoom/src/components/pan-zoom/script.js
+@@ -6,7 +6,7 @@ const PanZoomComponent = {
+     },
+     data() {
+         return {
+-            $panZoomInstance: null,
++            panZoomInstance: null,
+             instanceId: null,
+             defaultOptions: {
+                 autocenter: true,
+diff --git a/node_modules/vue-panzoom/src/components/pan-zoom/template.html b/node_modules/vue-panzoom/src/components/pan-zoom/template.html
+old mode 100644
+new mode 100755
+diff --git a/node_modules/vue-panzoom/src/main.js b/node_modules/vue-panzoom/src/main.js
+old mode 100644
+new mode 100755
+diff --git a/node_modules/vue-panzoom/vue.config.js b/node_modules/vue-panzoom/vue.config.js
+old mode 100644
+new mode 100755
