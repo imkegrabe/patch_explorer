@@ -11,6 +11,9 @@ class EncoderIntervention(DiffusionIntervention):
 
     def __init__(self, replacement_text, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        
+        if replacement_text is None:
+            replacement_text = ""
 
         self.replacement = encode_prompt(replacement_text, self.model)
 

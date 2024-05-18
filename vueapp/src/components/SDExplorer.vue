@@ -85,7 +85,7 @@ export default {
                 c16: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.2.transformer_blocks.0.attn2' }
             },
             imageUrl: require('@/assets/hidden-unicorn.png'),
-            interventions: {},
+            interventions: [],
             architecture: {},
             current_intervention_instance_applying: null
         };
@@ -111,9 +111,8 @@ export default {
                     this.current_intervention_instance_applying.envoys.add(this.modules[module_key].name)
                 }
                 else {
-
-                    for (const intervention in this.interventions) {
-                        for (const intervention_instance in intervention.instances) {
+                    for (const intervention of this.interventions) {
+                        for (const intervention_instance of intervention.instances) {
                             intervention_instance.envoys.delete(this.modules[module_key].name)
                         }
                     }

@@ -17,7 +17,7 @@
                         @click="applyIntervention(intervention_instance)"
                         :disabled="intervention_instance.name === current_intervention_instance_applying?.name"></Button>
                 </div>
-            </template>
+            </template>                                     
             <div v-for="(field, field_index) in intervention.fields"
                 :key="'field_' + intervention_instance_index + '_' + field_index">
                 <span>{{ field.name }}</span>
