@@ -1,12 +1,17 @@
 from nnsight.models.DiffusionModel import DiffusionModel
-
+from diffusers.schedulers.scheduling_ddim import DDIMScheduler
 from typing import List
 import torch
 
-from interventions import DiffusionIntervention
+from .interventions import DiffusionIntervention
 def load(id: str = "CompVis/stable-diffusion-v1-4"):
     
-    return DiffusionModel(id, dispatch=True).to('cuda:0')
+    model = DiffusionModel(id, dispatch=True).to('cuda:0')
+    
+    model._model.pipeline.scheduler = DDIMScheduler.from_config(model._model.pipeline.scheduler.config)
+    
+    return model
+
 
 
 def run(model:DiffusionModel, prompt:str, n_steps:int = 50, seed:int=40, interventions: List[DiffusionIntervention] = []):
