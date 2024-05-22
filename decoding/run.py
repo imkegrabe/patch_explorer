@@ -1,5 +1,6 @@
 from ..main import load
 from .interventions import *
+from .isolation import *
 import torch
 
 model = load()
@@ -25,10 +26,16 @@ with model.generate(
         if i != 0:
             model.unet.next(propagate=True)
         
-
-        #skip_block(model.unet.mid_block)
         
-        skip_crossattn(model.unet.up_blocks[1].attentions[1].transformer_blocks[0])
+        #skip_selfattn(model.unet.mid_block.attentions[0].transformer_blocks[0])
+        #isolate_crossattn(model.unet.down_blocks[1], 0)
+        
+        #skip_block(model.unet.up_blocks[0])
+        skip_block(model.unet.up_blocks[1])
+        skip_block(model.unet.up_blocks[2])
+        skip_block(model.unet.up_blocks[3])
+        
+        #skip_crossattn(model.unet.up_blocks[1].attentions[1].transformer_blocks[0])
 
         # skip_attn(model.unet.up_blocks[-2].attentions[2])
 
@@ -38,8 +45,8 @@ with model.generate(
     latents = model.output.images.save()
     
 latents = latents.value
-    
-latents = torch.concatenate((latents, (latents[0] - latents[1]).unsqueeze(0)))
+breakpoint()
+latents = torch.concatenate((latents, (latents[1] - latents[0]).unsqueeze(0)))
 
 
     
