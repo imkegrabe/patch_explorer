@@ -7,6 +7,11 @@ def skip_crossattn(attention):
     
     skip_ablate(attention.attn2)
     
+def skip_crossattns(block):
+    
+     for attn in block.attentions:
+        skip_crossattn(attn)
+    
 def skip_selfattn(attention):
     
     skip_ablate(attention.attn1)
