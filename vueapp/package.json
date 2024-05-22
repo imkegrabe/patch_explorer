@@ -5,10 +5,13 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "primevue": "^3.52.0",
     "vue": "^3.2.13",
     "vue-panzoom": "^1.1.6"
