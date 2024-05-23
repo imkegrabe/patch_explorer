@@ -1,17 +1,37 @@
 
+from .. import util
+
+encoding = None
+
 def skip_ablate(module):
     
     module.output[[1,3]] = 0
     
-def skip_crossattn(attention):
+def skip_crossattn(tblock, encoder_model=None):
     
-    skip_ablate(attention.attn2)
+    global encoding
     
-def skip_crossattns(block):
+    if encoder_model is None:
     
-     for attn in block.attentions:
-        skip_crossattn(attn)
+        skip_ablate(tblock.attn2)
+        
+    else:
+        
+        if encoding is None:
+        
+            encoding = util.encode_prompt("", encoder_model)
+        
+        tblock.attn2.input[1]["encoder_hidden_states"] = encoding
     
+def skip_crossattns(block, encoder_model=None):
+    
+    for attn in block.attentions:
+            
+        tblock = attn.transformer_blocks[0]
+        
+        skip_crossattn(tblock, encoder_model=encoder_model)
+    
+        
 def skip_selfattn(attention):
     
     skip_ablate(attention.attn1)
