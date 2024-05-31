@@ -3,7 +3,7 @@ from diffusers.schedulers.scheduling_ddim import DDIMScheduler
 from typing import List
 import torch
 
-from .interventions import DiffusionIntervention
+from interventions import DiffusionIntervention
 def load(id: str = "CompVis/stable-diffusion-v1-4"):
     
     model = DiffusionModel(id, dispatch=True).to('cuda:0')

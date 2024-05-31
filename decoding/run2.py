@@ -20,9 +20,9 @@ for i, module in enumerate(attn2s):
 
     
     generator = torch.Generator()
-    generator = generator.manual_seed(2)
+    generator = generator.manual_seed(79)
     generator2 = torch.Generator()
-    generator2 = generator2.manual_seed(2)
+    generator2 = generator2.manual_seed(79)
 
 
 
@@ -39,7 +39,7 @@ for i, module in enumerate(attn2s):
             if i != 0:
                 model.unet.next(propagate=True)
                     
-            module.output[[1,3]] = 3 * module.output[[0,2]]
+            module.output[[1,3]] = module.output[[0,2]]
                     
         latents = model.output.images.save()
         
@@ -56,7 +56,6 @@ for i, module in enumerate(attn2s):
     output = model.pipeline.image_processor.postprocess(output.detach().cpu(), output_type='pil')
 
 
-    output[0].save("control.png", format="png")
-    output[1].save(f"edited_{module._module_path}.png", format="png")
-    output[2].save("diff.png", format="png")
-
+    output[0].save("collaborative_diffusion/imke_outputs/control.png", format="png")
+    output[1].save(f"collaborative_diffusion/imke_outputs/edited_{module._module_path}.png", format="png")
+    output[2].save("collaborative_diffusion/imke_outputs/diff.png", format="png")

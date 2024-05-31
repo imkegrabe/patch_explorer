@@ -1,5 +1,5 @@
 from ..main import load
-from .interventions import *
+from interventions import *
 from .isolation import *
 import torch
 
