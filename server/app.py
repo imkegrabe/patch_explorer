@@ -1,6 +1,6 @@
 import importlib
 from io import BytesIO
-from typing import Dict
+from typing import Dict, List
 
 import uvicorn
 from fastapi import FastAPI, Response
@@ -18,6 +18,8 @@ from .pydantics.Configuration import ConfigurationModel
 from .pydantics.Intervention import InterventionModel
 from .pydantics.Request import RequestModel
 
+# from pydantic import BaseModel
+# import numpy as np
 
 app = FastAPI()
 
@@ -37,7 +39,6 @@ interventions_types: Dict[str, DiffusionIntervention] = {
     "Scaling": ScalingIntervention,
     "Encoder" : EncoderIntervention
 }
-
 
 @app.get("/init")
 async def init() -> ConfigurationModel:

@@ -163,7 +163,9 @@
         </div>
     </panZoom>
 </div>
+
 </template>
+
 <style>
 .attn-container {
     display: flex;
@@ -333,7 +335,10 @@
     align-items: center;
 }
 </style>
+
+
 <script>
+
 export default {
     name: "ModelDisplay",
     components: {

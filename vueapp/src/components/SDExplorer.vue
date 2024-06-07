@@ -12,11 +12,10 @@
             :current_intervention_instance_applying="current_intervention_instance_applying"
             :interventions="interventions"></SidebarDisplay>
 
-        <ModelDisplay :current_intervention_instance_applying="current_intervention_instance_applying"
-            :modules="modules" @selectModule="selectModule"></ModelDisplay>
+        <!--<ModelDisplay :current_intervention_instance_applying="current_intervention_instance_applying"
+            :modules="modules" @selectModule="selectModule"></ModelDisplay> -->
 
-
-
+        <MainDisplay :loading="loading" > </MainDisplay>
 
     </div>
 
@@ -38,9 +37,10 @@
 <script>
 
 import SidebarDisplay from './SidebarDisplay.vue';
-import ModelDisplay from './ModelDisplay.vue';
+// import ModelDisplay from './ModelDisplay.vue';
 import ImageDisplay from './ImageDisplay.vue';
 import InputDisplay from './InputDisplay.vue';
+import MainDisplay from './MainDisplay.vue';
 
 export default {
     name: 'SDExplorer',
@@ -94,8 +94,9 @@ export default {
     components: {
         SidebarDisplay,
         ImageDisplay,
-        ModelDisplay,
-        InputDisplay
+        // ModelDisplay,
+        InputDisplay,
+        MainDisplay,
 
     },
     methods: {
