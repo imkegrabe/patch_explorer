@@ -2,10 +2,11 @@
     <div class="grid" >
       <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="grid-row">
         <div
-          v-for="(cell, cellIndex) in row"
-          :key="cellIndex"
-          class="grid-cell"
-          :style="{ backgroundColor: getColor(cell) }"
+          v-for="(patch, patchIndex) in row"
+          :key="patchIndex"
+          class="patch"
+          :style="{ backgroundColor: getColor(patch) }"
+          @click="handleClick(rowIndex, patchIndex)"
         >
         </div>
       </div>
@@ -24,6 +25,10 @@
       grid: {
         type: Array,
         required: true
+      },
+      clickedPatches: {
+        type: Array,
+        required: true
       }
     },
     
@@ -31,6 +36,11 @@
       
       getColor(value) {
         // the color function
+        
+        // If patch clicked - add some transparent layer?
+        // if (this.clickedPatchs[rowIndex][patchIndex]) {
+        //   return 'rgb(255, 0, 0)';
+        // }
         const cmapCool = (x) => {
           const r = Math.floor(255 * x);
           const g = Math.floor(255 * (1 - x));
@@ -39,6 +49,10 @@
         };
         return cmapCool(value);
       
+      },
+
+      handleClick(rowIndex, patchIndex) {
+        this.$emit('patch-click', { rowIndex, patchIndex})
       }
     }
   };
@@ -58,8 +72,8 @@
     display: flex;
   }
   
-  /* style for grid cell */
-  .grid-cell {
+  /* style for patch */
+  .patch {
     width: 1px; /* Adjust the size as needed */
     height: 1px; /* Adjust the size as needed */
   }

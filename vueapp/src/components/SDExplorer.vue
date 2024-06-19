@@ -21,15 +21,6 @@
 
 </template>
 
-// CSS FOR STYLING
-<style scoped>
-.main-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-</style>
 
 
 
@@ -109,7 +100,7 @@ export default {
                 this.modules[module_key].isClicked = !this.modules[module_key].isClicked;
                 if (this.modules[module_key].isClicked) {
                     this.modules[module_key].color = this.current_intervention_instance_applying.color;
-                    this.current_intervention_instance_applying.envoys.add(this.modules[module_key].name)
+                    this.current_intervention_instance_applying.envoys.add(this.modules[module_key].name) //adds module name - want indices instead
                 }
                 else {
                     for (const intervention of this.interventions) {
@@ -148,3 +139,16 @@ export default {
 }
 
 </script>
+
+
+
+
+// CSS FOR STYLING
+<style scoped>
+.main-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+</style>
