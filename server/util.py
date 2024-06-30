@@ -15,10 +15,10 @@ def run(model:DiffusionModel, prompt:str, n_steps:int = 50, seed:int=40, interve
     generator = torch.Generator()
     generator = generator.manual_seed(seed)
     
-    with model.generate(prompt, num_inference_steps=n_steps, generator=generator, validate=False, scan=False):
+    with model.generate(prompt, num_inference_steps=n_steps, generator=generator, validate=False, scan=False) as tracer:
         
         for intervention in interventions:
-            intervention()
+            intervention(tracer)
             
         output = model.output.save()
         

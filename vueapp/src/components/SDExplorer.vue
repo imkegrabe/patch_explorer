@@ -2,7 +2,7 @@
 <template>
     <div class="main-container">
 
-        <InputDisplay @loading="loading = true" @updateImage="(url) => updateImage(url)" :host="host"
+        <InputDisplay @loading="loading = true" @updateImage="(url) => updateImage(url)" @updateAddends="(addends) => updateAddends(addends)" :host="host"
             :interventions="interventions" :loading="loading"></InputDisplay>
 
 
@@ -15,7 +15,7 @@
         <!--<ModelDisplay :current_intervention_instance_applying="current_intervention_instance_applying"
             :modules="modules" @selectModule="selectModule"></ModelDisplay> -->
 
-        <MainDisplay :loading="loading" > </MainDisplay>
+        <MainDisplay :loading="loading" :allGrids="allGrids" > </MainDisplay>
 
     </div>
 
@@ -41,6 +41,9 @@ import SidebarDisplay from './SidebarDisplay.vue';
 import ImageDisplay from './ImageDisplay.vue';
 import InputDisplay from './InputDisplay.vue';
 import MainDisplay from './MainDisplay.vue';
+
+import gridData from '@/assets/gridData.json';
+
 
 export default {
     name: 'SDExplorer',
@@ -85,6 +88,7 @@ export default {
                 c16: { isClicked: false, color: 'rgba(56, 255, 255, 0.6)', defaultColor: 'white', name: '.unet.up_blocks.3.attentions.2.transformer_blocks.0.attn2' }
             },
             imageUrl: require('@/assets/hidden-unicorn.png'),
+            allGrids: gridData,
             interventions: [],
             architecture: {},
             current_intervention_instance_applying: null
@@ -103,6 +107,9 @@ export default {
         updateImage(url) {
             this.imageUrl = url;
             this.loading = false;
+        },
+        updateAddends(addends) {
+            this.allGrids = addends
         },
         selectModule(module_key) {
             if (this.current_intervention_instance_applying !== null) {
@@ -125,6 +132,7 @@ export default {
             }
         },
         init() {
+            console.log(this.allGrids)
             fetch(this.host + '/init', {
                 method: 'GET',
                 headers: {

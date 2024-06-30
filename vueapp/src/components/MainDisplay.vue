@@ -4,7 +4,7 @@
             <div class="attn-container zoomable">
                 <div class="modules">
                     <ModuleDisplay
-                        v-for="(modulegrids, index) in allgrids"
+                        v-for="(modulegrids, index) in allGrids"
                         :key="index"
                         :modulegrids="modulegrids"
                     />
@@ -21,7 +21,6 @@
 <script>
 import ModuleDisplay from './ModuleDisplay.vue';
 
-import gridData from '@/assets/gridData.json';
 
 export default {
 
@@ -31,12 +30,9 @@ export default {
         ModuleDisplay,
 
     },
-
-    data() {
-        return {
-            allgrids: gridData
-        };
-    }
+    props: {
+        allGrids: Array
+    },
 
 }
 </script>

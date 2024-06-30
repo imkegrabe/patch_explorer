@@ -39,10 +39,10 @@
     border-top-right-radius: 20px;
     border-top-left-radius: 20px;
 
-    margin:0px !important;
+    margin: 0px !important;
     z-index: 999;
 
-    height:10%;
+    height: 10%;
 }
 </style>
 <script>
@@ -69,13 +69,13 @@ export default {
         }
     },
     methods: {
-        generate() {
-            const interventions_to_apply = [] 
+        async generate() {
+            const interventions_to_apply = []
 
 
             for (const intervention of this.interventions) {
-          
-                for (const intervention_instance of intervention.instances){
+
+                for (const intervention_instance of intervention.instances) {
 
                     const intervention_instance_to_apply = {
                         name: intervention.name,
@@ -85,29 +85,43 @@ export default {
 
                     interventions_to_apply.push(intervention_instance_to_apply)
                 }
-            }  
-  
+            }
+
             const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: interventions_to_apply }
 
             console.log(request)
-            
+
             this.$emit('loading')
 
-            fetch(this.host + '/generate', {
+            let response
+
+            response = await fetch(this.host + '/generate', {
                 method: 'POST',
                 body: JSON.stringify(request),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-          
-            }).then(res => { return res.blob() })
-                .then(blob => {
-                    var img = URL.createObjectURL(blob);
 
-                    this.$emit('updateImage', img)
+            })
 
-                })
+
+            var image = await response.blob()
+
+            image = URL.createObjectURL(image);
+
+            this.$emit('updateImage', image)
+
+            response = await fetch(this.host + '/addends', {
+                method: 'GET',
+
+            })
+
+            var addends = await response.json()
+
+            console.log(addends)
+
+            this.$emit('updateAddends', addends)
         }
     }
 

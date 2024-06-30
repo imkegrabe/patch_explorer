@@ -1,9 +1,14 @@
+import base64
 import importlib
 from io import BytesIO
+import json
 from typing import Dict, List
 
+import torch
 import uvicorn
 from fastapi import FastAPI, Response
+from fastapi.responses import JSONResponse
+
 from fastapi.middleware.cors import CORSMiddleware
 from PIL.Image import Image
 
@@ -14,6 +19,8 @@ from .interventions import DiffusionIntervention
 from .interventions.ablate import AblationIntervention
 from .interventions.scale import ScalingIntervention
 from .interventions.encoder import EncoderIntervention
+from .interventions.CAvis import CAVisIntervention
+
 from .pydantics.Configuration import ConfigurationModel
 from .pydantics.Intervention import InterventionModel
 from .pydantics.Request import RequestModel
@@ -40,6 +47,8 @@ interventions_types: Dict[str, DiffusionIntervention] = {
     "Encoder" : EncoderIntervention
 }
 
+cached_addends = None
+
 @app.get("/init")
 async def init() -> ConfigurationModel:
 
@@ -63,10 +72,17 @@ async def request(request: RequestModel):
         ]
 
        
-        print(intervention_model.args)
         intervention = interventions_types[intervention_model.name](*intervention_model.args, model, envoys)
 
         interventions.append(intervention)
+        
+        
+    cross_attentions = model.unet.modules(lambda x: x._module_path.endswith("attn2"))
+    
+    CAvis_intervention = CAVisIntervention(model, cross_attentions)
+    
+    interventions.append(CAvis_intervention)
+        
 
     image: Image = util.run(
         model,
@@ -75,14 +91,46 @@ async def request(request: RequestModel):
         seed=request.seed,
         interventions=interventions,
     )
+    
 
-    bytes = BytesIO()
+    ibytes = BytesIO()
 
-    image.save(bytes, format="png")
+    image.save(ibytes, format="png")
 
-    bytes.seek(0)
+    ibytes.seek(0)
+    
+    addends = CAvis_intervention.addends
+    
+    #addends = {key: value.value.cpu().tolist() for key, value in addends.items()}
+    
+    _addends = []
+    
+    for addend in addends.values():
+    
+        addend = addend.value.abs()
+        
+        addend -= addend.min()
+        addend /= addend.max()
+        
+        _addends.append(addend.tolist())
+        
+    
+    global cached_addends
+    
+    cached_addends = _addends
+        
+    return Response(content=ibytes.read(), media_type="image/png")
 
-    return Response(content=bytes.read(), media_type="image/png")
+@app.get("/addends")
+async def addends():
+    
+    global cached_addends
+    
+    addends = cached_addends
+    
+    cached_addends = None
+
+    return JSONResponse(content=addends)
 
 
 if __name__ == "__main__":

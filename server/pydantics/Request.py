@@ -8,6 +8,7 @@ class InterventionRequestModel(BaseModel):
     name: str
 
     modules: List[str]
+    # patches: Dict[str, List[Tuple[int, int] | None] | None]
 
     args: List[Any] = []
 
