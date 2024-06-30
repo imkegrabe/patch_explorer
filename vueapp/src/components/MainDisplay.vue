@@ -7,6 +7,7 @@
                         v-for="(modulegrids, index) in allGrids"
                         :key="index"
                         :modulegrids="modulegrids"
+                        @patch-click="handlePatchClicks(moduleIndex, $event)"
                     />
                 </div>
             </div>
@@ -33,6 +34,26 @@ export default {
     props: {
         allGrids: Array
     },
+    data() {
+        return {
+            clickedPatches: {}
+        }
+    },
+    methods: {
+        handlePatchClicks(moduleIndex, { gridIndex, rowIndex, patchIndex }) {
+            console.log(`patches clicked at module ${moduleIndex}`)
+            
+            const patchKey = `${moduleIndex}-${gridIndex}-${rowIndex}-${patchIndex}`;
+
+            const gd = this.allGrids
+            
+            if (this.clickedPatches[patchKey]) {
+                delete this.clickedPatches[patchKey];
+            } else {
+                this.$set(this.clickedPatches, patchKey, { moduleIndex, gd, rowIndex, patchIndex})
+            }
+        }
+    }
 
 }
 </script>
