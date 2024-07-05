@@ -78,7 +78,8 @@ async def request(request: RequestModel):
         
         
     cross_attentions = model.unet.modules(lambda x: x._module_path.endswith("attn2"))
-    
+    cross_attentions = sorted(cross_attentions, key=lambda x: x._module_path)
+
     CAvis_intervention = CAVisIntervention(model, cross_attentions)
     
     interventions.append(CAvis_intervention)
