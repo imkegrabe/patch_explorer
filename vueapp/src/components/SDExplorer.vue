@@ -1,28 +1,43 @@
 // HTML/MARKUP FOR CONTENT
 <template>
+    <div class="header">Patch Explorer</div>
     <div class="main-container">
+        
+        
+        <div class="content-container">
+            <InputDisplay 
+            @loading="loading = true" 
+            @updateImage="(url) => updateImage(url)" 
+            @updateAddends="(addends) => updateAddends(addends)" 
+            :host="host"
+            :interventions="interventions" 
+            :loading="loading" 
+            ></InputDisplay>
 
-        <InputDisplay @loading="loading = true" @updateImage="(url) => updateImage(url)" @updateAddends="(addends) => updateAddends(addends)" :host="host"
-            :interventions="interventions" :loading="loading"></InputDisplay>
+            <MainDisplay :loading="loading" :allGrids="allGrids"></MainDisplay>
+            <ImageDisplay :loading="loading" :imageUrl="imageUrl" class="image-display"></ImageDisplay>
+        </div>
 
 
-        <ImageDisplay :loading="loading" :imageUrl="imageUrl"></ImageDisplay>
-
-        <SidebarDisplay @updateInterventionInstance="(ii) => current_intervention_instance_applying = ii"
-            :current_intervention_instance_applying="current_intervention_instance_applying"
-            :interventions="interventions"></SidebarDisplay>
+        
 
         <!--<ModelDisplay :current_intervention_instance_applying="current_intervention_instance_applying"
             :modules="modules" @selectModule="selectModule"></ModelDisplay> -->
 
-        <MainDisplay :loading="loading" :allGrids="allGrids" > </MainDisplay>
-
     </div>
 
+    <div class="bottom-container">
+        <SidebarDisplay
+            @updateInterventionInstance="(ii) => current_intervention_instance_applying = ii"
+            :current_intervention_instance_applying="current_intervention_instance_applying"
+            :interventions="interventions"></SidebarDisplay>
+            <!-- <InterventionDisplay v-for="intervention in interventions" :key="'intervention_' + intervention.name"
+                    :intervention="intervention"
+                    :current_intervention_instance_applying="current_intervention_instance_applying"
+                    @updateInterventionInstance="(ii) => $emit('updateInterventionInstance', ii)"
+                    @addInterventionInstance="addInterventionInstance" /> -->
+    </div>
 </template>
-
-
-
 
 // JAVASCRIPT FOR DYNAMICS
 <script>
@@ -32,7 +47,7 @@ import SidebarDisplay from './SidebarDisplay.vue';
 import ImageDisplay from './ImageDisplay.vue';
 import InputDisplay from './InputDisplay.vue';
 import MainDisplay from './MainDisplay.vue';
-
+// import InterventionDisplay from './InterventionDisplay.vue';
 import gridData from '@/assets/gridData.json';
 
 
@@ -87,13 +102,13 @@ export default {
 
     },
     components: {
-        SidebarDisplay,
-        ImageDisplay,
-        // ModelDisplay,
-        InputDisplay,
-        MainDisplay,
-
-    },
+    SidebarDisplay,
+    ImageDisplay,
+    // ModelDisplay,
+    InputDisplay,
+    MainDisplay,
+    // InterventionDisplay,
+},
     methods: {
         updateImage(url) {
             this.imageUrl = url;
@@ -153,10 +168,49 @@ export default {
 
 // CSS FOR STYLING
 <style scoped>
+
+.header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: left;
+    justify-content: top;
+    padding: 0px;
+    top: 0px;
+    font-size: 75px;
+    color: rgb(43, 255, 43);
+}
 .main-container {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: left;
+    align-items: left; 
+}
+
+.content-container {
+    position: relative;
+    display: flex;
+    justify-content: left;
     align-items: center;
+}
+/* 
+.content-container > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+} */
+
+.bottom-container {
+    display: flex;
+    flex-direction: row;
+    bottom: 0;
+    left: 0;
+    /* background-color: rgb(233, 233, 233); */
+    border-color: rgb(43, 255, 43);
+    border-style: solid;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-left-width: 2px;
 }
 </style>

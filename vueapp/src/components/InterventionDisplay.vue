@@ -3,22 +3,22 @@
         <template #header>
             <div class="intervention-header">
                 <span class="font-bold">{{ intervention.name }}</span>
-                <Button label="Add" @click="createInterventionInstance"></Button>
+                <Button class="button" label="Add" @click="createInterventionInstance"></Button>
             </div>
         </template>
-        <Panel v-for="(intervention_instance, intervention_instance_index) in intervention.instances"
+        <Panel class="intervention-panel" v-for="(intervention_instance, intervention_instance_index) in intervention.instances"
             :key="'intervention_instance_' + intervention_instance_index">
             <template #header>
                 <div class="intervention-instance-header">
                     <span class="font-bold">{{ intervention_instance.name }}</span>
                     <ColorPicker v-model="intervention_instance.color"></ColorPicker>
-                    <Button
+                    <Button class="button"
                         :label="intervention_instance.name === current_intervention_instance_applying?.name ? 'Applying' : 'Apply'"
                         @click="applyIntervention(intervention_instance)"
                         :disabled="intervention_instance.name === current_intervention_instance_applying?.name"></Button>
                 </div>
             </template>                                     
-            <div v-for="(field, field_index) in intervention.fields"
+            <div class="interventions" v-for="(field, field_index) in intervention.fields"
                 :key="'field_' + intervention_instance_index + '_' + field_index">
                 <span>{{ field.name }}</span>
                 <InputText v-if="field.type === 'string'" v-model="intervention_instance.field_values[field_index]">
@@ -31,15 +31,6 @@
         </Panel>
     </Panel>
 </template>
-
-<style>
-.intervention-header, .intervention-instance-header {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-</style>
 
 <script>
 
@@ -96,3 +87,30 @@ export default {
 
 }
 </script>
+
+<style>
+.intervention-header, .intervention-instance-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.button {
+    background-color: aquamarine;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.intervention-panel {
+    display: flex;
+    flex-direction: row;
+}
+
+.interventions {
+    display: flex;
+    flex-direction: row;
+}
+</style>

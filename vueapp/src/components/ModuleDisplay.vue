@@ -32,6 +32,9 @@ export default {
         handlePatchClick(gridIndex,  {rowIndex, patchIndex}) {
             console.log(`patch clicked at grid ${gridIndex}`)
             this.$emit('patch-click', { gridIndex, rowIndex, patchIndex });
+        },
+        handleModuleClick() {
+            
         }
     }
 };
