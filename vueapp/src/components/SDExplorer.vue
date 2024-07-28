@@ -12,9 +12,6 @@
             :current_intervention_instance_applying="current_intervention_instance_applying"
             :interventions="interventions"></SidebarDisplay>
 
-        <!--<ModelDisplay :current_intervention_instance_applying="current_intervention_instance_applying"
-            :modules="modules" @selectModule="selectModule"></ModelDisplay> -->
-
         <MainDisplay :loading="loading" :allGrids="allGrids" > </MainDisplay>
 
     </div>

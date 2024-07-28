@@ -119,8 +119,6 @@ export default {
 
             var addends = await response.json()
 
-            console.log(addends)
-
             this.$emit('updateAddends', addends)
         }
     }
