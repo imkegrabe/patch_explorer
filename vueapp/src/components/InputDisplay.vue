@@ -14,37 +14,54 @@
         </div>
 
         <div class="button-test">
-            <Button label="Generate" @click="generate" :disabled="loading" />
+            <Button class="button" label="Generate" @click="generate" :disabled="loading" />
         </div>
 
     </div>
 
 </template>
+
+
+
+
 <style>
 .input-container {
-    position: fixed;
-    bottom: 0px;
-    width: 90%;
+    /* position: fixed; */
+    /* bottom: 0px; */
+    /* width: 40%; */
     display: flex;
-    flex-direction: row !important;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    justify-content: left;
+    align-items: left;
     gap: 20px;
-    background-color: rgb(233, 233, 233);
-    border-color: grey;
+    /* background-color: rgb(233, 233, 233); */
+    /* border-color: rgb(83, 251, 58);
     border-style: solid;
-    border-top-width: 5px;
-    border-right-width: 5px;
-    border-left-width: 5px;
-    border-top-right-radius: 20px;
-    border-top-left-radius: 20px;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-left-width: 2px;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px; */
 
     margin: 0px !important;
     z-index: 999;
 
     height: 10%;
+
+    
 }
+
+.button {
+    background-color: aquamarine;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
 </style>
+
+
 <script>
 import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';

@@ -1,81 +1,100 @@
 <template>
-    <div class="grid" >
-      <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="grid-row">
-        <div
-          v-for="(patch, patchIndex) in row"
-          :key="patchIndex"
-          class="patch"
-          :style="{ backgroundColor: getColor(patch) }"
-          @click="handleClick(rowIndex, patchIndex)"
-        >
-        </div>
+  <div class="grid" @keydown="handleKeyDown" @keyup="handleKeyUp" tabindex="0">
+    <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="grid-row">
+      <div
+        v-for="(patch, patchIndex) in row"
+        :key="patchIndex"
+        class="patch"
+        :style="{ backgroundColor: getColor(patch) }"
+        @mouseover="handleMouseOver(rowIndex, patchIndex)"
+      >
+        <div v-if="isPainted(rowIndex, patchIndex)" class="overlay"></div>
       </div>
     </div>
-  </template>
-  
+  </div>
+</template>
 
+<script>
+export default {
+  props: {
+    // the grid data probs
+    grid: {
+      type: Array,
+      required: true,
+    },
+  },
 
+  data() {
+    return {
+      isPainting: false,
+      paintedPatches: new Set(),
+    };
+  },
 
-  <script>
+  methods: {
+    getColor(value) {
+      const cmapCool = (x) => {
+        const r = Math.floor(255 * x);
+        const g = Math.floor(255 * (1 - x));
+        const b = 255;
+        const a = 0.9;
+        return `rgb(${r}, ${g}, ${b}, ${a})`;
+      };
+      return cmapCool(value);
+    },
 
-  export default {
-
-    props:  {
-      // the grid data probs
-      grid: {
-        type: Array,
-        required: true
-      },
-      clickedPatches: {
-        type: Array,
-        required: true
+    handleKeyDown(event) {
+      if (event.key === "d") {
+        this.isPainting = true;
+        console.log("I pressed D");
       }
     },
-    
-    methods: {
-      
-      getColor(value) {
-        // the color function
-        
-        // If patch clicked - add some transparent layer?
-        // if (this.clickedPatchs[rowIndex][patchIndex]) {
-        //   return 'rgb(255, 0, 0)';
-        // }
-        const cmapCool = (x) => {
-          const r = Math.floor(255 * x);
-          const g = Math.floor(255 * (1 - x));
-          const b = 255;
-        return `rgb(${r}, ${g}, ${b})`;
-        };
-        return cmapCool(value);
-      
-      },
 
-      handleClick(rowIndex, patchIndex) {
-        this.$emit('patch-click', { rowIndex, patchIndex})
+    handleKeyUp(event) {
+      if (event.key === "d") {
+        this.isPainting = false;
       }
-    }
-  };
-  
-  </script>
-  
+    },
 
+    handleMouseOver(rowIndex, patchIndex) {
+      if (this.isPainting) {
+        const patchKey = `${rowIndex}-${patchIndex}`;
+        this.paintedPatches.add(patchKey);
+        this.$forceUpdate();
+      }
+    },
 
-  
-  <style>
-  /* style for grid row */
-  .grid {
-    padding: 1px;
-  }
+    isPainted(rowIndex, patchIndex) {
+      const patchKey = `${rowIndex}-${patchIndex}`;
+      return this.paintedPatches.has(patchKey);
+    },
+  },
+};
+</script>
 
-  .grid-row {
-    display: flex;
-  }
-  
-  /* style for patch */
-  .patch {
-    width: 1px; /* Adjust the size as needed */
-    height: 1px; /* Adjust the size as needed */
-  }
-  </style>
-  
+<style>
+.grid {
+  padding: 1px;
+  cursor: pointer;
+}
+
+.grid-row {
+  display: flex;
+}
+
+.patch {
+  width: 1px;
+  height: 1px;
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(19, 255, 29, 0.75);
+  pointer-events: none;
+}
+</style>

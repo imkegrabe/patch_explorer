@@ -1,22 +1,22 @@
 <template>
-    <Panel header="Image" toggleable class="not-zoomable" style="position: fixed; top: 0px; right: 0px; z-index: 999;">
-        <div class="image-container" style="width: 40vh; height:40vh;">
-            <Skeleton v-show="loading" style="width: 100%; height:100%;"></Skeleton>
+    <!-- <Panel header="Image" toggleable class="not-zoomable" style="position: fixed; top: 0px; right: 0px; z-index: 999;"> -->
+        <div class="image-container" style="width: 256px; height:256px;">
+            <Skeleton v-show="loading" class="loading" style="width: 100%; height:100%;"></Skeleton>
             <img style="width: 100%;height: 100%;" v-show="!loading" :src="imageUrl" alt="Image" />
         </div>
-    </Panel>
+    <!-- </Panel> -->
 </template>
 <style></style>
 <script>
 
 import Skeleton from 'primevue/skeleton';
-import Panel from 'primevue/panel';
+// import Panel from 'primevue/panel';
 
 export default {
     name: "ImageDisplay",
     components: {
         Skeleton,
-        Panel
+        // Panel
     },
     props: {
         imageUrl: String,
@@ -32,3 +32,10 @@ export default {
 
 }
 </script>
+
+<style>
+.loading {
+    border-radius: 0;
+}
+
+</style>

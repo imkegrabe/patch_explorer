@@ -41,6 +41,9 @@ export default {
             var module_dim = this.modulegrids[0][0].length
 
             return module_dim * this.panzoom_scale >= 64
+        },
+        handleModuleClick() {
+            
         }
     }
 };
