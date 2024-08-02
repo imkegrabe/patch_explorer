@@ -7,7 +7,7 @@ from .interventions import DiffusionIntervention
 
 def load(id: str = "CompVis/stable-diffusion-v1-4"):
     
-    return DiffusionModel(id, dispatch=True).to('cuda:0')
+    return DiffusionModel(id, dispatch=True).to('cuda:0').to(torch.bfloat16)
 
 
 def run(model:DiffusionModel, prompt:str, n_steps:int = 50, seed:int=40, interventions: List[DiffusionIntervention] = []):

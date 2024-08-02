@@ -2,7 +2,7 @@
     <div>
         <div class="attn-container">
             <div class="modules">
-                <ModuleDisplay v-for="(modulegrids, index) in allGrids" :key="index" :modulegrids="modulegrids" :panzoom_scale="panzoom_scale"
+                <ModuleDisplay v-for="(modulegrids, index) in allGrids" :key="index" :modulegrids="modulegrids"
                     @patch-click="handlePatchClicks(moduleIndex, $event)" />
             </div>
         </div>
@@ -31,8 +31,7 @@ export default {
     },
     data() {
         return {
-            clickedPatches: {},
-            panzoom_scale: 1.0
+            clickedPatches: {}
         }
     },
     methods: {
@@ -57,27 +56,14 @@ export default {
         var element = document.querySelector('.attn-container')
 
         // Create panzoom handler on the selected element
-        var panzoom_instance = panzoom(element, {
+        panzoom(element, {
             smoothScroll: false
         })
-
-        var thiss = this
-
-        // When zoomed, let components know via this.panzoom_scale
-        panzoom_instance.on('zoomend', function() {
-
-            thiss.panzoom_scale = panzoom_instance.getTransform().scale
-            
-        });
 
     }
 
 }
 </script>
-
-
-
-
 
 <style>
 .modules {
@@ -86,11 +72,6 @@ export default {
     align-items: center;
     /*  flex-end; */
     gap: 20px;
-
-}
-/* Makes zooming smoother */
-.attn-container{
-    transition: transform .5s cubic-bezier(0, 0, 0.58, 1);
 
 }
 </style>

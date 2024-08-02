@@ -68,5 +68,5 @@ class CAVisIntervention(DiffusionIntervention):
             self.addends[attn._module_path] += addendum_byhead.cpu()
             
         if step == self.end_step - 1:
-            
+                        
             self.addends[attn._module_path] = self.addends[attn._module_path].save()
