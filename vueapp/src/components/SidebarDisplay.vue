@@ -1,14 +1,14 @@
 <template>
     <!-- <div id="sidebar-container"> -->
         <!-- <Sidebar v-model:visible="sidebar_visible" header="Menu" style="width:fit-content;"> -->
-            <Panel class="intervention-bar" header="Interventions" toggleable>
+            <!-- <Panel class="intervention-bar" header="Interventions" toggleable> -->
                 <InterventionDisplay class="intervention-intance" v-for="intervention in interventions" :key="'intervention_' + intervention.name"
                     :intervention="intervention"
                     :current_intervention_instance_applying="current_intervention_instance_applying"
                     @updateInterventionInstance="(ii) => $emit('updateInterventionInstance', ii)"
                     @addInterventionInstance="addInterventionInstance" />
 
-            </Panel>
+            <!-- </Panel> -->
         <!-- </Sidebar> -->
         <!-- <Button label="Menu" @click="sidebar_visible = true" style="position:fixed;top:10px;left:20px" /> -->
     <!-- </div> -->
@@ -17,7 +17,7 @@
 <script>
 
 // import Button from 'primevue/button';
-import Panel from 'primevue/panel';
+// import Panel from 'primevue/panel';
 // import Sidebar from 'primevue/sidebar';
 import InterventionDisplay from './InterventionDisplay.vue';
 
@@ -26,7 +26,7 @@ export default {
     components: {
         // Sidebar,
         // Button,
-        Panel,
+        // Panel,
         InterventionDisplay
     },
     props: {
@@ -50,5 +50,8 @@ export default {
 }</script>
 
 <style>
-
+.intervention-instance {
+    display: flex;
+    flex-direction: row;
+}
 </style>

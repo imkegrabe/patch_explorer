@@ -1,6 +1,11 @@
 <template>
-  <div class="grid" @keydown="handleKeyDown" @keyup="handleKeyUp" tabindex="0">
-    <div v-for="(row, rowIndex) in grid" :key="rowIndex" class="grid-row">
+  <div class="grid" 
+  @keydown="handleKeyDown" 
+  @keyup="handleKeyUp" 
+  tabindex="0">
+    <div v-for="(row, rowIndex) in grid" 
+    :key="rowIndex" 
+    class="grid-row">
       <div
         v-for="(patch, patchIndex) in row"
         :key="patchIndex"
@@ -8,20 +13,25 @@
         :style="{ backgroundColor: getColor(patch) }"
         @mouseover="handleMouseOver(rowIndex, patchIndex)"
       >
-        <div v-if="isPainted(rowIndex, patchIndex)" class="overlay"></div>
+        <div v-if="isPainted(rowIndex, patchIndex)" 
+        class="overlay"
+        :style="{ backgroundColor: this.current_intervention_instance_applying.color }"
+        >
+      </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+
 export default {
   props: {
-    // the grid data probs
     grid: {
       type: Array,
       required: true,
     },
+    current_intervention_instance_applying: Object
   },
 
   data() {
@@ -53,19 +63,22 @@ export default {
     handleKeyUp(event) {
       if (event.key === "d") {
         this.isPainting = false;
+        console.log("we painted", this.paintedPatches)
+        this.$emit("patch-draw", this.paintedPatches)
       }
     },
 
     handleMouseOver(rowIndex, patchIndex) {
       if (this.isPainting) {
-        const patchKey = `${rowIndex}-${patchIndex}`;
+        const patchKey = `${rowIndex}, ${patchIndex}`;
         this.paintedPatches.add(patchKey);
         this.$forceUpdate();
       }
     },
 
     isPainted(rowIndex, patchIndex) {
-      const patchKey = `${rowIndex}-${patchIndex}`;
+      const patchKey = `${rowIndex}, ${patchIndex}`;
+      // console.log("registered", patchKey);
       return this.paintedPatches.has(patchKey);
     },
   },

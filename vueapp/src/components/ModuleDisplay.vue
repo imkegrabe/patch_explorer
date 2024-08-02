@@ -1,16 +1,18 @@
 <template>
     <div class="module">
     <GridDisplay
-        v-for="(grid, index) in modulegrids"
-        :key="index"
+        v-for="(grid, gridIndex) in module"
+        :key="gridIndex"
         :grid="grid"
-        @patch-click="handlePatchClick(index, $event)"
+        :current_intervention_instance_applying="current_intervention_instance_applying"
+        @patch-draw="handlePatchDraw(gridIndex, $event)"
     />
     </div>
 </template>
 
 
 <script>
+
 import GridDisplay from './GridDisplay.vue';
 
 export default {
@@ -22,19 +24,17 @@ export default {
     },
     
     props:  {
-        modulegrids: {
+        module: {
             type: Array,
             required: true
-        }
+        },
+        current_intervention_instance_applying: Object
     },
 
     methods: {
-        handlePatchClick(gridIndex,  {rowIndex, patchIndex}) {
-            console.log(`patch clicked at grid ${gridIndex}`)
-            this.$emit('patch-click', { gridIndex, rowIndex, patchIndex });
-        },
-        handleModuleClick() {
-            
+        handlePatchDraw(gridIndex,  patches) {
+            console.log(`patch draw registered at grid ${gridIndex}, emitting dict:`, {[gridIndex] : patches});
+            this.$emit('grid-draw', {[gridIndex] : patches});
         }
     }
 };
@@ -47,12 +47,9 @@ export default {
 
 <style>
 
-
 .module {
     display: flex;
     flex-direction: column;
-
 }
-
 
 </style>
