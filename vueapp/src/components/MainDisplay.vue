@@ -46,14 +46,14 @@ export default {
             
         //     const patchKey = `${moduleIndex}-${gridIndex}-${rowIndex}-${patchIndex}`;
 
-            const gd = this.allGrids
+        //     const gd = this.allGrids
             
-            if (this.clickedPatches[patchKey]) {
-                delete this.clickedPatches[patchKey];
-            } else {
-                this.$set(this.clickedPatches, patchKey, { moduleIndex, gd, rowIndex, patchIndex})
-            }
-        }
+        //     if (this.clickedPatches[patchKey]) {
+        //         delete this.clickedPatches[patchKey];
+        //     } else {
+        //         this.$set(this.clickedPatches, patchKey, { moduleIndex, gd, rowIndex, patchIndex})
+        //     }
+        // }
     },
     mounted() {
         // Select root element to enable pan zoom for
@@ -62,6 +62,7 @@ export default {
         panzoom(element, {
             smoothScroll: false
         })
+    }
 
 }
 </script>
