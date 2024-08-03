@@ -27,9 +27,6 @@
             ></ImageDisplay>
         </div>        
 
-        <!--<ModelDisplay :current_intervention_instance_applying="current_intervention_instance_applying"
-            :modules="modules" @selectModule="selectModule"></ModelDisplay> -->
-
     </div>
 
     <div class="bottom-container">

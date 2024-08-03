@@ -2,7 +2,7 @@ from typing import List
 
 from nnsight.envoy import Envoy
 
-from ..pydantics.Intervention import FieldModel
+from ..schema.Intervention import FieldModel
 from ..util import encode_prompt
 from . import DiffusionIntervention
 

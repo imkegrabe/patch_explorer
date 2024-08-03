@@ -18,7 +18,7 @@ import GridDisplay from './GridDisplay.vue';
 export default {
 
     name: "ModuleDisplay",
-    
+
     components: {
         GridDisplay
     },
@@ -46,7 +46,6 @@ export default {
 
 
 <style>
-
 .module {
     display: flex;
     flex-direction: column;

@@ -11,12 +11,12 @@
   "dependencies": {
     "core-js": "^3.8.3",
     "d3-scale-chromatic": "^3.1.0",
+    "panzoom": "^9.4.3",
     "patch-package": "^8.0.0",
     "postinstall-postinstall": "^2.1.0",
     "primevue": "^3.52.0",
     "undici": "^6.18.2",
-    "vue": "^3.2.13",
-    "vue-panzoom": "^1.1.6"
+    "vue": "^3.2.13"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
