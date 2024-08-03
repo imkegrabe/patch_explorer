@@ -4,7 +4,7 @@
             <div class="modules">
                 <ModuleDisplay v-for="(module, moduleIndex) in allGrids" :key="moduleIndex" :module="module"
                         :current_intervention_instance_applying="current_intervention_instance_applying"
-                    @grid-draw="handleGridDraw(moduleIndex, $event)" />
+                    @grid-draw="(grid_idx, patches) => handleGridDraw(moduleIndex, grid_idx, patches)" />
             </div>
         </div>
 
@@ -37,9 +37,9 @@ export default {
         }
     },
     methods: {
-        handleGridDraw (moduleIndex, gridPatches) {
-            console.log(`grid draw registered at module ${moduleIndex}, emitting dict:`, {[moduleIndex] : gridPatches});
-            this.$emit('module-draw', {[moduleIndex] : gridPatches});
+        handleGridDraw (module_idx, grid_idx, patches) {
+            console.log(`grid draw registered at module ${module_idx}, emitting dict:`);
+            this.$emit('module-draw', module_idx , grid_idx, patches);
         }
         // handlePatchClicks(moduleIndex, { gridIndex, rowIndex, patchIndex }) {
         //     console.log(`patches clicked at module ${moduleIndex}`)

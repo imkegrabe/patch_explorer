@@ -10,6 +10,7 @@
             @updateAddends="(addends) => updateAddends(addends)" 
             :host="host"
             :interventions="interventions" 
+            :temp="temp"
             :loading="loading" 
             ></InputDisplay>
 
@@ -17,7 +18,7 @@
             :loading="loading" 
             :allGrids="allGrids"
             :current_intervention_instance_applying="current_intervention_instance_applying"
-            @module-draw="handleModuleDraw($event)"
+            @module-draw="(module_idx, grid_idx, patches) =>handleModuleDraw(module_idx, grid_idx, patches)"
             ></MainDisplay>
 
             <ImageDisplay 
@@ -64,6 +65,8 @@ export default {
             imageUrl: require('@/assets/hidden-unicorn.png'),
             allGrids: gridData,
             interventions: [],
+            // Replace temp
+            temp: {},
             architecture: {},
             current_intervention_instance_applying: null
         };
@@ -120,8 +123,17 @@ export default {
                     this.architecture = response.architecture;
                 })
         },
-        handleModuleDraw(moduleGridPatches) {
-            console.log(`module draw registered, emitting dict:`, moduleGridPatches);
+        handleModuleDraw(module_idx, grid_idx, patches) {
+            console.log(`module draw registered, emitting dict:`);
+
+            if (!(module_idx in this.temp)){
+                this.temp[module_idx] = {}
+            }
+
+            this.temp[module_idx][grid_idx] = Array.from(patches)
+            
+            console.log(this.temp)
+
         }
 
     },

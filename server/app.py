@@ -39,6 +39,9 @@ app.add_middleware(
 model = util.load()
 model._model.pipeline.safety_checker = None
 
+cross_attentions = model.unet.modules(lambda x: x._module_path.endswith("attn2"))
+cross_attentions = sorted(cross_attentions, key=lambda x: x._module_path)
+
 interventions_types: Dict[str, DiffusionIntervention] = {
     "Ablation": AblationIntervention,
     "Scaling": ScalingIntervention,
@@ -62,26 +65,29 @@ async def init() -> ConfigurationModel:
 
 @app.post("/generate")
 async def request(request: RequestModel):
+    
+
+    
     interventions = []
 
     for intervention_model in request.interventions:
-
-        envoys = [
-            fetch_attr(model, module_path)
-            for module_path in intervention_model.selections.keys()
-        ]
-
+        
+        envoys = []
+        selections = {}
+        
+        for module_idx in list(intervention_model.selections.keys()):
+            envoy = cross_attentions[module_idx]
+            envoys.append(envoy)
+            selections[envoy._module_path] = intervention_model.selections[module_idx]
+            
         intervention = interventions_types[intervention_model.name](
             *intervention_model.args,
             model,
             envoys,
-            selections=intervention_model.selections
+            selections=selections
         )
 
         interventions.append(intervention)
-
-    cross_attentions = model.unet.modules(lambda x: x._module_path.endswith("attn2"))
-    cross_attentions = sorted(cross_attentions, key=lambda x: x._module_path)
 
     CAvis_intervention = CAVisIntervention(model, cross_attentions)
 
@@ -109,8 +115,6 @@ async def request(request: RequestModel):
 
     for key, addend in addends.items():
         
-        print(key)
-
         addend = addend.value.abs()
 
         addend -= addend.min()

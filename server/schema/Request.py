@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Union
 
 from pydantic import BaseModel
 
@@ -7,7 +7,7 @@ class InterventionRequestModel(BaseModel):
 
     name: str
 
-    selections: Dict[str, List[Tuple[int, int, int]]]
+    selections: Dict[int, Dict[int, List[str]]]
 
     args: List[Any] = []
 

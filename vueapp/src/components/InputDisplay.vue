@@ -48,7 +48,7 @@
 
     height: 10%;
 
-    
+
 }
 
 .button {
@@ -58,7 +58,6 @@
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
 }
-
 </style>
 
 
@@ -77,7 +76,8 @@ export default {
     props: {
         host: String,
         interventions: Array,
-        loading: Boolean
+        loading: Boolean,
+        temp: Object
     },
     data() {
         return {
@@ -90,21 +90,33 @@ export default {
             const interventions_to_apply = []
 
 
-            for (const intervention of this.interventions) {
+            // for (const intervention of this.interventions) {
 
-                for (const intervention_instance of intervention.instances) {
+            //     for (const intervention_instance of intervention.instances) {
 
-                    const intervention_instance_to_apply = {
-                        name: intervention.name,
-                        args: Array.from(intervention_instance.field_values),
-                        modules: Array.from(intervention_instance.envoys)
-                    }
+            //         const intervention_instance_to_apply = {
+            //             name: intervention.name,
+            //             args: Array.from(intervention_instance.field_values),
+            //             modules: Array.from(intervention_instance.envoys)
+            //         }
 
-                    interventions_to_apply.push(intervention_instance_to_apply)
-                }
+            //         interventions_to_apply.push(intervention_instance_to_apply)
+            //     }
+            // }
+
+            // Replace this with real interventions
+            const intervention_instance_to_apply = {
+                name: 'Scaling',
+                args: [0.0],
+                selections: this.temp
             }
 
+            interventions_to_apply.push(intervention_instance_to_apply)
+
+
             const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: interventions_to_apply }
+
+            console.log(request)
 
             console.log(request)
 

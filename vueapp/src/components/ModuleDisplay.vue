@@ -5,7 +5,7 @@
         :key="gridIndex"
         :grid="grid"
         :current_intervention_instance_applying="current_intervention_instance_applying"
-        @patch-draw="handlePatchDraw(gridIndex, $event)"
+        @patch-draw="(patches)=>handlePatchDraw(gridIndex, patches)"
     />
     </div>
 </template>
@@ -32,9 +32,9 @@ export default {
     },
 
     methods: {
-        handlePatchDraw(gridIndex,  patches) {
-            console.log(`patch draw registered at grid ${gridIndex}, emitting dict:`, {[gridIndex] : patches});
-            this.$emit('grid-draw', {[gridIndex] : patches});
+        handlePatchDraw(grid_idx,  patches) {
+            console.log(`patch draw registered at grid ${grid_idx}, emitting dict:`, {[grid_idx] : patches});
+            this.$emit('grid-draw', grid_idx, patches);
         }
     }
 };

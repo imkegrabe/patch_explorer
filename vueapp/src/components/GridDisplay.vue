@@ -13,9 +13,10 @@
         :style="{ backgroundColor: getColor(patch) }"
         @mouseover="handleMouseOver(rowIndex, patchIndex)"
       >
+      <!-- Need to make this this.current_intervention_instance_applying.color  -->
         <div v-if="isPainted(rowIndex, patchIndex)" 
         class="overlay"
-        :style="{ backgroundColor: this.current_intervention_instance_applying.color }"
+        :style="{ backgroundColor: 'green' }"
         >
       </div>
       </div>
@@ -70,14 +71,14 @@ export default {
 
     handleMouseOver(rowIndex, patchIndex) {
       if (this.isPainting) {
-        const patchKey = `${rowIndex}, ${patchIndex}`;
+        const patchKey = `${rowIndex},${patchIndex}`;
         this.paintedPatches.add(patchKey);
         this.$forceUpdate();
       }
     },
 
     isPainted(rowIndex, patchIndex) {
-      const patchKey = `${rowIndex}, ${patchIndex}`;
+      const patchKey = `${rowIndex},${patchIndex}`;
       // console.log("registered", patchKey);
       return this.paintedPatches.has(patchKey);
     },

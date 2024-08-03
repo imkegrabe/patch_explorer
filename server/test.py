@@ -2,7 +2,7 @@ import requests
 
 intervention = {
     "name": "Scaling",
-    "selections": {".unet.mid_block.attentions.0.transformer_blocks.0.attn2": [(0,0,0), (1,1,1)]},
+    "selections": {0: {0 : ['0,0', '1,1'], 1: ['1,1']}},
     "args" : [.0]
 }
 
