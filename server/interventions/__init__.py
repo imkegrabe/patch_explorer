@@ -3,8 +3,7 @@ from typing import Dict, List, Tuple
 import torch
 
 from nnsight import NNsight
-from nnsight.contexts.Tracer import Tracer
-from nnsight.envoy import Envoy
+from nnsight.intervention.envoy import Envoy
 
 
 class DiffusionIntervention:
@@ -40,23 +39,17 @@ class DiffusionIntervention:
 
                 self.selections[module_name] = tuple(torch.Tensor(patches).t().to(int))
 
-    def intervene(self, envoy: Envoy, tracer: Tracer, step: int):
+    def intervene(self, envoy: Envoy):
         pass
 
-    def __call__(self, tracer: Tracer):
+    def __call__(self):
 
         for envoy in self.envoys:
 
-            envoy._reset()
+            with envoy.iter[self.start_step:self.end_step]:
+        
+                self.intervene(envoy)
 
-            for i in range(self.start_step):
-                envoy.next(propagate=True)
-
-            for i in range(self.end_step - self.start_step):
-
-                self.intervene(envoy, tracer, self.start_step + i)
-
-                envoy.next(propagate=True)
 
     @classmethod
     def fields(cls):

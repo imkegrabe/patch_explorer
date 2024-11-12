@@ -15,7 +15,6 @@ from nnsight.util import fetch_attr
 
 from . import util
 from .interventions import DiffusionIntervention
-from .interventions.ablate import AblationIntervention
 from .interventions.CAvis import CAVisIntervention
 from .interventions.encoder import EncoderIntervention
 from .interventions.scale import ScalingIntervention
@@ -39,11 +38,10 @@ app.add_middleware(
 model = util.load()
 model._model.pipeline.safety_checker = None
 
-cross_attentions = model.unet.modules(lambda x: x._module_path.endswith("attn2"))
-cross_attentions = sorted(cross_attentions, key=lambda x: x._module_path)
+cross_attentions = model.unet.modules(lambda x: x.path.endswith("attn2"))
+cross_attentions = sorted(cross_attentions, key=lambda x: x.path)
 
 interventions_types: Dict[str, DiffusionIntervention] = {
-    "Ablation": AblationIntervention,
     "Scaling": ScalingIntervention,
     "Encoder": EncoderIntervention,
 }
@@ -78,7 +76,7 @@ async def request(request: RequestModel):
         for module_idx in list(intervention_model.selections.keys()):
             envoy = cross_attentions[module_idx]
             envoys.append(envoy)
-            selections[envoy._module_path] = intervention_model.selections[module_idx]
+            selections[envoy.path] = intervention_model.selections[module_idx]
             
         intervention = interventions_types[intervention_model.name](
             *intervention_model.args,
@@ -115,7 +113,7 @@ async def request(request: RequestModel):
 
     for key, addend in addends.items():
         
-        addend = addend.value.abs()
+        addend = sum(addend).abs()
 
         addend -= addend.min()
         addend /= addend.max()
@@ -142,4 +140,4 @@ async def addends():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8002, workers=1)
+    uvicorn.run(app, host="0.0.0.0", port=8003, workers=1)

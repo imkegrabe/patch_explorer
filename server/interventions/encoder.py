@@ -1,6 +1,6 @@
 from typing import List
 
-from nnsight.envoy import Envoy
+from nnsight import Envoy
 
 from ..schema.Intervention import FieldModel
 from ..util import encode_prompt
