@@ -2,13 +2,14 @@
 
 import * as THREE from 'three';
 
+let alpha = 175;
+
 export function getColor(value) {
     const cmapCool = (x) => {
         const r = Math.floor(255 * x);
         const g = Math.floor(255 * (1 - x));
         const b = 255;
-        const a = 255;
-        return [r, g, b, a]
+        return [r, g, b, alpha]
     };
     return cmapCool(value);
 }
@@ -52,7 +53,7 @@ export function grid_to_image(grid) {
 
     let geometry = new THREE.PlaneGeometry(size, size);
 
-    let material = new THREE.MeshBasicMaterial({ map: texture});
+    let material = new THREE.MeshBasicMaterial({ map: texture, transparent:true});
 
     let mesh = new THREE.Mesh(geometry, material);
 
@@ -87,7 +88,7 @@ export function image_to_pixels(image){
             // color it using a string
             let color = new THREE.Color(`rgb(${r}, ${g}, ${b})`)
                 
-            let material = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide});
+            let material = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide, transparent:a !== 255, opacity:alpha/255});
         
             let mesh = new THREE.Mesh(geometry, material);
 
@@ -117,8 +118,8 @@ export function splitImage(image){
 
     let offset = -size / 2 + .5 - split_padding;
 
-    for (let row = 0; row < size; row++){
-        for (let col = 0; col < size; col++){
+    for (let col = 0; col < size; col++){
+        for (let row = 0; row < size; row++){
 
             let x =  offset + (row * (1 + split_padding)); 
             let y =  offset + (col * (1 + split_padding));
@@ -126,6 +127,9 @@ export function splitImage(image){
             let pixel = pixels[row][col];
 
             pixel.position.set(x, y)
+            pixel.row = row;
+            pixel.col = col;
+            
             group.add(pixel)
         }
     }
@@ -133,7 +137,27 @@ export function splitImage(image){
     return group;
 }
 
+export function updateImage(image, pixels){
 
+    let texture = image.material.map.source.data.data;
+    let size = pixels.children.length;
+
+    for (let index = 0; index < size; index++){
+        let aindex = index * 4 + 3;
+        let pixel = pixels.children[index];
+
+        let a = alpha;
+
+        if (!pixel.material.transparent){
+            a = 255;
+        }
+
+        texture[aindex] = a;
+    }
+
+    image.material.map.needsUpdate = true;
+
+}
 export function destroy(mesh){
 
     mesh.removeFromParent();

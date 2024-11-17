@@ -7,7 +7,8 @@ export default {
 
     data() {
         return {
-            grids: [[[0, .5, .5], [1, 0, 1], [0, .2, .5]], [[1, 1, 1], [0,0,0], [.5,.5,.5]]],
+            //grids: [[[0, .5, .5], [1, 0, 1], [0, .2, .5]], [[1, 1, 1], [0,0,0], [.5,.5,.5]]],
+            grids: [[[1,1,1,1,1,1, 1], [1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1]], [[0,0,0],[.5,.5,.5], [1,1,1]]], 
             setGrids: null
         }
     },
@@ -25,6 +26,7 @@ export default {
         // Set grids to example. Imke you will have to changes this to add another grid dimension
         // (layer X head X (row x column))
         this.setGrids(this.grids)
+        
 
     }
 }

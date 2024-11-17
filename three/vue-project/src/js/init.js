@@ -17,7 +17,6 @@ export function init(element) {
 
     function animate() {
 
-
         renderer.render(scene, camera);
 
     }
@@ -26,7 +25,7 @@ export function init(element) {
     let raycaster = new THREE.Raycaster();
     let mouse = new THREE.Vector2();
     let meshes = [];
-    let selected = {'image': null, 'pixels': null}
+    let selected = { 'image': null, 'pixels': null }
 
     // Add click event
     element.addEventListener("click", onClick(scene, renderer, camera, mouse, raycaster, meshes, selected));

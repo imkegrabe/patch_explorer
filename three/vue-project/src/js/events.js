@@ -1,7 +1,8 @@
 // THis file should have everything to do with handling events from the user.
 
 
-import { grid_to_image, destroy, splitImage } from "./grids";
+import { CompressedTextureLoader } from "three";
+import { grid_to_image, destroy, splitImage, updateImage } from "./grids";
 
 // Select specific head image.
 export function select(scene, image, selected){
@@ -21,6 +22,8 @@ export function select(scene, image, selected){
 // Deselect a head image Mesh by destroying its expanded pixels and re-showing the image.
 export function deselect(selected){
 
+    updateImage(selected.image, selected.pixels)
+
     for (let i = 0; i < selected.pixels.children.length; i++){
         destroy(selected.pixels.children[i]);
     }
@@ -29,6 +32,12 @@ export function deselect(selected){
     selected.image = null;
     selected.pixels = null;
 }
+
+export function togglePixel(pixel){
+
+    pixel.material.transparent = !pixel.material.transparent;
+}
+
 
 // This function returns a function that should be called when the canvas is clicked
 // This is functional programming :)
@@ -50,7 +59,7 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, selec
 
             if (intersects.length > 0){
                 // Here is where we would call a function to select pixels.
-                console.log('clicked pixel')
+                togglePixel(intersects[0].object)
                 return
             }
 
@@ -92,19 +101,24 @@ export function setGrids(scene, meshes, selected){
         selected.image = null;
         selected.pixels = null;
 
+        let offset = -grids[0].length / 2;
+
         // Create and add grids. Needs to be changes for 4D inputs and handling placement etc etc
         for (let grid_idx = 0; grid_idx < grids.length; grid_idx++){
 
             let grid = grids[grid_idx];
 
-            let size = grid.length;
+            let halfsize = grid.length / 2;
+
+            offset += halfsize;
 
             let image = grid_to_image(grid);
-            image.position.set((size + padding) * grid_idx, 0);
+            image.position.set(offset + (grid_idx * padding), 0);
 
             meshes.push(image)
 
             scene.add(image);
+            offset += halfsize;
 
         }
     }
