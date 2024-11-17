@@ -32,9 +32,8 @@ export function deselect(selected){
     selected.pixels = null;
 }
 
-export function togglePixel(pixel){
-
-    pixel.material.transparent = !pixel.material.transparent;
+export function setPixel(pixel, value){
+    pixel.material.transparent = value;
 }
 
 
@@ -58,7 +57,19 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, selec
 
             if (intersects.length > 0){
                 // Here is where we would call a function to select pixels.
-                togglePixel(intersects[0].object)
+                if (event.shiftKey){
+
+                    let transparent = event.ctrlKey;
+
+                    for (let i = 0; i < selected.pixels.children.length; i++){
+                        let pixel = selected.pixels.children[i]
+                        setPixel(pixel, transparent);
+                    }
+                }
+                else{
+                    let pixel = intersects[0].object
+                    setPixel(pixel, !pixel.material.transparent)
+                }
                 return
             }
 
@@ -71,6 +82,39 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, selec
         if (intersects.length > 0){
            select(scene, intersects[0].object, selected);
         }
+    }
+
+    return inner
+
+}
+
+export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, selected){
+
+    function inner(event){
+        console.log('asd')
+        event.preventDefault();
+
+        // Theres no nice vue "onclick", we need to find out what Meshes you clicked on via raytracing
+        mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+        mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+
+        raycaster.setFromCamera( mouse, camera );
+
+        // If something is currently selected, we need to either click on a pixel to further select it.
+        // Otherwise de-select it.
+        if (selected.image !== null && event.shiftKey){
+            var intersects = raycaster.intersectObjects( selected.pixels.children, false );
+
+            if (intersects.length > 0){
+
+                let transparent = event.ctrlKey;
+            
+                let pixel = intersects[0].object
+                setPixel(pixel, transparent)
+
+            }
+        }
+
     }
 
     return inner

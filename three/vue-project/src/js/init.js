@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { onClick, setGrids } from './events';
+import { onClick, setGrids, onMouseMove} from './events';
 
 export function init(element) {
 
@@ -36,6 +36,7 @@ export function init(element) {
 
     // Add click event
     element.addEventListener("click", onClick(scene, renderer, camera, mouse, raycaster, meshes, selected));
+    element.addEventListener("mousemove", onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, selected));
 
     // Get setGrids handle.
     return setGrids(scene, meshes, selected);
