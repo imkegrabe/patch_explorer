@@ -1,7 +1,6 @@
 // THis file should have everything to do with handling events from the user.
 
 
-import { CompressedTextureLoader } from "three";
 import { grid_to_image, destroy, splitImage, updateImage } from "./grids";
 
 // Select specific head image.

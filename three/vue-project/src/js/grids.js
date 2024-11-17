@@ -2,7 +2,7 @@
 
 import * as THREE from 'three';
 
-let alpha = 175;
+let alpha = 125;
 
 export function getColor(value) {
     const cmapCool = (x) => {

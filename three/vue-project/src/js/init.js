@@ -5,7 +5,7 @@ import { onClick, setGrids } from './events';
 export function init(element) {
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10);
+    const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
     camera.position.z = 1;
     const renderer = new THREE.WebGLRenderer();
 
@@ -13,6 +13,13 @@ export function init(element) {
     renderer.setAnimationLoop(animate);
     element.appendChild(renderer.domElement);
     const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableRotate = false;
+    // Make click and drag pan not rotate
+    controls.mouseButtons = {
+        LEFT: THREE.MOUSE.PAN,         
+        MIDDLE: THREE.MOUSE.DOLLY,     
+        RIGHT: THREE.MOUSE.ROTATE      
+    };
     controls.update();
 
     function animate() {
