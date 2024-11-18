@@ -1,13 +1,13 @@
-from typing import List
+from collections import defaultdict
+from typing import Any, List
 
 import torch
 import math
-from nnsight.contexts.Tracer import Tracer
-from nnsight.envoy import Envoy
+from nnsight import Envoy, trace, apply, cond
 
 from . import DiffusionIntervention
 
-
+@trace
 def split(q, k , v, attn):
     
     
@@ -38,18 +38,35 @@ def split(q, k , v, attn):
     spatial_dim = int(math.sqrt(addendum_byhead.shape[-1]))
     
     addendum_byhead = addendum_byhead.reshape((-1, spatial_dim, spatial_dim)).cpu()
-    
+        
     return addendum_byhead
         
+
+class CustomDict(dict):
+    
+    def __init__(self):
+        
+        self.dict = {}
+    
+    
+    def __getitem__(self, key: Any) -> Any:
+        return self.dict.__getitem__(key)
+    
+    
+    def __setitem__(self, key: Any, value: Any) -> None:
+        return self.dict.__setitem__(key, value)
+    
+    def get(self, *args, **kwargs):
+        return self.dict.get(*args, **kwargs)
 
 class CAVisIntervention(DiffusionIntervention):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        self.addends = {}
+        self.addends = defaultdict(list)
 
-    def intervene(self, envoy: Envoy, tracer: Tracer, step: int):
+    def intervene(self, envoy: Envoy):
 
         attn = envoy
 
@@ -57,16 +74,8 @@ class CAVisIntervention(DiffusionIntervention):
         k = attn.to_k.output.to(torch.bfloat16)
         v = attn.to_v.output.to(torch.bfloat16)
         
-        addendum_byhead = tracer.apply(split, q, k, v, attn, validate=False)    
+        addendum_byhead = split(q, k, v, attn)    
         
-        if attn._module_path not in self.addends:
-
-            self.addends[attn._module_path] = addendum_byhead.cpu()
-            
-        else:
-
-            self.addends[attn._module_path] += addendum_byhead.cpu()
-            
-        if step == self.end_step - 1:
-                        
-            self.addends[attn._module_path] = self.addends[attn._module_path].save()
+        
+        apply(self.addends[attn.path].append, addendum_byhead.cpu().save())
+        

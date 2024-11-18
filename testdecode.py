@@ -61,7 +61,7 @@ generator2 = generator2.manual_seed(79)
 
 
 blocks = [*model.unet.down_blocks, model.unet.mid_block, *model.unet.up_blocks]
-block_idx = {blocks[i]._module_path: i for i in range(len(blocks))}
+block_idx = {blocks[i].path: i for i in range(len(blocks))}
 
 block = model.unet.mid_block
 attn_idx = 0

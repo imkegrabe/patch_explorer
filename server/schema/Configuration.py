@@ -5,7 +5,7 @@ from typing import Any, Dict, List
 from pydantic import BaseModel, field_validator
 
 from nnsight import NNsight
-from nnsight.envoy import Envoy
+from nnsight import Envoy
 
 from .Intervention import InterventionModel
 
@@ -32,10 +32,10 @@ class ConfigurationModel(BaseModel):
         def _arch(envoy: Envoy):
 
             return EnvoyModel(
-                name=envoy._module_path,
+                name=envoy.path,
                 type=f"{type(envoy._module).__module__}.{type(envoy._module).__name__}",
                 children={
-                    _envoy._module_path: _arch(_envoy) for _envoy in envoy._sub_envoys
+                    _envoy.path: _arch(_envoy) for _envoy in envoy._children
                 },
             )
 

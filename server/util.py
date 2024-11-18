@@ -1,4 +1,4 @@
-from nnsight.models.DiffusionModel import DiffusionModel
+from nnsight.modeling.diffusion import DiffusionModel
 
 from typing import List
 import torch
@@ -12,13 +12,10 @@ def load(id: str = "CompVis/stable-diffusion-v1-4"):
 
 def run(model:DiffusionModel, prompt:str, n_steps:int = 50, seed:int=40, interventions: List[DiffusionIntervention] = []):
     
-    generator = torch.Generator()
-    generator = generator.manual_seed(seed)
-    
-    with model.generate(prompt, num_inference_steps=n_steps, generator=generator, validate=False, scan=False) as tracer:
+    with model.generate(prompt, num_inference_steps=n_steps, seed=seed, validate=False, scan=False) as tracer:
         
         for intervention in interventions:
-            intervention(tracer)
+            intervention()
             
         output = model.output.save()
         

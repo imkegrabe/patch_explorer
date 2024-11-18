@@ -2,12 +2,12 @@ import math
 
 import torch
 
-from nnsight.envoy import Envoy
+from nnsight import Envoy, trace
 
 from ..schema.Intervention import FieldModel
 from . import DiffusionIntervention
 
-
+@trace
 def apply(hidden_states: torch.Tensor, factor, selection, attn):
 
     spatial_dim = int(math.sqrt(hidden_states.shape[1]))
@@ -28,18 +28,16 @@ class ScalingIntervention(DiffusionIntervention):
 
         self.factor = factor
 
-    def intervene(self, attn_envoy: Envoy, tracer, *args):
+    def intervene(self, attn_envoy: Envoy):
 
         envoy = attn_envoy.to_out[0]
 
         # (batch, spatial * spatial, heads * dim)
-        hidden_states: torch.Tensor = envoy.input[0][0]
+        hidden_states: torch.Tensor = envoy.input
 
-        selection = self.selections[attn_envoy._module_path]
+        selection = self.selections[attn_envoy.path]
 
-        tracer.apply(
-            apply, hidden_states, self.factor, selection, attn_envoy, validate=False
-        )
+        apply(hidden_states, self.factor, selection, attn_envoy)
 
     @classmethod
     def fields(cls):
