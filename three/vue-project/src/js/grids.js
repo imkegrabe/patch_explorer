@@ -116,7 +116,7 @@ export function splitImage(image){
     let group = new THREE.Group()
     group.position.set(position.x, position.y)
 
-    let offset = -size / 2 + .5 - split_padding;
+    let offset = -size / 2 + .5 - (split_padding * (size / 2));
 
     for (let col = 0; col < size; col++){
         for (let row = 0; row < size; row++){
