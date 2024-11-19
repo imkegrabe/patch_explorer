@@ -59,6 +59,7 @@ export function grid_to_image(grid) {
 
     return mesh
 }
+
 // Converts an image Mesh to individual pixel Meshes
 export function image_to_pixels(image){
 
@@ -98,10 +99,8 @@ export function image_to_pixels(image){
     }
 
     return pixels;
-
-  
-
 }
+
 // You can change this
 let split_padding = .05;
 

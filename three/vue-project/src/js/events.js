@@ -1,6 +1,7 @@
 // THis file should have everything to do with handling events from the user.
 
-
+import * as THREE from 'three';
+import { toHandlerKey } from "vue";
 import { grid_to_image, destroy, splitImage, updateImage } from "./grids";
 
 // Select specific head image.
@@ -13,7 +14,7 @@ export function select(scene, image, selected){
     // Make the original image Mesh invisible
     image.visible = false;
 
-    // Add the image and pixels to the selected object to be used later. How exciting!
+    // Add the image and pixels to the selected object to be used later. How exciting! lol
     selected.image = image;
     selected.pixels = group;
 }
@@ -121,8 +122,6 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, s
 
 }
 
-let padding = .5;
-
 // Function to return the function that should be called when there are new grids from the server
 export function setGrids(scene, meshes, selected){
 
@@ -144,25 +143,37 @@ export function setGrids(scene, meshes, selected){
         selected.image = null;
         selected.pixels = null;
 
-        let offset = -grids[0].length / 2;
+        // looooop through layers - main array with all layers is called grids and is in 4D - [ layers [ heads [ rows [ cols ]]]]
+        let x_offset = 0 //-grids[0][0].length / 2;
+        
+        for (let layer_idx = 0; layer_idx < grids.length; layer_idx++){
 
-        // Create and add grids. Needs to be changes for 4D inputs and handling placement etc etc
-        for (let grid_idx = 0; grid_idx < grids.length; grid_idx++){
+            // group doesnt work yet - do we need it tho?
+            // let group = new THREE.Group();
+            // group.position.set(layer_idx*layer_offset, 0, 0);
+            // scene.add(group);
 
-            let grid = grids[grid_idx];
+            let heads = grids[layer_idx];
+            let y_offset = -65*4 + grids[layer_idx][0].length * 4; //initial offset for grids
 
-            let halfsize = grid.length / 2;
+            //loop through heads which are all the grids at layer x
+            for (let head_idx = 0; head_idx < heads.length; head_idx++){
+                let grid = heads[head_idx];
 
-            offset += halfsize;
+                let image = grid_to_image(grid);
 
-            let image = grid_to_image(grid);
-            image.position.set(offset + (grid_idx * padding), 0);
+                image.position.set(x_offset + grid.length/2, y_offset);
 
-            meshes.push(image)
+                // group.add(image);
 
-            scene.add(image);
-            offset += halfsize;
+                scene.add(image);
+                y_offset -= grid.length+1;
 
+                meshes.push(image);
+
+            };
+            
+            x_offset += grids[layer_idx][0].length + 10;
         }
     }
 

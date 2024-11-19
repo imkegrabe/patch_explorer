@@ -6,11 +6,12 @@ export function init(element) {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
-    camera.position.z = 8;
+    camera.position.z = 800;
     const renderer = new THREE.WebGLRenderer();
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setAnimationLoop(animate);
+    renderer.setClearColor(0x000000, .75);
     element.appendChild(renderer.domElement);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableRotate = false;

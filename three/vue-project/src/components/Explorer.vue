@@ -1,6 +1,9 @@
 <script>
 
 import { init } from '@/js/init';
+import gridData from '@/assets/gridData.json';
+import title from '@/assets/title.json';
+import { grid_to_image } from '@/js/grids';
 
 export default {
     name: "Explorer",
@@ -9,7 +12,10 @@ export default {
         return {
             //grids: [[[0, .5, .5], [1, 0, 1], [0, .2, .5]], [[1, 1, 1], [0,0,0], [.5,.5,.5]]],
             grids: [[[1,1,1,1,1,1, 1], [1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1]], [[0,0,0],[.5,.5,.5], [1,1,1]]], 
-            setGrids: null
+            testgrid: [[[[1, .3, .5], [.6, 1, .8], [.1, .34, .6]], [[1, .23, .25], [.6, .1, .48], [.31, .49, .36]]], [[[1, .3, .5], [.6, 1, .8], [.1, .34, .6]], [[1, .23, .25], [.6, .1, .48], [.31, .49, .36]]]],
+            setGrids: null,
+            testGridz: gridData,
+            title: title
         }
     },
    
@@ -25,8 +31,7 @@ export default {
 
         // Set grids to example. Imke you will have to changes this to add another grid dimension
         // (layer X head X (row x column))
-        this.setGrids(this.grids)
-        
+        this.setGrids(this.testGridz)
 
     }
 }
@@ -35,6 +40,11 @@ export default {
 
 
 <template>
+
+    <div >
+            <div ref="headerCanvas"></div>
+    </div>
+
     <div>
         <div ref="canvas">
 
@@ -42,6 +52,3 @@ export default {
     </div>
 
 </template>
-
-
-<style></style>

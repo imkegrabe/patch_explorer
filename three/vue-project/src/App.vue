@@ -14,4 +14,7 @@ export default {
 </template>
 
 <style scoped>
+#app {
+  background-color: white;
+}
 </style>
