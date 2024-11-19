@@ -11,7 +11,7 @@ export function init(element) {
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setAnimationLoop(animate);
-    renderer.setClearColor(0x000000, .75);
+    renderer.setClearColor(0x000000, 0);
     element.appendChild(renderer.domElement);
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableRotate = false;

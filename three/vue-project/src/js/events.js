@@ -121,6 +121,8 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, s
 
 }
 
+let padding = 3;
+
 // Function to return the function that should be called when there are new grids from the server
 export function setGrids(scene, meshes, selected){
 
@@ -153,7 +155,7 @@ export function setGrids(scene, meshes, selected){
             // scene.add(group);
 
             let heads = grids[layer_idx];
-            let y_offset = -65*4 + grids[layer_idx][0].length * 4; //initial offset for grids
+            let y_offset = -(64*3.5 + padding*3.5) + grids[layer_idx][0].length*3.5 + padding*3.5; //initial offset for grids
 
             //loop through heads which are all the grids at layer x
             for (let head_idx = 0; head_idx < heads.length; head_idx++){
@@ -166,13 +168,13 @@ export function setGrids(scene, meshes, selected){
                 // group.add(image);
 
                 scene.add(image);
-                y_offset -= grid.length+1;
+                y_offset -= grid.length + padding;
 
                 meshes.push(image);
 
             };
             
-            x_offset += grids[layer_idx][0].length + 10;
+            x_offset += grids[layer_idx][0].length + padding;
         }
     }
 

@@ -23,11 +23,11 @@ export function grid_to_texture(grid) {
     // In the form [r1,g2,b1,a1,r2,g2,b2,...]
     let texture = new Uint8Array(size * size * 4);
 
-    for (let row = 0; row < size; row++) {
+    for (let row = size-1; row >= 0; row--) { // we loop through the grid just to get the shape
         for (let col = 0; col < size; col++) {
             let index = (row * size + col) * 4;
 
-            let rgba = getColor(grid[row][col]);
+            let rgba = getColor(grid[size-(row+1)][col]); // then start with the value from the last row, because image data is upsite down hehe :)
 
             texture[index] = rgba[0];
             texture[index + 1] = rgba[1];
