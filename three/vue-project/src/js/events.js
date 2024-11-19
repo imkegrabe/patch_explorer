@@ -92,7 +92,6 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, selec
 export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, selected){
 
     function inner(event){
-        console.log('asd')
         event.preventDefault();
 
         // Theres no nice vue "onclick", we need to find out what Meshes you clicked on via raytracing
