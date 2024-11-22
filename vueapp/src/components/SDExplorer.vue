@@ -78,7 +78,7 @@ export default {
     // ModelDisplay,
     InputDisplay,
     MainDisplay,
-},
+    },
     methods: {
         updateImage(url) {
             this.imageUrl = url;
@@ -119,7 +119,7 @@ export default {
             })
                 .then(response => { return response.json() })
                 .then(response => {
-                    this.interventions = response.interventions;
+                    this.interventions = response.interventions; //updates interventions + architecture
                     this.architecture = response.architecture;
                 })
         },

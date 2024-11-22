@@ -45,10 +45,19 @@ export default {
   methods: {
     getColor(value) {
       const cmapCool = (x) => {
-        const r = Math.floor(255 * x);
-        const g = Math.floor(255 * (1 - x));
+        let r = 255;
+        let g = 255;
+        
+        if (x < 0) {
+          r = 255 - Math.floor(255 * x);
+        } 
+        if (x > 0) {
+          g = 255 - Math.floor(255 * x);
+        } 
+        
         const b = 255;
         const a = 0.9;
+
         return `rgb(${r}, ${g}, ${b}, ${a})`;
       };
       return cmapCool(value);

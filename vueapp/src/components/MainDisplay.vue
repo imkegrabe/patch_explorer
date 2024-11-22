@@ -73,7 +73,7 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
 
 }
 
