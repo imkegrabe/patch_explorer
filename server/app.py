@@ -64,8 +64,6 @@ async def init() -> ConfigurationModel:
 @app.post("/generate")
 async def request(request: RequestModel):
     
-
-    
     interventions = []
 
     for intervention_model in request.interventions:
