@@ -53,7 +53,7 @@ export default {
         // Set grids to example.
         this.setGrids(this.allGrids)
 
-        canvas.height = height;
+        // canvas.height = height;
 
     }
 }
@@ -71,8 +71,7 @@ export default {
 <style>
 .canvas-container {
     position: absolute;
-    z-index: 1;
-    display: flex;
+    z-index: 0 ;
     top: 0;
     left: 0;
     width: 100vw; /* Full viewport width */
@@ -85,5 +84,6 @@ canvas {
     display: block; /* Removes extra space below the canvas in some browsers */
     width: 100%; /* Ensure canvas scales horizontally */
     height: 100%; /* Ensure canvas scales vertically */
+    
 }
 </style>
