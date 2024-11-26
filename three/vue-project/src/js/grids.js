@@ -2,7 +2,7 @@
 
 import * as THREE from 'three';
 
-let alpha = 100;
+let alpha = 150;
 
 export function getColor(value) {
     const cmapCool = (x) => {
@@ -148,6 +148,7 @@ export function updateImage(image, pixels){
 
         if (!pixel.material.transparent){
             a = 255;
+            image.selections.push([])
         }
 
         texture[aindex] = a;

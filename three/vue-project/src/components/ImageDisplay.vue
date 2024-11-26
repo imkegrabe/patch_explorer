@@ -23,16 +23,21 @@ export default {
 
 
 <template>
-    <div class="image-container" style="width: 256px; height:256px;">
-        <Skeleton v-show="loading" class="loading" style="width: 100%; height:100%;"></Skeleton>
-        <img style="width: 100%;height: 100%;" v-show="!loading" :src="imageUrl" alt="Image" />
+    <!-- will have loop here to contain all cached images... -->
+    <div class="image-container">
+        <!-- activate loading again... <Skeleton v-show="loading" class="loading" style="width: 100%; height:100%;"></Skeleton> -->
+        <img :src="imageUrl" alt="Image" />
     </div>
 </template>
 
 
-
 <style>
-.loading {
-    border-radius: 0;
+.image-container img {
+    width: 256px;
+    height: 256px;
+    object-fit: contain;
+    padding: 5px;
+    display: block;
+    align-items: center;
 }
 </style>

@@ -2,7 +2,6 @@
 import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
-import Sidebar from 'primevue/sidebar';
 
 export default {
     name: 'Input',
@@ -27,7 +26,6 @@ export default {
         async generate() {
             const interventions_to_apply = []
 
-
             // for (const intervention of this.interventions) {
 
             //     for (const intervention_instance of intervention.instances) {
@@ -42,19 +40,16 @@ export default {
             //     }
             // }
 
-            // Replace this with real interventions - hardcoded to scaling right now
+            // Replace this to work for all interventions - hardcoded to scaling right now
             const intervention_instance_to_apply = {
                 name: 'Scaling',
                 args: [0.0],
                 selections: this.temp
             }
 
-            interventions_to_apply.push(intervention_instance_to_apply)
-
+            // interventions_to_apply.push(intervention_instance_to_apply)
 
             const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: interventions_to_apply }
-
-            console.log(request)
 
             console.log(request)
 
@@ -72,12 +67,14 @@ export default {
 
             })
 
-
+            //GENERATED IMAGE
             var image = await response.blob()
+            
+            var url = URL.createObjectURL(image);
 
-            image = URL.createObjectURL(image);
+            this.$emit('newImageUrl', url)
 
-            this.$emit('updateImage', image)
+            //GENERATED ADDENDS
 
             response = await fetch(this.host + '/addends', {
                 method: 'GET',
@@ -86,12 +83,14 @@ export default {
 
             var addends = await response.json()
 
-            this.$emit('updateAddends', addends)
+            this.$emit('newAddends', addends)
         }
     }
-
 }
 </script>
+
+
+
 <template>
     <div class="input-container">
 

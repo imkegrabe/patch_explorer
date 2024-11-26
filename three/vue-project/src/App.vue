@@ -1,34 +1,59 @@
 <script>
 import Explorer from './components/Explorer.vue';
-import Input from './components/Input.vue';
+import InputDisplay from './components/InputDisplay.vue';
 import ImageDisplay from './components/ImageDisplay.vue';
 import InterventionDisplay from './components/InterventionDisplay.vue';
+
 export default {
   name: 'App',
+
   components: {
     Explorer,
     ImageDisplay,
     InterventionDisplay,
-    Input
-}
+    InputDisplay
+    },
+
+    methods: {
+    updateImage(url) {
+      this.imageUrl = url;
+      console.log("updating image")
+      this.$forceUpdate()
+    },
+    updateAddends(addends) {
+      this.$refs.explorer_container.setGrids(addends)
+    }
+  }
 }
 </script>
+
+
 
 <template>
   <div>
 
-    <Explorer class="explorer" position="absolute"></Explorer>
-
+    <Explorer class="explorer" position="absolute" ref="explorer_container"></Explorer>
 
     <div class="header">
       <img src="@/assets/patch-explorer.svg" alt="Header Image saying Patch Explorer in pixels font" />
     </div>
 
-    <ImageDisplay></ImageDisplay>
     <InterventionDisplay></InterventionDisplay>
 
+    <div class="image-row">
+      <ImageDisplay
+        :imageUrl="imageUrl"
+        ></ImageDisplay>
+    </div>
 
-    <Input position="absolute" :host="'http://localhost:8002'" :interventions="[]" :loading="false"  :temp="[]"></Input>
+    <InputDisplay position="absolute"
+      @newImageUrl="(url) => updateImage(url)" 
+      @newAddends="(addends) => updateAddends(addends)"
+      :host="'http://localhost:8003'" 
+      :interventions="[]" 
+      :loading="false"  
+      :temp="[]"
+    ></InputDisplay>
 
   </div>
 </template>
@@ -36,6 +61,17 @@ export default {
 <style scoped>
 #app {
   background-color: white;
+}
+
+.image-row {
+  position: fixed;
+    right: 0;
+    height: 100%; /* Adjust height as needed */
+    color: white;
+    display: flex;
+    justify-content: center; /* Distributes buttons evenly */
+    align-items: center;
+    z-index: 100; /* Ensures it stays above other content */
 }
 
 .control-bar {

@@ -124,7 +124,7 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, s
 let padding = 2;
 
 // Function to return the function that should be called when there are new grids from the server
-export function setGrids(scene, meshes, selected){
+export function setGrids(scene, meshes, selected, global_selections){
 
     function inner(grids){
 
@@ -134,11 +134,12 @@ export function setGrids(scene, meshes, selected){
         }
 
         // Do they same with selected head pixels.
+        // console.log(selected.image !== null)
         if (selected.image !== null){
-            for (let i = 0; i < selected.pixels.length; i++){
-                destroy(selected.pixels[i]);
-            }
+           deselect(selected)
         }
+
+        global_selections.length = 0;
 
         meshes.length = 0;
         selected.image = null;
@@ -157,15 +158,22 @@ export function setGrids(scene, meshes, selected){
             let heads = grids[layer_idx];
             let y_offset = -(64*3.5 + padding*3.5) + grids[layer_idx][0].length*3.5 + padding*3.5; //initial offset for grids
 
+
+            var layer_selections = [];
+
             //loop through heads which are all the grids at layer x
             for (let head_idx = 0; head_idx < heads.length; head_idx++){
                 let grid = heads[head_idx];
 
                 let image = grid_to_image(grid);
 
+                var head_selections = [];
+                image.selections = head_selections;
+                layer_selections.push(head_selections);
+
                 image.position.set(x_offset + grid.length/2 -380-20, y_offset+231-20);
 
-                console.log("layer", layer_idx, "head", head_idx, image.position)
+                // console.log("layer", layer_idx, "head", head_idx, image.position)
                 // group.add(image);
 
                 scene.add(image);
@@ -174,6 +182,8 @@ export function setGrids(scene, meshes, selected){
                 meshes.push(image);
 
             };
+
+            global_selections.push(layer_selections);
             
             x_offset += grids[layer_idx][0].length + 20;
         }

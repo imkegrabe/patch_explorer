@@ -37,6 +37,7 @@ export function init(element) {
     let mouse = new THREE.Vector2();
     let meshes = [];
     let selected = { 'image': null, 'pixels': null }
+    let global_selections = []
 
     // Add click event
     element.addEventListener("click", onClick(scene, renderer, camera, mouse, raycaster, meshes, selected));
@@ -56,7 +57,7 @@ export function init(element) {
     });
     
     // Get setGrids handle.
-    return setGrids(scene, meshes, selected);
+    return setGrids(scene, meshes, selected, global_selections);
 
 
 }
