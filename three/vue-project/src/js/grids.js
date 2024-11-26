@@ -2,7 +2,7 @@
 
 import * as THREE from 'three';
 
-let alpha = 200;
+let alpha = 100;
 
 export function getColor(value) {
     const cmapCool = (x) => {
@@ -132,7 +132,6 @@ export function splitImage(image){
             group.add(pixel)
         }
     }
-
     return group;
 }
 

@@ -4,15 +4,19 @@ import { onClick, setGrids, onMouseMove} from './events';
 
 export function init(element) {
 
+    // CAMERA
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
-    camera.position.z = 800;
-    const renderer = new THREE.WebGLRenderer();
+    // const camera = new THREE.OrthogonalCamera(-2000, 2000, 1000, -1000, 0.01, 2000)
+    camera.position.set(0, 0, 500);
 
+    // RENDERER
+    const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setAnimationLoop(animate);
-    renderer.setClearColor(0x111111, .75); //background color, opacity
+    renderer.setClearColor(0x111111, 1); //background color, opacity
     element.appendChild(renderer.domElement);
+
+    // CONTROLS
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableRotate = false;
     // Make click and drag pan not rotate
@@ -24,10 +28,9 @@ export function init(element) {
     controls.update();
 
     function animate() {
-
         renderer.render(scene, camera);
-
     }
+    renderer.setAnimationLoop(animate);
 
     // Define state vars here
     let raycaster = new THREE.Raycaster();
@@ -39,6 +42,19 @@ export function init(element) {
     element.addEventListener("click", onClick(scene, renderer, camera, mouse, raycaster, meshes, selected));
     element.addEventListener("mousemove", onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, selected));
 
+    // adjust to browser drags
+    window.addEventListener('resize', () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // update renderer size
+        renderer.setSize(width, height);
+
+        // update camera aspect ratio and projection matrix
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+    });
+    
     // Get setGrids handle.
     return setGrids(scene, meshes, selected);
 

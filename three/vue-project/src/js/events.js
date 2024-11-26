@@ -160,12 +160,12 @@ export function setGrids(scene, meshes, selected){
             //loop through heads which are all the grids at layer x
             for (let head_idx = 0; head_idx < heads.length; head_idx++){
                 let grid = heads[head_idx];
-                console.log("layer", layer_idx, "head", head_idx)
 
                 let image = grid_to_image(grid);
 
-                image.position.set(x_offset + grid.length/2, y_offset);
+                image.position.set(x_offset + grid.length/2 -380-20, y_offset+231-20);
 
+                console.log("layer", layer_idx, "head", head_idx, image.position)
                 // group.add(image);
 
                 scene.add(image);

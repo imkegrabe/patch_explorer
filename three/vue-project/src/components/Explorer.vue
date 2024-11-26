@@ -4,22 +4,16 @@ import { init } from '@/js/init';
 import gridData from '@/assets/gridData.json';
 // import title from '@/assets/title.json';
 // import { grid_to_image } from '@/js/grids';
+// import Sidebar from 'primevue/sidebar';
 
 export default {
     name: "Explorer",
-    props: {
-        host: String
-    },
 
     data() {
         return {
-            //grids: [[[0, .5, .5], [1, 0, 1], [0, .2, .5]], [[1, 1, 1], [0,0,0], [.5,.5,.5]]],
-            // grids: [[[1,1,1,1,1,1, 1], [1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1],[1,1,1,1,1,1, 1]], [[0,0,0],[.5,.5,.5], [1,1,1]]], 
-            // testgrid: [[[[1, .3, .5], [.6, 1, .8], [.1, .34, .6]], [[1, .23, .25], [.6, .1, .48], [.31, .49, .36]]], [[[1, .3, .5], [.6, 1, .8], [.1, .34, .6]], [[1, .23, .25], [.6, .1, .48], [.31, .49, .36]]]],
+            // testgrids: [[[[1, .3, .5], [.6, 1, .8], [.1, .34, .6]], [[1, .23, .25], [.6, .1, .48], [.31, .49, .36]]], [[[1, .3, .5], [.6, 1, .8], [.1, .34, .6]], [[1, .23, .25], [.6, .1, .48], [.31, .49, .36]]]],
             setGrids: null,
             allGrids: gridData,
-            // title: title
-
             loading: false,
             ImageUrl: null,
             interventions: [],
@@ -59,6 +53,8 @@ export default {
         // Set grids to example.
         this.setGrids(this.allGrids)
 
+        canvas.height = height;
+
     }
 }
 
@@ -66,15 +62,28 @@ export default {
 
 
 <template>
-
-    <!-- <div >
-            <div ref="headerCanvas"></div>
-    </div> -->
-
-    <div>
-        <div ref="canvas">
-
+    <div class="canvas-container">
+    <!-- <div style="width: 100vw; height: 100vh; overflow: hidden;"> -->
+        <div ref="canvas" style="width: 100%; height: 100%; position: relative;">
+        <!-- </div> -->
         </div>
     </div>
-
 </template>
+
+<style>
+.canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    overflow: hidden; /* Prevent scrollbars from appearing */
+}
+
+/* Canvas itself */
+canvas {
+    display: block; /* Removes extra space below the canvas in some browsers */
+    width: 100%; /* Ensure canvas scales horizontally */
+    height: 100%; /* Ensure canvas scales vertically */
+}
+</style>
