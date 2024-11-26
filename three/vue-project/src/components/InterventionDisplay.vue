@@ -4,7 +4,7 @@
 import Button from 'primevue/button';
 
 export default {
-    name: "ImageDisplay",
+    name: "InterventionDisplay",
     components: {
         Button,
     },
@@ -25,20 +25,19 @@ export default {
 
 
 <template>
-     <div class="image-display" v-if="sidebar_visible"> 
+     <div class="intervention-display" v-if="sidebar_visible"> 
          <div >Hello</div> 
          
      </div> 
-     <Button label="Images" severity="info" @click="sidebar_visible = !sidebar_visible" style="position:fixed;top:10px;right:20px" /> 
+     <Button label="Menu" severity="info" @click="sidebar_visible = !sidebar_visible" style="position:fixed;top:10px;left:20px" /> 
      
 </template>
 
 
 <style>
 
-    .image-display{
+    .intervention-display{
         position: absolute;
-        right:0px;
         height:100vh;
         width: 15%;
         background-color: white;

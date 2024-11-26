@@ -7,7 +7,7 @@ import InputText from 'primevue/inputtext';
 import Sidebar from 'primevue/sidebar';
 
 export default {
-    name: 'InputDisplay',
+    name: 'Input',
     components: {
         Button,
         InputNumber,
@@ -95,7 +95,7 @@ export default {
 }
 </script>
 <template>
-    <div class="input-container" position="absolute">
+    <div class="input-container">
 
         <div class="prompt">
             <label>Prompt:</label>
@@ -118,38 +118,19 @@ export default {
 
 <style>
 .input-container {
+    position: fixed;
     display: flex;
-    flex-direction: column;
-    justify-content: left;
-    align-items: left;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     gap: 20px;
-    margin: 0px !important;
-    z-index: 999;
-    height: 10%;
+    height: 5%;
+    width:30%;
+    margin-left: 35%;
+    color:black;
+    bottom:0;
+    background-color: grey;
+    border-radius: 25px 25px 0px 0px;
 }
 
-.button {
-    background-color: aquamarine;
-    border-top-right-radius: 0px;
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
-}
-
-.overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            opacity: 0;
-            transition: opacity 0.3s;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 18px;
-        }
 </style>

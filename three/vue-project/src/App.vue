@@ -1,12 +1,15 @@
 <script>
 import Explorer from './components/Explorer.vue';
-import InputDisplay from './components/InputDisplay.vue';
-
+import Input from './components/Input.vue';
+import ImageDisplay from './components/ImageDisplay.vue';
+import InterventionDisplay from './components/InterventionDisplay.vue';
 export default {
   name: 'App',
   components: {
     Explorer,
-    InputDisplay
+    ImageDisplay,
+    InterventionDisplay,
+    Input
 }
 }
 </script>
@@ -14,17 +17,19 @@ export default {
 <template>
   <div>
 
+    <Explorer class="explorer" position="absolute"></Explorer>
+
+
     <div class="header">
       <img src="@/assets/patch-explorer.svg" alt="Header Image saying Patch Explorer in pixels font" />
     </div>
 
-    <Explorer class="explorer" position="absolute" style = "z-index: 1;"></Explorer>
+    <ImageDisplay></ImageDisplay>
+    <InterventionDisplay></InterventionDisplay>
 
-    <!-- <InputDisplay position="absolute" style="z-index: 2; pointer-events: auto;" :host="'http://localhost:8002'" :interventions="[]" :loading="false"  :temp="[]"></InputDisplay> -->
-    <div class="control-bar">
-            <button @click="handleAction('Action 1')">Action 1</button>
-            <button @click="handleAction('Action 2')">Action 2</button>
-        </div>
+
+    <Input position="absolute" :host="'http://localhost:8002'" :interventions="[]" :loading="false"  :temp="[]"></Input>
+
   </div>
 </template>
 
@@ -53,7 +58,6 @@ export default {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 100;
     padding: 10px;
     /* width: 150vh; */
     display: flex;
