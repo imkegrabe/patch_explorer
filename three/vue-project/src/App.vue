@@ -1,13 +1,15 @@
 <script>
 import Explorer from './components/Explorer.vue';
 import InputDisplay from './components/InputDisplay.vue';
+import ImageDisplay from './components/ImageDisplay.vue';
 
 export default {
   name: 'App',
   components: {
     Explorer,
-    InputDisplay
-}
+    InputDisplay,
+    ImageDisplay
+  }
 }
 </script>
 
@@ -20,11 +22,12 @@ export default {
 
     <Explorer class="explorer" position="absolute" style = "z-index: 1;"></Explorer>
 
-    <!-- <InputDisplay position="absolute" style="z-index: 2; pointer-events: auto;" :host="'http://localhost:8002'" :interventions="[]" :loading="false"  :temp="[]"></InputDisplay> -->
     <div class="control-bar">
-            <button @click="handleAction('Action 1')">Action 1</button>
-            <button @click="handleAction('Action 2')">Action 2</button>
-        </div>
+      <button @click="handleAction('Action 1')">Action 1</button>
+      <button @click="handleAction('Action 2')">Action 2</button>
+    </div>
+    <ImageDisplay class="image-row" style="width: 256px; right: 0; height:256px;"></ImageDisplay>
+
   </div>
 </template>
 
@@ -33,19 +36,28 @@ export default {
   background-color: white;
 }
 
+.image-container {
+  position: fixed;
+  right: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+
+}
+
 .control-bar {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 60px; /* Adjust height as needed */
-    background-color: #222; /* Dark background for contrast */
+    height: 60px;
+    background-color: #222;
     color: white;
     display: flex;
-    justify-content: space-around; /* Distributes buttons evenly */
+    justify-content: space-around;
     align-items: center;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5); /* Adds a subtle shadow */
-    z-index: 100; /* Ensures it stays above other content */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+    z-index: 100;
 }
 
 .header {

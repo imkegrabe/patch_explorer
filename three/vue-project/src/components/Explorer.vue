@@ -63,9 +63,7 @@ export default {
 
 <template>
     <div class="canvas-container">
-    <!-- <div style="width: 100vw; height: 100vh; overflow: hidden;"> -->
         <div ref="canvas" style="width: 100%; height: 100%; position: relative;">
-        <!-- </div> -->
         </div>
     </div>
 </template>
@@ -73,6 +71,8 @@ export default {
 <style>
 .canvas-container {
     position: absolute;
+    z-index: 1;
+    display: flex;
     top: 0;
     left: 0;
     width: 100vw; /* Full viewport width */
