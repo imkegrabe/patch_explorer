@@ -36,12 +36,12 @@ export function init(element) {
     let raycaster = new THREE.Raycaster();
     let mouse = new THREE.Vector2();
     let meshes = [];
-    let selected = { 'image': null, 'pixels': null }
-    let global_selections = []
+    let focused = { 'image': null, 'pixels': null } // currently opened head and its patches
+    let global_selections = [] // stores the data structure: list of layer, heads, x, y coordinates...
 
     // Add click event
-    element.addEventListener("click", onClick(scene, renderer, camera, mouse, raycaster, meshes, selected));
-    element.addEventListener("mousemove", onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, selected));
+    element.addEventListener("click", onClick(scene, renderer, camera, mouse, raycaster, meshes, focused));
+    element.addEventListener("mousemove", onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, focused));
 
     // adjust to browser drags
     window.addEventListener('resize', () => {
@@ -57,7 +57,7 @@ export function init(element) {
     });
     
     // Get setGrids handle.
-    return setGrids(scene, meshes, selected, global_selections);
+    return setGrids(scene, meshes, focused, global_selections);
 
 
 }

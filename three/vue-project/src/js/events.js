@@ -4,33 +4,33 @@ import * as THREE from 'three';
 import { toHandlerKey } from "vue";
 import { grid_to_image, destroy, splitImage, updateImage } from "./grids";
 
-// Select specific head image.
-export function select(scene, image, selected){
+// focus specific head image.
+export function focus(scene, image, focused){
 
-    // Get threejs group of pixels
+    // Get THREE.Group of pixels
     let group = splitImage(image);
-    // Add them visually
+    // Add group to scene
     scene.add(group);
-    // Make the original image Mesh invisible
+    // Make original image-mesh invisible
     image.visible = false;
 
-    // Add the image and pixels to the selected object to be used later. How exciting! lol
-    selected.image = image;
-    selected.pixels = group;
+    // Add the image and pixels to the focused object to be used later. How exciting! lol
+    focused.image = image;
+    focused.pixels = group;
 }
 
-// Deselect a head image Mesh by destroying its expanded pixels and re-showing the image.
-export function deselect(selected){
+// defocus a head image Mesh by destroying its expanded pixels and re-showing the image.
+export function defocus(focused){
 
-    updateImage(selected.image, selected.pixels)
+    updateImage(focused.image, focused.pixels)
 
-    for (let i = 0; i < selected.pixels.children.length; i++){
-        destroy(selected.pixels.children[i]);
+    for (let i = 0; i < focused.pixels.children.length; i++){
+        destroy(focused.pixels.children[i]);
     }
-    selected.pixels.removeFromParent();
-    selected.image.visible = true;
-    selected.image = null;
-    selected.pixels = null;
+    focused.pixels.removeFromParent();
+    focused.image.visible = true;
+    focused.image = null;
+    focused.pixels = null;
 }
 
 export function setPixel(pixel, value){
@@ -40,7 +40,7 @@ export function setPixel(pixel, value){
 
 // This function returns a function that should be called when the canvas is clicked
 // This is functional programming :)
-export function onClick(scene, renderer, camera, mouse, raycaster, meshes, selected){
+export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focused){
 
     function inner(event){
         event.preventDefault();
@@ -51,10 +51,10 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, selec
 
         raycaster.setFromCamera( mouse, camera );
 
-        // If something is currently selected, we need to either click on a pixel to further select it.
+        // If something is currently focused, we need to either click on a pixel to further select it.
         // Otherwise de-select it.
-        if (selected.image !== null){
-            var intersects = raycaster.intersectObjects( selected.pixels.children, false );
+        if (focused.image !== null){
+            var intersects = raycaster.intersectObjects( focused.pixels.children, false );
 
             if (intersects.length > 0){
                 // Here is where we would call a function to select pixels.
@@ -62,8 +62,8 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, selec
 
                     let transparent = event.ctrlKey;
 
-                    for (let i = 0; i < selected.pixels.children.length; i++){
-                        let pixel = selected.pixels.children[i]
+                    for (let i = 0; i < focused.pixels.children.length; i++){
+                        let pixel = focused.pixels.children[i]
                         setPixel(pixel, transparent);
                     }
                 }
@@ -74,14 +74,14 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, selec
                 return
             }
 
-            deselect(selected)
+            defocus(focused)
         }
 
         // Now we want to check if we clicked any image meshes to split up and select.
         var intersects = raycaster.intersectObjects( meshes, false );
 
         if (intersects.length > 0){
-           select(scene, intersects[0].object, selected);
+           focus(scene, intersects[0].object, focused);
         }
     }
 
@@ -89,7 +89,7 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, selec
 
 }
 
-export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, selected){
+export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, focused){
 
     function inner(event){
         event.preventDefault();
@@ -100,10 +100,10 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, s
 
         raycaster.setFromCamera( mouse, camera );
 
-        // If something is currently selected, we need to either click on a pixel to further select it.
+        // If something is currently focused, we need to either click on a pixel to further select it.
         // Otherwise de-select it.
-        if (selected.image !== null && event.shiftKey){
-            var intersects = raycaster.intersectObjects( selected.pixels.children, false );
+        if (focused.image !== null && event.shiftKey){
+            var intersects = raycaster.intersectObjects( focused.pixels.children, false );
 
             if (intersects.length > 0){
 
@@ -124,7 +124,7 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, s
 let padding = 2;
 
 // Function to return the function that should be called when there are new grids from the server
-export function setGrids(scene, meshes, selected, global_selections){
+export function setGrids(scene, meshes, focused, global_selections){
 
     function inner(grids){
 
@@ -133,17 +133,17 @@ export function setGrids(scene, meshes, selected, global_selections){
             destroy(meshes[i]);
         }
 
-        // Do they same with selected head pixels.
-        // console.log(selected.image !== null)
-        if (selected.image !== null){
-           deselect(selected)
+        // Do the same with focused head pixels.
+        // console.log(focused.image !== null)
+        if (focused.image !== null){
+           defocus(focused)
         }
 
-        global_selections.length = 0;
+        // global_selections.length = 0;
 
         meshes.length = 0;
-        selected.image = null;
-        selected.pixels = null;
+        focused.image = null;
+        focused.pixels = null;
 
         // looooop through layers - main array with all layers is called grids and is in 4D - [ layers [ heads [ rows [ cols ]]]]
         let x_offset = 0 //-grids[0][0].length / 2;
@@ -168,10 +168,10 @@ export function setGrids(scene, meshes, selected, global_selections){
                 let image = grid_to_image(grid);
 
                 var head_selections = [];
-                image.selections = head_selections;
-                layer_selections.push(head_selections);
+                image.selections = head_selections; //list 
+                layer_selections.push(head_selections); //list is global
 
-                image.position.set(x_offset + grid.length/2 -380-20, y_offset+231-20);
+                image.position.set(x_offset + grid.length/2 -380-20, y_offset+231-20); //moving to the ~center so it looks good with header...
 
                 // console.log("layer", layer_idx, "head", head_idx, image.position)
                 // group.add(image);

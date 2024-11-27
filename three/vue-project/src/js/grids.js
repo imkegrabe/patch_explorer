@@ -101,7 +101,6 @@ export function image_to_pixels(image){
     return pixels;
 }
 
-// You can change this
 let split_padding = .05;
 
 // Splits an image Mesh into pixel Meshes and computes where to place them based on where the original image was and some padding.
@@ -135,28 +134,32 @@ export function splitImage(image){
     return group;
 }
 
-export function updateImage(image, pixels){
+// Sets pi
+export function updateImage(image, pixels){ 
 
-    let texture = image.material.map.source.data.data;
+    let texture = image.material.map.source.data.data; //images texture
     let size = pixels.children.length;
 
+    // image.selection.length = 0 //to clear selections
     for (let index = 0; index < size; index++){
         let aindex = index * 4 + 3;
         let pixel = pixels.children[index];
 
         let a = alpha;
 
-        if (!pixel.material.transparent){
+        if (!pixel.material.transparent){ //instead of setting the 
             a = 255;
-            image.selections.push([])
+            image.selections.push([])   //next: push coordinates to image.selections which is global (defined in setGrids)
         }
 
         texture[aindex] = a;
     }
+    // console.log(image.selections)
 
     image.material.map.needsUpdate = true;
 
 }
+
 export function destroy(mesh){
 
     mesh.removeFromParent();
