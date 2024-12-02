@@ -26,10 +26,10 @@ export default {
 
 <template>
      <div class="intervention-display" v-if="sidebar_visible"> 
-         <div >Hello</div> 
+         <div >Intervention here</div> 
          
      </div> 
-     <Button label="Menu" severity="info" @click="sidebar_visible = !sidebar_visible" style="position:fixed;top:10px;left:20px" /> 
+     <Button class="button" label="Interventions" severity="info" @click="sidebar_visible = !sidebar_visible" style="position:fixed;top:10px;left:20px;background-color:rgba(0, 255, 255, 1); color:black" /> 
      
 </template>
 
@@ -40,7 +40,11 @@ export default {
         position: absolute;
         height:100vh;
         width: 15%;
-        background-color: white;
+        background-color: rgba(255, 255, 255, 0);
+        flex-direction: column;
+        align-items: center;
+        display: flex;
+        flex-direction: row;
     }
 
 </style>

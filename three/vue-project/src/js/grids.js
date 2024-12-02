@@ -134,11 +134,12 @@ export function splitImage(image){
     return group;
 }
 
-// Sets pi
+// transfers the pixel-meshes tranperency to the image-mesh
 export function updateImage(image, pixels){ 
 
     let texture = image.material.map.source.data.data; //images texture
     let size = pixels.children.length;
+    console.log("pixels.children.length", size)
 
     // image.selection.length = 0 //to clear selections
     for (let index = 0; index < size; index++){
@@ -149,12 +150,12 @@ export function updateImage(image, pixels){
 
         if (!pixel.material.transparent){ //instead of setting the 
             a = 255;
-            image.selections.push([])   //next: push coordinates to image.selections which is global (defined in setGrids)
+            image.selections.push([index])   //next: push coordinates to image.selections which is global (defined in setGrids)
         }
 
         texture[aindex] = a;
     }
-    // console.log(image.selections)
+    console.log("image.selections:", image.selections) // image here means head!
 
     image.material.map.needsUpdate = true;
 

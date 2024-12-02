@@ -7,6 +7,12 @@ import InterventionDisplay from './components/InterventionDisplay.vue';
 export default {
   name: 'App',
 
+  data() {
+    return {
+      isImageRowVisible: true,
+    }
+  },
+
   components: {
     Explorer,
     ImageDisplay,

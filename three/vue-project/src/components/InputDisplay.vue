@@ -40,12 +40,14 @@ export default {
             //     }
             // }
 
-            // Replace this to work for all interventions - hardcoded to scaling right now
+            // Replace this to work for all interventions - hardcoded to Scaling right now
             const intervention_instance_to_apply = {
                 name: 'Scaling',
                 args: [0.0],
                 selections: this.temp
             }
+
+            console.log(this.temp)
 
             // interventions_to_apply.push(intervention_instance_to_apply)
 
@@ -95,19 +97,19 @@ export default {
     <div class="input-container">
 
         <div class="prompt">
-            <label>Prompt:</label>
+            <label>Prompt: </label>
             <InputText type="text" v-model="prompt_value" />
             <small></small>
         </div>
 
         <div class="seed">
             <label>Seed: </label>
-            <InputNumber v-model="seed_value" inputId="integeronly" />
+            <InputNumber v-model="seed_value" inputId="integeronly" :step="1" :min="0"/>
             <small></small>
         </div>
 
         <div class="button-test">
-            <Button class="button" label="Generate" @click="generate" :disabled="loading" />
+            <Button class="button" label="Generate" @click="generate" :disabled="loading" style="background-color: rgb(0, 255, 255); color: black; margin: 5%; margin-left: 5%;"/>
         </div>
 
     </div>
@@ -121,13 +123,17 @@ export default {
     justify-content: center;
     align-items: center;
     gap: 20px;
-    height: 5%;
-    width:30%;
-    margin-left: 35%;
-    color:black;
+    /* height: 7%; */
+    /* width:45%; */
+    margin-left: 30%;
+    color:white;
     bottom:0;
-    background-color: grey;
-    border-radius: 25px 25px 0px 0px;
+    /* background-color: rgba(0, 255, 255, 1); */
+    border-radius: 15px 15px 0px 0px;
+    border-color: white;
+    border-style: solid;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 </style>
