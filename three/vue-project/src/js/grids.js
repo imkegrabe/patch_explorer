@@ -134,14 +134,32 @@ export function splitImage(image){
     return group;
 }
 
-// transfers the pixel-meshes tranperency to the image-mesh
+export function convert(i, row_len) {
+
+    let r = Math.floor(i, row_len);  // row index in original matrix
+    let c = i % row_len;  //column index
+    
+    // Calculate new row index
+    // let new_row = row_len - 1 - r
+    
+    // # New index in the transformed matrix
+    let new_index = r * row_len  + c
+    console.log(i, row_len, r, c)
+
+    return new_index
+    }
+
+// transfers the pixel-meshes transparency to the image-mesh
 export function updateImage(image, pixels){ 
 
     let texture = image.material.map.source.data.data; //images texture
     let size = pixels.children.length;
     console.log("pixels.children.length", size)
 
-    // image.selection.length = 0 //to clear selections
+    image.selections.length = 0 //to clear selections
+    
+    let row_len = Math.sqrt(size)
+    
     for (let index = 0; index < size; index++){
         let aindex = index * 4 + 3;
         let pixel = pixels.children[index];
@@ -150,7 +168,8 @@ export function updateImage(image, pixels){
 
         if (!pixel.material.transparent){ //instead of setting the 
             a = 255;
-            image.selections.push([index])   //next: push coordinates to image.selections which is global (defined in setGrids)
+            let patch_index = convert(index, row_len)
+            image.selections.push(patch_index)   //next: push coordinates to image.selections which is global (defined in setGrids)
         }
 
         texture[aindex] = a;

@@ -71,7 +71,7 @@ async def request(request: RequestModel):
         envoys = []
         selections = {}
         
-        for module_idx in list(intervention_model.selections.keys()):
+        for module_idx in range(len(intervention_model.selections)):
             envoy = cross_attentions[module_idx]
             envoys.append(envoy)
             selections[envoy.path] = intervention_model.selections[module_idx]

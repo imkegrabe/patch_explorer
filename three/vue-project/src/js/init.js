@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { onClick, setGrids, onMouseMove} from './events';
 
-export function init(element) {
+export function init(element, global_selections) {
 
     // CAMERA
     const scene = new THREE.Scene();
@@ -37,7 +37,7 @@ export function init(element) {
     let mouse = new THREE.Vector2();
     let meshes = [];
     let focused = { 'image': null, 'pixels': null } // currently opened head and its patches
-    let global_selections = [] // stores the data structure: list of layer, heads, x, y coordinates...
+    // let global_selections = [] // stores the data structure: list of layer, heads, x, y coordinates...
 
     // Add click event
     element.addEventListener("click", onClick(scene, renderer, camera, mouse, raycaster, meshes, focused));

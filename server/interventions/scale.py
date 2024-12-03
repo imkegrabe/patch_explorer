@@ -10,15 +10,15 @@ from . import DiffusionIntervention
 @trace
 def apply(hidden_states: torch.Tensor, factor, selection, attn):
 
-    spatial_dim = int(math.sqrt(hidden_states.shape[1]))
+    spatial_dim = hidden_states.shape[1]
     n_heads = attn.heads
 
     hidden_states = hidden_states.view(
-        (hidden_states.shape[0], spatial_dim, spatial_dim, n_heads, -1)
+        (hidden_states.shape[0], spatial_dim, n_heads, -1)
     )
 
     # THis is effecting both the cond and uncond
-    hidden_states[:, selection[0], selection[1], selection[2]] *= factor
+    hidden_states[:, selection[0], selection[1]] *= factor
 
 
 class ScalingIntervention(DiffusionIntervention):
@@ -36,8 +36,9 @@ class ScalingIntervention(DiffusionIntervention):
         hidden_states: torch.Tensor = envoy.input
 
         selection = self.selections[attn_envoy.path]
-
-        apply(hidden_states, self.factor, selection, attn_envoy)
+        
+        if len(selection) > 0:
+            apply(hidden_states, self.factor, selection, attn_envoy)
 
     @classmethod
     def fields(cls):

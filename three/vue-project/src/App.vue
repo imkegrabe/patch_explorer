@@ -10,6 +10,7 @@ export default {
   data() {
     return {
       isImageRowVisible: true,
+      globalSelections: []
     }
   },
 
@@ -38,7 +39,7 @@ export default {
 <template>
   <div>
 
-    <Explorer class="explorer" position="absolute" ref="explorer_container"></Explorer>
+    <Explorer class="explorer" position="absolute" ref="explorer_container" :globalSelections="globalSelections"></Explorer>
 
     <div class="header">
       <img src="@/assets/patch-explorer.svg" alt="Header Image saying Patch Explorer in pixels font" />
@@ -55,6 +56,7 @@ export default {
     <InputDisplay position="absolute"
       @newImageUrl="(url) => updateImage(url)" 
       @newAddends="(addends) => updateAddends(addends)"
+      :globalSelections="globalSelections"
       :host="'http://localhost:8003'" 
       :interventions="[]" 
       :loading="false"  

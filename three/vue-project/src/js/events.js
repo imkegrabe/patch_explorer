@@ -139,7 +139,7 @@ export function setGrids(scene, meshes, focused, global_selections){
            defocus(focused)
         }
 
-        // global_selections.length = 0;
+        global_selections.length = 0;
 
         meshes.length = 0;
         focused.image = null;

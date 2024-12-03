@@ -14,7 +14,8 @@ export default {
         host: String,
         interventions: Array,
         loading: Boolean,
-        temp: Object
+        temp: Object,
+        globalSelections: Array,
     },
     data() {
         return {
@@ -44,12 +45,12 @@ export default {
             const intervention_instance_to_apply = {
                 name: 'Scaling',
                 args: [0.0],
-                selections: this.temp
+                selections: this.globalSelections
             }
 
-            console.log(this.temp)
+            console.log(this.globalSelections)
 
-            // interventions_to_apply.push(intervention_instance_to_apply)
+            interventions_to_apply.push(intervention_instance_to_apply)
 
             const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: interventions_to_apply }
 

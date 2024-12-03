@@ -9,6 +9,9 @@ import gridData from '@/assets/gridData.json';
 export default {
     name: "Explorer",
 
+    props: {
+        globalSelections: Array,
+    },
     data() {
         return {
             // testgrids: [[[[1, .3, .5], [.6, 1, .8], [.1, .34, .6]], [[1, .23, .25], [.6, .1, .48], [.31, .49, .36]]], [[[1, .3, .5], [.6, 1, .8], [.1, .34, .6]], [[1, .23, .25], [.6, .1, .48], [.31, .49, .36]]]],
@@ -48,7 +51,7 @@ export default {
 
         // Init WebGl with all of the functionality we need.
         // Returns a function to call when new grids are returned from the server.
-        this.setGrids = init(canvas);
+        this.setGrids = init(canvas, this.globalSelections);
 
         // Set grids to example.
         this.setGrids(this.allGrids)

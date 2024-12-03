@@ -7,7 +7,7 @@ class InterventionRequestModel(BaseModel):
 
     name: str
 
-    selections: Dict[int, Dict[int, List[str]]]
+    selections: List[List[List[int]]]
 
     args: List[Any] = []
 

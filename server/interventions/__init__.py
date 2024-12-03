@@ -28,17 +28,19 @@ class DiffusionIntervention:
 
                 patches = []
 
-                for head, head_patches in value.items():
+                for head_idx, head_patches in enumerate(value):
 
                     head_patches = [
-                        [int(x) for x in patch.split(",")] + [head]
+                        [patch, head_idx]
                         for patch in head_patches
                     ]
 
                     patches.extend(head_patches)
 
                 self.selections[module_name] = tuple(torch.Tensor(patches).t().to(int))
-
+        
+        print(self.selections)
+        
     def intervene(self, envoy: Envoy):
         pass
 
