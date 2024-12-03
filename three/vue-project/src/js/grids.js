@@ -136,15 +136,18 @@ export function splitImage(image){
 
 export function convert(i, row_len) {
 
-    let r = Math.floor(i, row_len);  // row index in original matrix
-    let c = i % row_len;  //column index
+    let row_idx = Math.floor(i / row_len);  // row index in original matrix
+    console.log("old row is", row_idx)
+    let col_idx = i % row_len;  //column index
+    console.log("col is", col_idx)
     
     // Calculate new row index
-    // let new_row = row_len - 1 - r
-    
+    let new_row = row_len-1 - row_idx
+    console.log("new row is", new_row)
+
     // # New index in the transformed matrix
-    let new_index = r * row_len  + c
-    console.log(i, row_len, r, c)
+    let new_index = new_row*row_len  + col_idx
+    console.log("therefore new idx is", new_index)
 
     return new_index
     }
