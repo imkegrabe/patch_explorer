@@ -18,7 +18,7 @@ def apply(hidden_states: torch.Tensor, factor, selection, attn):
     )
 
     # THis is effecting both the cond and uncond
-    hidden_states[:, selection[0], selection[1]] *= factor
+    hidden_states[1, selection[0], selection[1]] *= factor
 
 
 class ScalingIntervention(DiffusionIntervention):
