@@ -13,7 +13,7 @@ export function init(element, global_selections) {
     // RENDERER
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x111111, 1); //background color, opacity
+    renderer.setClearColor(0x111111, 0); //background color, opacity
     element.appendChild(renderer.domElement);
 
     // CONTROLS

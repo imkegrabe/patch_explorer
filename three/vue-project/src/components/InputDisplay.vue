@@ -44,7 +44,7 @@ export default {
             // Replace this to work for all interventions - hardcoded to Scaling right now
             const intervention_instance_to_apply = {
                 name: 'Scaling',
-                args: [0.0],
+                args: [-1.0],
                 selections: this.globalSelections
             }
 

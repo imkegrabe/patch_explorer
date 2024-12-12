@@ -173,7 +173,7 @@ export function updateImage(image, pixels){
             a = 255;
             let patch_index = convert(index, row_len)
             image.selections.push(patch_index)   //next: push coordinates to image.selections which is global (defined in setGrids)
-        }
+         }
 
         texture[aindex] = a;
     }
