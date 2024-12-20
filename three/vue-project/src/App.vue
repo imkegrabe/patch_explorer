@@ -10,7 +10,8 @@ export default {
   data() {
     return {
       isImageRowVisible: true,
-      globalSelections: []
+      globalSelections: [],
+      encoderValue: "",
     }
   },
 
@@ -45,7 +46,9 @@ export default {
       <img src="@/assets/patch-explorer.svg" alt="Header Image saying Patch Explorer in pixels font" />
     </div>
 
-    <InterventionDisplay></InterventionDisplay>
+    <InterventionDisplay
+      v-model:encoderValue="encoderValue"
+    ></InterventionDisplay>
 
     <div class="image-row">
       <ImageDisplay
@@ -61,6 +64,7 @@ export default {
       :interventions="[]" 
       :loading="false"  
       :temp="[]"
+      :encoderValue="encoderValue"
     ></InputDisplay>
 
   </div>

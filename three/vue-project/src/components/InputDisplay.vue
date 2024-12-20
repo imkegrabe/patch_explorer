@@ -16,6 +16,7 @@ export default {
         loading: Boolean,
         temp: Object,
         globalSelections: Array,
+        encoderValue: String,
     },
     data() {
         return {
@@ -43,8 +44,8 @@ export default {
 
             // Replace this to work for all interventions - hardcoded to Scaling right now
             const intervention_instance_to_apply = {
-                name: 'Scaling',
-                args: [0.0],
+                name: 'Encoder',
+                args: [this.encoderValue],
                 selections: this.globalSelections
             }
 

@@ -2,11 +2,17 @@
 <script>
 
 import Button from 'primevue/button';
+import InputText from 'primevue/inputtext';
 
 export default {
     name: "InterventionDisplay",
     components: {
         Button,
+        InputText
+    },
+    
+    props: {
+        encoderValue: String,
     },
 
     data() {
@@ -26,9 +32,18 @@ export default {
 
 <template>
      <div class="intervention-display" v-if="sidebar_visible"> 
-         <div >Intervention here</div> 
+        <div class="encoding">
+            <label>Encoding: </label>
+            <InputText
+                type="text"
+                :value="encoderValue"
+                @input="$emit('update:encoderValue', $event.target.value)" 
+            />
+            <small></small>
+        </div>
          
      </div> 
+
      <Button class="button" label="Interventions" severity="info" @click="sidebar_visible = !sidebar_visible" style="position:fixed;top:10px;left:20px;background-color:rgba(0, 255, 255, 1); color:black" /> 
      
 </template>
