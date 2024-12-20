@@ -16,9 +16,8 @@
         <div class="button-test">
             <Button class="button" label="Generate" @click="generate" :disabled="loading" />
         </div>
-
+        
     </div>
-
 </template>
 
 <script>
