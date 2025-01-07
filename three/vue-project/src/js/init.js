@@ -8,7 +8,7 @@ export function init(element, global_selections) {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.01, 2000);
     // const camera = new THREE.OrthographicCamera(-20, 20, 10, -10, 0.01, 2000)
-    camera.position.set(0, 0, 500);
+    camera.position.set(0, 50, 500);
 
     const gridsize = 10000;
     const divisions = 10000;
@@ -20,7 +20,7 @@ export function init(element, global_selections) {
     gridHelper.position.y = 0;
     gridHelper.position.z = 0;
 
-    // scene.add( gridHelper );
+    scene.add( gridHelper );
 
     // RENDERER
     const renderer = new THREE.WebGLRenderer();
@@ -37,6 +37,12 @@ export function init(element, global_selections) {
         MIDDLE: THREE.MOUSE.DOLLY,     
         RIGHT: THREE.MOUSE.ROTATE      
     };
+    controls.keys = {
+        LEFT: 'ArrowLeft', //left arrow
+        UP: 'ArrowUp', // up arrow
+        RIGHT: 'ArrowRight', // right arrow
+        BOTTOM: 'ArrowDown' // down arrow
+    }
     controls.update();
 
     function animate() {

@@ -17,7 +17,7 @@ export function getColor(value) {
 
         if (x > 0) {
             g = 0;
-            alpha = x*4;
+            alpha = x*2;
             r = 255;
             b = 255;
         }
@@ -30,7 +30,7 @@ export function getColor(value) {
 
         if (x < 0) {
             r = 0;
-            alpha = Math.abs(x*4);
+            alpha = Math.abs(x*2);
             g = 255;
             b = 255;
         }

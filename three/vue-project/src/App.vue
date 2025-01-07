@@ -44,7 +44,7 @@ export default {
       <img src="@/assets/patch-explorer.svg" alt="Header Image saying Patch Explorer in pixels font" />
     </div>
 
-    <InterventionDisplay></InterventionDisplay>
+    <!-- <InterventionDisplay></InterventionDisplay> -->
 
     <!-- <div class="image-row">
       <ImageDisplay
@@ -52,7 +52,7 @@ export default {
         ></ImageDisplay>
     </div> -->
 
-    <InputDisplay position="absolute"
+    <!-- <InputDisplay position="absolute"
       @newImageUrl="(url) => updateImage(url)" 
       @newAddends="(addends) => updateAddends(addends)"
       :globalSelections="globalSelections"
@@ -60,7 +60,7 @@ export default {
       :interventions="[]" 
       :loading="false"  
       :temp="[]"
-    ></InputDisplay>
+    ></InputDisplay> -->
 
   </div>
 </template>

@@ -147,6 +147,8 @@ export function setGrids(scene, meshes, focused, global_selections){
 
         // looooop through layers - main array with all layers is called grids and is in 4D - [ layers [ heads [ rows [ cols ]]]]
         let x_offset = 0 //-grids[0][0].length / 2;
+        // let z_offset = 0;
+        let z_buffer = 0;
         
         for (let layer_idx = 0; layer_idx < grids.length; layer_idx++){
 
@@ -157,7 +159,12 @@ export function setGrids(scene, meshes, focused, global_selections){
 
             let heads = grids[layer_idx];
             let y_offset = -(64*3.5 + padding*3.5) + grids[layer_idx][0].length*3.5 + padding*3.5; //initial offset for grids
-            let z_offset = 0
+            // let z_offset = grids[layer_idx].length*20;
+            let z_offset = 0;
+            console.log(layer_idx, (256-grids[layer_idx].length/2)*20)
+            // z_offset = (256-grids[layer_idx].length/2)*20;
+            z_buffer = 512*20/grids[layer_idx].length;
+            console.log("z buffer is", z_buffer)
 
             var layer_selections = [];
 
@@ -178,7 +185,8 @@ export function setGrids(scene, meshes, focused, global_selections){
 
                 scene.add(image);
                 // y_offset -= grid.length + padding;
-                z_offset += 20;
+                // z_offset += 20;
+                z_offset += z_buffer;
 
                 meshes.push(image);
 
@@ -186,7 +194,7 @@ export function setGrids(scene, meshes, focused, global_selections){
 
             global_selections.push(layer_selections);
             
-            x_offset += grids[layer_idx][0].length;
+            x_offset += grids[layer_idx][0].length + 4;
         }
     }
 
