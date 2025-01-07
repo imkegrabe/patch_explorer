@@ -6,11 +6,43 @@ let alpha = 150;
 
 export function getColor(value) {
     const cmapCool = (x) => {
-        const r = Math.floor(255 * x);
-        const g = Math.floor(255 * (1 - x));
-        const b = 255;
+        // const r = Math.floor(255 * x);
+        // const g = Math.floor(255 * (1 - x));
+        // const b = 255;
+        let r = 255;
+        let g = 255;
+        let b = 255;
+        alpha = 0;
+        // let alpha = 5;
+
+        if (x > 0) {
+            g = 0;
+            alpha = x*4;
+            r = 255;
+            b = 255;
+        }
+
+        // if (x > -5 && x < 15) {
+        //     r = 220;
+        //     g = 220;
+        //     b = 220;
+        // }
+
+        if (x < 0) {
+            r = 0;
+            alpha = Math.abs(x*4);
+            g = 255;
+            b = 255;
+        }
+
+        // if (x > -15 && x < 15) {
+        //     alpha = 0;
+        // }
+        // let alpha = Math.abs(x*5);
+        // const alpha = 75;
         return [r, g, b, alpha]
     };
+
     return cmapCool(value);
 }
 

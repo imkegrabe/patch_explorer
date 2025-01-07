@@ -47,11 +47,11 @@ export default {
 
     <InterventionDisplay></InterventionDisplay>
 
-    <div class="image-row">
+    <!-- <div class="image-row">
       <ImageDisplay
         :imageUrl="imageUrl"
         ></ImageDisplay>
-    </div>
+    </div> -->
 
     <InputDisplay position="absolute"
       @newImageUrl="(url) => updateImage(url)" 

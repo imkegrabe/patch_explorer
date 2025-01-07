@@ -157,7 +157,7 @@ export function setGrids(scene, meshes, focused, global_selections){
 
             let heads = grids[layer_idx];
             let y_offset = -(64*3.5 + padding*3.5) + grids[layer_idx][0].length*3.5 + padding*3.5; //initial offset for grids
-
+            let z_offset = 0
 
             var layer_selections = [];
 
@@ -171,13 +171,14 @@ export function setGrids(scene, meshes, focused, global_selections){
                 image.selections = head_selections; //list 
                 layer_selections.push(head_selections); //list is global
 
-                image.position.set(x_offset + grid.length/2 -380-20, y_offset+231-20); //moving to the ~center so it looks good with header...
+                image.position.set(x_offset + grid.length/2 -380-20, 0, z_offset); //moving to the ~center so it looks good with header...
 
                 // console.log("layer", layer_idx, "head", head_idx, image.position)
                 // group.add(image);
 
                 scene.add(image);
-                y_offset -= grid.length + padding;
+                // y_offset -= grid.length + padding;
+                z_offset += 20;
 
                 meshes.push(image);
 
@@ -185,7 +186,7 @@ export function setGrids(scene, meshes, focused, global_selections){
 
             global_selections.push(layer_selections);
             
-            x_offset += grids[layer_idx][0].length + 20;
+            x_offset += grids[layer_idx][0].length;
         }
     }
 

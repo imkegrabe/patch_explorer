@@ -6,9 +6,21 @@ export function init(element, global_selections) {
 
     // CAMERA
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
-    // const camera = new THREE.OrthogonalCamera(-2000, 2000, 1000, -1000, 0.01, 2000)
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.01, 2000);
+    // const camera = new THREE.OrthographicCamera(-20, 20, 10, -10, 0.01, 2000)
     camera.position.set(0, 0, 500);
+
+    const gridsize = 10000;
+    const divisions = 10000;
+    const colorCenterLine = 0xD3D3D3;
+    const colorGrid = 0xD3D3D3; 
+    const gridHelper = new THREE.GridHelper( gridsize, divisions, colorCenterLine, colorGrid );
+
+    gridHelper.rotation.x = Math.PI / 2;
+    gridHelper.position.y = 0;
+    gridHelper.position.z = 0;
+
+    // scene.add( gridHelper );
 
     // RENDERER
     const renderer = new THREE.WebGLRenderer();
@@ -18,7 +30,7 @@ export function init(element, global_selections) {
 
     // CONTROLS
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableRotate = false;
+    controls.enableRotate = true;
     // Make click and drag pan not rotate
     controls.mouseButtons = {
         LEFT: THREE.MOUSE.PAN,         

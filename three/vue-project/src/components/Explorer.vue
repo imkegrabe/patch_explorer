@@ -1,7 +1,7 @@
 <script>
 
 import { init } from '@/js/init';
-import gridData from '@/assets/fashion-grids-rounded.json';
+import gridData from '@/assets/fashion-grids-scaled-short.json';
 // import title from '@/assets/title.json';
 // import { grid_to_image } from '@/js/grids';
 // import Sidebar from 'primevue/sidebar';
