@@ -111,7 +111,11 @@ async def request(request: RequestModel):
 
     for key, addend in addends.items():
         
+        for i in addend:
+            print(len(i))
         addend = sum(addend).abs()
+        for i in addend:
+            print(len(i))
 
         addend -= addend.min()
         addend /= addend.max()
