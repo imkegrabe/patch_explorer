@@ -120,7 +120,7 @@ async def request(request: RequestModel):
 
         # # print("abs max addend", addend.abs().max())
         addend /= addend.abs().max()
-        print("min, max addend after div", addend.max(), addend.min())
+        # print("min, max addend after div", addend.max(), addend.min())
         # print(len(addend))
         
         _addends.append(addend)

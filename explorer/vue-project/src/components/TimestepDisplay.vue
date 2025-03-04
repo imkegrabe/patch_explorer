@@ -1,105 +1,42 @@
 <script>
-import Button from 'primevue/button';
-import InputNumber from 'primevue/inputnumber';
-import InputText from 'primevue/inputtext';
+import SelectButton from 'primevue/selectbutton';
+import Slider from 'primevue/slider';
+// import { ref } from 'vue';
 
 export default {
-    name: 'Input',
+    name: 'TimestepDisplay',
     components: {
-        Button,
-        InputNumber,
-        InputText
+        SelectButton,
+        Slider
     },
     props: {
-        host: String,
-        loading: Boolean,
-        temp: Object,
-        globalSelections: Array,
-        encoderValue: String,
+        
     },
-    
-    methods: {
-        async generate() {
-            const interventions_to_apply = []
 
-            // Replace this to work for all interventions - hardcoded to Scaling right now
-            const intervention_instance_to_apply = {
-                name: 'Encoder',
-                args: [this.encoderValue],
-                selections: this.globalSelections
-            }
 
-            console.log(this.globalSelections)
-
-            interventions_to_apply.push(intervention_instance_to_apply)
-
-            const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: interventions_to_apply }
-
-            console.log(request)
-
-            this.$emit('loading')
-
-            let response
-
-            response = await fetch(this.host + '/generate', {
-                method: 'POST',
-                body: JSON.stringify(request),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-
-            })
-
-            // //GENERATED IMAGE
-            // var image = await response.blob()
-            
-            // var url = URL.createObjectURL(image);
-
-            // this.$emit('newImageUrl', url)
-
-            // //GENERATED ADDENDS
-
-            // response = await fetch(this.host + '/addends', {
-            //     method: 'GET',
-
-            // })
-
-            // var addends = await response.json()
-
-            // this.$emit('newAddends', addends)
-        }
     }
-}
+import { ref } from 'vue';
+
+const value = ref('One-Way');
+const options = ref(['One-Way', 'Return']);
 </script>
-
-
 
 <template>
     <div class="timestep-container">
+        <SelectButton id="view-selection" v-model="value" :options="options" />
+        <Slider v-model="value" id="timestep-slider" range orientation="vertical" style="position: fixed; bottom: 200px; left: 10%; color: white;"/>
 
+        <input type="range" id="near-slider" min="0" max="100" step="2" value="0" style="position: fixed; bottom: 200px; left: 3%; transform: translateX(-50%) rotate(-90deg);">
+        <!-- <span id="near-value">100</span> -->
+        <span id="near-value" style="position: fixed; bottom: 200px; left: 4%; transform: translateX(-50%);">50</span>
+
+        <input type="range" id="far-slider" min="0" max="100" step="2" value="100" style="position: fixed; bottom: 200px; left: 5%; transform: translateX(-50%) rotate(-90deg);">
+        <!-- <span id="far-value">0</span> -->
+        <span id="far-value" style="position: fixed; bottom: 200px; left: 6%; transform: translateX(-50%);">0</span>
     </div>
+    
 </template>
 
 <style>
-.timestep-container {
-    position: fixed;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    /* height: 7%; */
-    /* width:45%; */
-    margin-left: 30%;
-    color:white;
-    bottom:0;
-    /* background-color: rgba(0, 255, 255, 1); */
-    border-radius: 15px 15px 0px 0px;
-    border-color: white;
-    border-style: solid;
-    padding-left: 10px;
-    padding-right: 10px;
-}
 
 </style>

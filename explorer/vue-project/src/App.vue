@@ -3,7 +3,7 @@ import Explorer from './components/Explorer.vue';
 import InputDisplay from './components/InputDisplay.vue';
 import ImageDisplay from './components/ImageDisplay.vue';
 import InterventionDisplay from './components/InterventionDisplay.vue';
-import Slider from 'primevue/slider';
+import TimestepDisplay from './components/TimestepDisplay.vue';
 
 export default {
   name: 'App',
@@ -20,8 +20,10 @@ export default {
     Explorer,
     ImageDisplay,
     InterventionDisplay,
-    InputDisplay
-    },
+    InputDisplay,
+    TimestepDisplay,
+    TimestepDisplay
+},
 
     methods: {
     updateImage(url) {
@@ -35,8 +37,6 @@ export default {
   }
 }
 </script>
-
-
 
 <template>
   <div>
@@ -71,16 +71,9 @@ export default {
     <!-- <input type="range" id="z-slider" min="2" max="100" value="99" style="position: fixed; bottom: 200px; left: 5%; transform: translateX(-50%) rotate(-90deg);">
     <span id="slider-value" style="position: fixed; bottom: 200px; left: 4%; transform: translateX(-50%);">50</span> -->
 
-    <input type="range" id="near-slider" min="0" max="100" step="2" value="0" style="position: fixed; bottom: 200px; left: 3%; transform: translateX(-50%) rotate(-90deg);">
-    <!-- <span id="near-value">100</span> -->
-    <span id="near-value" style="position: fixed; bottom: 200px; left: 4%; transform: translateX(-50%);">50</span>
+    <TimestepDisplay></TimestepDisplay>
 
-    <input type="range" id="far-slider" min="0" max="100" step="2" value="100" style="position: fixed; bottom: 200px; left: 5%; transform: translateX(-50%) rotate(-90deg);">
-    <!-- <span id="far-value">0</span> -->
-    <span id="far-value" style="position: fixed; bottom: 200px; left: 6%; transform: translateX(-50%);">0</span>
 
-    <Slider v-model="value" range orientation="vertical" style="position: fixed; bottom: 200px; left: 5%;"/>
-    
   </div>
 </template>
 
@@ -133,15 +126,6 @@ export default {
   width: auto; /* Maintains the aspect ratio */
   height: 120px; /* Set a specific height for better control */
   display: block;
-}
-.z-slider {
-    position: fixed;
-    left: 5%;  /* Keep it on the left */
-    bottom: auto;  /* Remove bottom positioning */
-    top: 20%; /* Move it up (lower % = higher up) */
-    transform: translateY(-50%) rotate(-90deg);
-    height: 300px; /* Increase this value to make it longer */
-    width: 8px; /* Adjust thickness */
 }
 
 @media (max-width: 768px) {
