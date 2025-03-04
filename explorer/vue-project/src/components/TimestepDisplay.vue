@@ -15,10 +15,12 @@ export default {
 
 
     }
-import { ref } from 'vue';
+// import { ref } from 'vue';
 
-const value = ref('One-Way');
-const options = ref(['One-Way', 'Return']);
+// const value = ref('One-Way');
+// const options = ref(['One-Way', 'Return']);
+// // const range = ref([0, 100]);
+
 </script>
 
 <template>

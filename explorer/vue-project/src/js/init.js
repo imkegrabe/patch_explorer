@@ -6,8 +6,8 @@ export function init(element, global_selections) {
 
     // CAMERA
     const scene = new THREE.Scene();
-    // const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
-    const camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0, 100 );
+    const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
+    // const camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0, 100 );
     camera.position.set(0, 0, 100);
 
     // RENDERER
@@ -53,6 +53,10 @@ export function init(element, global_selections) {
 
         // update camera aspect ratio and projection matrix
         camera.aspect = width / height;
+        camera.left = width / -2;
+        camera.right = width / 2;
+        camera.top = height / 2;
+        camera.bottom = height / -2;
         camera.updateProjectionMatrix();
     });
 
@@ -74,6 +78,8 @@ export function init(element, global_selections) {
 
     const nearValue = document.getElementById("near-value");
     const farValue = document.getElementById("far-value");
+
+    // const range = ref([0, 100]);
 
     nearSlider.addEventListener("input", () => {
         let nearValueNum = Number(nearSlider.value);
