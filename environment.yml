@@ -1,0 +1,11 @@
+name: cd
+channels:
+  - defaults
+dependencies:
+- python==3.10
+- pip
+- nodejs
+- pip:
+  - nnsight
+  - fastapi
+  - uvicorn

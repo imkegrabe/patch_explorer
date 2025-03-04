@@ -71,7 +71,7 @@ async def request(request: RequestModel):
         envoys = []
         selections = {}
         
-        for module_idx in range(len(intervention_model.selections)):
+        for module_idx in range(len(intervention_model.selections[1])):
             envoy = cross_attentions[module_idx]
             envoys.append(envoy)
             selections[envoy.path] = intervention_model.selections[module_idx]
@@ -109,18 +109,21 @@ async def request(request: RequestModel):
 
     _addends = []
 
+    # addends for every layer
     for key, addend in addends.items():
+        addend = torch.stack(addend)
+        # print (addend.shape)
+        # addend = sum(addend)#.abs()
         
-        for i in addend:
-            print(len(i))
-        addend = sum(addend).abs()
-        for i in addend:
-            print(len(i))
+        # # # print("min addend", addend.min())
+        # # # addend -= addend.min()
 
-        addend -= addend.min()
-        addend /= addend.max()
-
-        _addends.append(addend.tolist())
+        # # print("abs max addend", addend.abs().max())
+        addend /= addend.abs().max()
+        print("min, max addend after div", addend.max(), addend.min())
+        # print(len(addend))
+        
+        _addends.append(addend)
 
     global cached_addends
 
@@ -138,8 +141,12 @@ async def addends():
 
     cached_addends = None
 
-    return JSONResponse(content=addends)
+    data = [tensor.tolist() for tensor in addends]
+    # with open("/share/u/imgr/nnsight-folder/collaborative_diffusion/explorer/vue-project/src/assets/addends.json", "w") as f:
+    #     json.dump(data, f)
+
+    return JSONResponse(content=data)
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8003, workers=1)
+    uvicorn.run(app, host="0.0.0.0", port=8004, workers=1)
