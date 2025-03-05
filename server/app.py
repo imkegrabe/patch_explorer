@@ -94,7 +94,9 @@ async def request(request: RequestModel):
         request.prompt,
         n_steps=request.timesteps,
         seed=request.seed,
-        interventions=interventions,
+        interventions=interventions
+        # start_step=
+        # end_step=
     )
 
     ibytes = BytesIO()

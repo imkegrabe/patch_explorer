@@ -6,8 +6,8 @@ export function init(element, global_selections) {
 
     // CAMERA
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
-    // const camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0, 100 );
+    // const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
+    const camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0, 100 );
     camera.position.set(0, 0, 100);
 
     // RENDERER
@@ -59,19 +59,6 @@ export function init(element, global_selections) {
         camera.bottom = height / -2;
         camera.updateProjectionMatrix();
     });
-
-    // const slider = document.getElementById("z-slider");
-    // const sliderValue = document.getElementById("slider-value");
-
-    // // update camera z-position according to slider
-    // slider.addEventListener("input", () => {
-    //     camera.position.z = Number(slider.value);
-    //     camera.updateProjectionMatrix();
-    // });
-
-    // slider.addEventListener("input", () => {
-    //     sliderValue.textContent = Math.round(slider.value/2); // Update the number display
-    // });
     
     const nearSlider = document.getElementById("near-slider");
     const farSlider = document.getElementById("far-slider");
@@ -83,12 +70,6 @@ export function init(element, global_selections) {
 
     nearSlider.addEventListener("input", () => {
         let nearValueNum = Number(nearSlider.value);
-        // let farValueNum = Number(farSlider.value);
-
-        // if (nearValueNum >= farValueNum) {
-        //     nearValueNum = farValueNum - 1; // Ensure near < far
-        //     nearSlider.value = nearValueNum;
-        // }
 
         camera.near = nearValueNum;
         camera.updateProjectionMatrix();
@@ -96,13 +77,7 @@ export function init(element, global_selections) {
     });
 
     farSlider.addEventListener("input", () => {
-        // let nearValueNum = Number(nearSlider.value);
         let farValueNum = Number(farSlider.value);
-
-        // if (farValueNum <= nearValueNum) {
-        //     farValueNum = nearValueNum + 1; // Ensure far > near
-        //     farSlider.value = farValueNum;
-        // }
 
         camera.far = farValueNum;
         camera.updateProjectionMatrix();
