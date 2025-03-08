@@ -53,21 +53,12 @@ export function init(element, global_selections) {
 
         // update camera aspect ratio and projection matrix
         camera.aspect = width / height;
+        camera.left = width / -2;
+        camera.right = width / 2;
+        camera.top = height / 2;
+        camera.bottom = height / -2;
         camera.updateProjectionMatrix();
     });
-
-    // const slider = document.getElementById("z-slider");
-    // const sliderValue = document.getElementById("slider-value");
-
-    // // update camera z-position according to slider
-    // slider.addEventListener("input", () => {
-    //     camera.position.z = Number(slider.value);
-    //     camera.updateProjectionMatrix();
-    // });
-
-    // slider.addEventListener("input", () => {
-    //     sliderValue.textContent = Math.round(slider.value/2); // Update the number display
-    // });
     
     const nearSlider = document.getElementById("near-slider");
     const farSlider = document.getElementById("far-slider");
@@ -75,14 +66,10 @@ export function init(element, global_selections) {
     const nearValue = document.getElementById("near-value");
     const farValue = document.getElementById("far-value");
 
+    // const range = ref([0, 100]);
+
     nearSlider.addEventListener("input", () => {
         let nearValueNum = Number(nearSlider.value);
-        // let farValueNum = Number(farSlider.value);
-
-        // if (nearValueNum >= farValueNum) {
-        //     nearValueNum = farValueNum - 1; // Ensure near < far
-        //     nearSlider.value = nearValueNum;
-        // }
 
         camera.near = nearValueNum;
         camera.updateProjectionMatrix();
@@ -90,13 +77,7 @@ export function init(element, global_selections) {
     });
 
     farSlider.addEventListener("input", () => {
-        // let nearValueNum = Number(nearSlider.value);
         let farValueNum = Number(farSlider.value);
-
-        // if (farValueNum <= nearValueNum) {
-        //     farValueNum = nearValueNum + 1; // Ensure far > near
-        //     farSlider.value = farValueNum;
-        // }
 
         camera.far = farValueNum;
         camera.updateProjectionMatrix();
