@@ -64,10 +64,11 @@ async def init() -> ConfigurationModel:
 @app.post("/generate")
 async def request(request: RequestModel):
     
+    
+    
     interventions = []
 
-    for intervention_model in request.interventions:
-        
+    for intervention_model in request.interventions:        
              
         if len(intervention_model.selections) < 2:
             break
@@ -76,16 +77,18 @@ async def request(request: RequestModel):
         envoys = []
         selections = {}
         
-        for module_idx in range(len(intervention_model.selections[1])):
+        for module_idx in range(len(intervention_model.selections)):
             envoy = cross_attentions[module_idx]
             envoys.append(envoy)
             selections[envoy.path] = intervention_model.selections[module_idx]
-            
+                        
         intervention = interventions_types[intervention_model.name](
             *intervention_model.args,
             model,
             envoys,
-            selections=selections
+            selections=selections,
+            start_step=request.start_step,
+            end_step=request.end_step
         )
 
         interventions.append(intervention)

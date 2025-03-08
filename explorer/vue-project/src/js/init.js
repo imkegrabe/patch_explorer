@@ -69,19 +69,17 @@ export function init(element, global_selections) {
     // const range = ref([0, 100]);
 
     nearSlider.addEventListener("input", () => {
-        let nearValueNum = Number(nearSlider.value);
+        let nearValueNum = Number(nearSlider.value) * 2;
 
         camera.near = nearValueNum;
         camera.updateProjectionMatrix();
-        nearValue.textContent = 50 - nearValueNum/2;
     });
 
     farSlider.addEventListener("input", () => {
-        let farValueNum = Number(farSlider.value);
+        let farValueNum = Number(farSlider.value) * 2;
 
         camera.far = farValueNum;
         camera.updateProjectionMatrix();
-        farValue.textContent = 50 - farValueNum/2;
     });
 
     // Get setGrids handle.

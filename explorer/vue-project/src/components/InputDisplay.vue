@@ -22,6 +22,8 @@ export default {
         return {
             prompt_value: "unicorn",
             seed_value: 79,
+             start_step:"0",
+        end_step: "50"
         }
     },
     methods: {
@@ -51,9 +53,10 @@ export default {
 
             console.log(this.globalSelections)
 
+
             interventions_to_apply.push(intervention_instance_to_apply)
 
-            const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: interventions_to_apply }
+            const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: interventions_to_apply, start_step:this.start_step, end_step:this.end_step }
 
             console.log(request)
 
@@ -73,7 +76,7 @@ export default {
 
             //GENERATED IMAGE
             var image = await response.blob()
-            
+
             var url = URL.createObjectURL(image);
 
             this.$emit('newImageUrl', url)
@@ -106,14 +109,28 @@ export default {
 
         <div class="seed">
             <label>Seed: </label>
-            <InputNumber v-model="seed_value" inputId="integeronly" :step="1" :min="0"/>
+            <InputNumber v-model="seed_value" inputId="integeronly" :step="1" :min="0" />
             <small></small>
         </div>
 
         <div class="button-test">
-            <Button class="button" label="Generate" @click="generate" :disabled="loading" style="background-color: rgb(0, 255, 255); color: black; margin: 5%; margin-left: 5%;"/>
+            <Button class="button" label="Generate" @click="generate" :disabled="loading"
+                style="background-color: rgb(0, 255, 255); color: black; margin: 5%; margin-left: 5%;" />
         </div>
 
+        <div class="timestep-container">
+            <!-- <SelectButton id="view-selection" v-model="value" :options="options" />
+        <Slider v-model="value" id="timestep-slider" range orientation="vertical" style="position: fixed; bottom: 200px; left: 10%; color: white;"/> -->
+
+            <input type="range"  id="near-slider" v-model="start_step" min="0" max="50" step="1" value="0"
+                style="position: fixed; bottom: 200px; left: 3%; transform: translateX(-50%) rotate(-90deg);">
+            <span id="near-value"
+                style="position: fixed; bottom: 200px; left: 4%; transform: translateX(-50%);">{{ start_step }}</span>
+
+            <input type="range" id="far-slider" v-model="end_step" min="0" max="50" step="1" value="50"
+                style="position: fixed; bottom: 200px; left: 5%; transform: translateX(-50%) rotate(-90deg);">
+            <span id="far-value" style="position: fixed; bottom: 200px; left: 6%; transform: translateX(-50%);">{{ end_step }}</span>
+        </div>
     </div>
 </template>
 
@@ -128,8 +145,8 @@ export default {
     /* height: 7%; */
     /* width:45%; */
     margin-left: 30%;
-    color:white;
-    bottom:0;
+    color: white;
+    bottom: 0;
     /* background-color: rgba(0, 255, 255, 1); */
     border-radius: 15px 15px 0px 0px;
     border-color: white;
@@ -137,5 +154,4 @@ export default {
     padding-left: 10px;
     padding-right: 10px;
 }
-
 </style>

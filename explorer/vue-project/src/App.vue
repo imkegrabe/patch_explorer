@@ -71,8 +71,6 @@ export default {
     <!-- <input type="range" id="z-slider" min="2" max="100" value="99" style="position: fixed; bottom: 200px; left: 5%; transform: translateX(-50%) rotate(-90deg);">
     <span id="slider-value" style="position: fixed; bottom: 200px; left: 4%; transform: translateX(-50%);">50</span> -->
 
-    <TimestepDisplay></TimestepDisplay>
-
 
   </div>
 </template>

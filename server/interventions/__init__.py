@@ -22,7 +22,7 @@ class DiffusionIntervention:
         self.selections = selections
         self.start_step = start_step
         self.end_step = end_step
-
+        
         if self.selections is not None:
             for module_name, value in self.selections.items():
 
@@ -38,9 +38,7 @@ class DiffusionIntervention:
                     patches.extend(head_patches)
 
                 self.selections[module_name] = tuple(torch.Tensor(patches).t().to(int))
-        
-        print(self.selections)
-        
+                
     def intervene(self, envoy: Envoy):
         pass
 

@@ -122,7 +122,7 @@ export function splitImage(image){
     let size = pixels.length;
 
     let group = new THREE.Group()
-    group.position.set(position.x, position.y)
+    group.position.set(position.x, position.y, position.z)
 
     let offset = -size / 2 + .5 - (split_padding * (size / 2));
 
@@ -147,17 +147,13 @@ export function splitImage(image){
 export function convert(i, row_len) {
 
     let row_idx = Math.floor(i / row_len);  // row index in original matrix
-    console.log("old row is", row_idx)
     let col_idx = i % row_len;  //column index
-    console.log("col is", col_idx)
     
     // Calculate new row index
     let new_row = row_len-1 - row_idx
-    console.log("new row is", new_row)
 
     // # New index in the transformed matrix
     let new_index = new_row*row_len  + col_idx
-    console.log("therefore new idx is", new_index)
 
     return new_index
     }
@@ -167,7 +163,6 @@ export function updateImage(image, pixels){
 
     let texture = image.material.map.source.data.data; //images texture
     let size = pixels.children.length;
-    console.log("pixels.children.length", size)
 
     image.selections.length = 0 //to clear selections
     
@@ -189,7 +184,8 @@ export function updateImage(image, pixels){
         texture[index * 4 + 1] = g * 255;
         texture[index * 4 + 2] = b * 255;
     }
-    console.log("image.selections:", image.selections) // image here means head!
+    console.log("image.selections:", image.selections)
+    console.log("image.selections:", image.ggs) // image here means head!
 
     image.material.map.needsUpdate = true;
 

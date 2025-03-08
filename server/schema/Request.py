@@ -17,5 +17,7 @@ class RequestModel(BaseModel):
     prompt: str
     seed: int = 42
     timesteps: int = 50
+    start_step:int = 0
+    end_step:int = 50
 
     interventions: List[InterventionRequestModel]

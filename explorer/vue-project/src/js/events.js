@@ -35,8 +35,6 @@ export function defocus(focused){
 
 export function setPixel(pixel, value){
 
-    console.log([value, pixel.material.color.b])
-
     if (value && pixel.material.color.b !== 1.0){
         pixel.material.color.r = pixel.material.color.b === 0.0 ? 1.0 : 0.0;
         pixel.material.color.g = pixel.material.color.b !== 0.0 ? 1.0 : 0.0;
@@ -63,6 +61,9 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focus
 
         raycaster.setFromCamera( mouse, camera );
 
+        raycaster.near = camera.near
+        raycaster.far = camera.far
+
         // If something is currently focused, we need to either click on a pixel to further select it.
         // Otherwise de-select it.
         if (focused.image !== null){
@@ -70,7 +71,6 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focus
 
             if (intersects.length > 0){
                 // Here is where we would call a function to select pixels.
-                console.log(event.shiftKey)
                 // Here is where we would call a function to select pixels.
                 if (event.shiftKey){
 
@@ -95,7 +95,7 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focus
         var intersects = raycaster.intersectObjects( meshes, false );
 
         if (intersects.length > 0){
-           focus(scene, intersects[0].object, focused);
+           focus(scene, intersects[intersects.length - 1].object, focused);
         }
     }
 
@@ -113,6 +113,9 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, f
         mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
 
         raycaster.setFromCamera( mouse, camera );
+
+        raycaster.near = camera.near
+        raycaster.far = camera.far
 
         // If something is currently focused, we need to either click on a pixel to further select it.
         // Otherwise de-select it.
@@ -185,8 +188,10 @@ export function setGrids(scene, meshes, focused, global_selections){
 
             let z_offset = 0
 
+            var layer_selections = [];
+
             // loop through timesteps
-            for (let timestep_idx = 0; timestep_idx < 1; timestep_idx++){           
+            for (let timestep_idx = 0; timestep_idx < timesteps.length; timestep_idx++){           
 
                 //HEADS
                 let heads = timesteps[timestep_idx]
@@ -194,7 +199,6 @@ export function setGrids(scene, meshes, focused, global_selections){
                 //initial offset for heads - where to start the column on y
                 let y_offset = -(64*3.5 + padding*3.5) + grids[layer_idx][0][0].length*3.5 + padding*3.5; 
 
-                var layer_selections = [];
 
                 //loop through heads which are all the grids at layer x and timestep x
                 for (let head_idx = 0; head_idx < heads.length; head_idx++){
@@ -203,9 +207,20 @@ export function setGrids(scene, meshes, focused, global_selections){
                     // transform grid into image
                     let image = grid_to_image(grid);
 
-                    var head_selections = [];
-                    image.selections = head_selections; //list 
-                    layer_selections.push(head_selections); //list is global
+                    
+
+                    if (timestep_idx === 0){
+                        var head_selections = [];
+                        image.selections = head_selections; //list 
+                        layer_selections.push(head_selections); //list is global
+                    }
+                    else {
+                        var head_selections = layer_selections[head_idx];
+                        image.selections = head_selections;
+                    }
+
+                    image.ggs = global_selections;
+                   
 
                     image.position.set(x_offset + grid.length/2 -380-20, y_offset+231-20, z_offset); //moving to the ~center so it looks good with header...
 
@@ -221,9 +236,11 @@ export function setGrids(scene, meshes, focused, global_selections){
 
                 z_offset += padding;
 
-            global_selections.push(layer_selections);
+            
             
             }
+
+            global_selections.push(layer_selections);
             
             //move ... into x direction for the next layer
             x_offset += grids[layer_idx][0][0].length + 20;
