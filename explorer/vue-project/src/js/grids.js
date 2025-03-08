@@ -16,7 +16,7 @@ export function getColor(value) {
         const r = x >= 0 ? 0 : 255;
         const g = x <= 0 ? 0 : 255;
         const b = 255;
-        const alpha = Math.abs(255 * x / 5 ); //*2
+        const alpha = Math.abs(255 * x ); //*2
         return [r, g, b, alpha]
     };
 
@@ -98,7 +98,7 @@ export function image_to_pixels(image){
             // color it using a string
             let color = new THREE.Color(`rgb(${r}, ${g}, ${b})`)
                 
-            let material = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide, transparent:a !== 255, opacity:alpha/255});
+            let material = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide, transparent:true, opacity:a/255});
         
             let mesh = new THREE.Mesh(geometry, material);
 
@@ -173,18 +173,20 @@ export function updateImage(image, pixels){
     let row_len = Math.sqrt(size)
     
     for (let index = 0; index < size; index++){
-        let aindex = index * 4 + 3;
         let pixel = pixels.children[index];
 
-        let a = alpha;
+        let r = pixel.material.color.r;
+        let g = pixel.material.color.g;
+        let b = pixel.material.color.b;
 
-        if (!pixel.material.transparent){ //instead of setting the 
-            a = 255;
+        if (b !== 1.0){ //instead of setting the 
             let patch_index = convert(index, row_len)
             image.selections.push(patch_index)   //next: push coordinates to image.selections which is global (defined in setGrids)
         }
 
-        texture[aindex] = a;
+        texture[index * 4 + 0] = r * 255;
+        texture[index * 4 + 1] = g * 255;
+        texture[index * 4 + 2] = b * 255;
     }
     console.log("image.selections:", image.selections) // image here means head!
 

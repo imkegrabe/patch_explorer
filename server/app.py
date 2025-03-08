@@ -68,6 +68,11 @@ async def request(request: RequestModel):
 
     for intervention_model in request.interventions:
         
+             
+        if len(intervention_model.selections) < 2:
+            break
+        
+        
         envoys = []
         selections = {}
         

@@ -34,7 +34,19 @@ export function defocus(focused){
 }
 
 export function setPixel(pixel, value){
-    pixel.material.transparent = value;
+
+    console.log([value, pixel.material.color.b])
+
+    if (value && pixel.material.color.b !== 1.0){
+        pixel.material.color.r = pixel.material.color.b === 0.0 ? 1.0 : 0.0;
+        pixel.material.color.g = pixel.material.color.b !== 0.0 ? 1.0 : 0.0;
+        pixel.material.color.b = 1.0;
+    }
+    else if (!value && pixel.material.color.b === 1.0){
+        pixel.material.color.b = pixel.material.color.r > 0.0 ? 0.0 : 5/255;
+        pixel.material.color.r = 0.0;
+        pixel.material.color.g = 1.0;
+    }
 }
 
 
@@ -58,6 +70,8 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focus
 
             if (intersects.length > 0){
                 // Here is where we would call a function to select pixels.
+                console.log(event.shiftKey)
+                // Here is where we would call a function to select pixels.
                 if (event.shiftKey){
 
                     let transparent = event.ctrlKey;
@@ -69,7 +83,7 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focus
                 }
                 else{
                     let pixel = intersects[0].object
-                    setPixel(pixel, !pixel.material.transparent)
+                    setPixel(pixel, pixel.material.color.b !== 1.0)
                 }
                 return
             }
@@ -172,7 +186,7 @@ export function setGrids(scene, meshes, focused, global_selections){
             let z_offset = 0
 
             // loop through timesteps
-            for (let timestep_idx = 0; timestep_idx < timesteps.length; timestep_idx++){           
+            for (let timestep_idx = 0; timestep_idx < 1; timestep_idx++){           
 
                 //HEADS
                 let heads = timesteps[timestep_idx]
