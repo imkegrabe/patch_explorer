@@ -25,12 +25,39 @@ export function init(element, global_selections) {
         MIDDLE: THREE.MOUSE.DOLLY,     
         RIGHT: THREE.MOUSE.ROTATE      
     };
+    controls.enablePan = true;
     controls.update();
 
     function animate() {
         renderer.render(scene, camera);
     }
     renderer.setAnimationLoop(animate);
+
+    window.addEventListener("keydown", (event) => {
+        const panSpeed = 5; // Adjust this value for desired speed
+    
+        switch (event.key) {
+            case "ArrowLeft":
+                camera.position.x -= panSpeed;
+                controls.target.x -= panSpeed; // Ensures consistent panning
+                break;
+            case "ArrowRight":
+                camera.position.x += panSpeed;
+                controls.target.x += panSpeed;
+                break;
+            case "ArrowUp":
+                camera.position.y += panSpeed; // Optional: For vertical movement
+                controls.target.y += panSpeed;
+                break;
+            case "ArrowDown":
+                camera.position.y -= panSpeed;
+                controls.target.y -= panSpeed;
+                break;
+        }
+    
+        controls.update(); // Ensure camera updates properly
+    });
+    
 
     // Define state vars here
     let raycaster = new THREE.Raycaster();
