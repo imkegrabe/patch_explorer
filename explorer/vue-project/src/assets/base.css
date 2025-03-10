@@ -82,8 +82,15 @@ body {
   font-family:
     Courier,
     monospace;
-  font-size: 15px;
+  font-size: 30px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+input,
+textarea {
+  font-size: 60px; /* Adjust this value as desired */
+  padding: 10px;   /* Optional: Improves spacing inside the box */
+  border: 1px solid var(--color-border); /* Ensures the styling fits your theme */
+  border-radius: 4px; /* Optional: For softer corners */
 }

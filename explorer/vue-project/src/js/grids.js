@@ -12,16 +12,24 @@ export function getColor(value) {
     //     return [r, g, b, alpha]
     // };
 
-    const cmapCool2 = (x) => {
-        const r = 255; // absolute values now...
-        // const g = x < 0 ? 255 : 0;
-        const g = 0;
+    // const cmapCool2 = (x) => {
+    //     const r = 255; // absolute values now...
+    //     // const g = x < 0 ? 255 : 0;
+    //     const g = 0;
+    //     const b = 255;
+    //     const alpha = Math.abs(255 * x ); //*2
+    //     return [r, g, b, alpha]
+    // };
+
+    const cmapCool3 = (x) => {
+        const r = x > 0 ? 255 : 0;
+        const g = x < 0 ? 255 : 0;
         const b = 255;
-        const alpha = Math.abs(255 * x ); //*2
+        const alpha = Math.abs(255 * x/5 ); //*2
         return [r, g, b, alpha]
     };
 
-    return cmapCool2(value);
+    return cmapCool3(value);
 }
 
 // Convert a grid to a threejs texture.

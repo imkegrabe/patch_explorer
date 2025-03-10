@@ -38,6 +38,7 @@ export default {
                 type="text"
                 :value="encoderValue"
                 @input="$emit('update:encoderValue', $event.target.value)" 
+                style="font-size: 30px; padding: 10px; width: 200px;"
             />
             <small></small>
         </div>
