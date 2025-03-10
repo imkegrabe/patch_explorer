@@ -13,7 +13,7 @@ export function getColor(value) {
     // };
 
     const cmapCool2 = (x) => {
-        const r = x !== 0 ? 255 : 0; // absolute values now...
+        const r = 255; // absolute values now...
         // const g = x < 0 ? 255 : 0;
         const g = 0;
         const b = 255;
@@ -111,7 +111,7 @@ export function image_to_pixels(image){
     return pixels;
 }
 
-let split_padding = .05;
+let split_padding = 0;
 
 // Splits an image Mesh into pixel Meshes and computes where to place them based on where the original image was and some padding.
 export function splitImage(image){
@@ -175,6 +175,7 @@ export function updateImage(image, pixels){
         let g = pixel.material.color.g;
         let b = pixel.material.color.b;
 
+
         if (b !== 1.0){ //instead of setting the 
             let patch_index = convert(index, row_len)
             image.selections.push(patch_index)   //next: push coordinates to image.selections which is global (defined in setGrids)
@@ -183,6 +184,9 @@ export function updateImage(image, pixels){
         texture[index * 4 + 0] = r * 255;
         texture[index * 4 + 1] = g * 255;
         texture[index * 4 + 2] = b * 255;
+        if (!pixel.material.transparent){
+            texture[index * 4 + 3] = 255;
+        }
     }
     console.log("image.selections:", image.selections)
     console.log("image.selections:", image.ggs) // image here means head!

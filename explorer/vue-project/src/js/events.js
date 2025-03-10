@@ -36,15 +36,19 @@ export function defocus(focused){
 export function setPixel(pixel, value){
 
     if (value && pixel.material.color.b !== 1.0){
-        pixel.material.color.r = pixel.material.color.b === 0.0 ? 1.0 : 0.0;
-        pixel.material.color.g = pixel.material.color.b !== 0.0 ? 1.0 : 0.0;
+        pixel.material.color.r = 1.0;
+        pixel.material.color.g = 0.0;
         pixel.material.color.b = 1.0;
+        pixel.material.transparent = true;
     }
     else if (!value && pixel.material.color.b === 1.0){
-        pixel.material.color.b = pixel.material.color.r > 0.0 ? 0.0 : 5/255;
+        pixel.material.color.b = 0.0;
         pixel.material.color.r = 0.0;
         pixel.material.color.g = 1.0;
+        pixel.material.transparent = false;
     }
+
+    pixel.material.needsUpdate = true;
 }
 
 
@@ -53,6 +57,8 @@ export function setPixel(pixel, value){
 export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focused){
 
     function inner(event){
+
+        console.log('click')
         event.preventDefault();
 
         // Theres no nice vue "onclick", we need to find out what Meshes you clicked on via raytracing
@@ -95,7 +101,7 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focus
         var intersects = raycaster.intersectObjects( meshes, false );
 
         if (intersects.length > 0){
-           focus(scene, intersects[intersects.length - 1].object, focused);
+           focus(scene, intersects[0].object, focused);
         }
     }
 
