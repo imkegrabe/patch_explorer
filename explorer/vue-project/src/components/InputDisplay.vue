@@ -122,14 +122,14 @@ export default {
             <!-- <SelectButton id="view-selection" v-model="value" :options="options" />
         <Slider v-model="value" id="timestep-slider" range orientation="vertical" style="position: fixed; bottom: 200px; left: 10%; color: white;"/> -->
 
-            <input type="range"  id="near-slider" v-model="start_step" min="0" max="50" step="1" value="0"
+            <input type="range"  id="far-slider" v-model="start_step" min="0" max="50" step="1" value="0"
                 style="position: fixed; bottom: 200px; left: 3%; transform: translateX(-50%) rotate(-90deg);">
-            <span id="near-value"
+            <span id="far-value"
                 style="position: fixed; bottom: 200px; left: 4%; transform: translateX(-50%);">{{ start_step }}</span>
 
-            <input type="range" id="far-slider" v-model="end_step" min="0" max="50" step="1" value="50"
+            <input type="range" id="near-slider" v-model="end_step" min="0" max="50" step="1" value="50"
                 style="position: fixed; bottom: 200px; left: 5%; transform: translateX(-50%) rotate(-90deg);">
-            <span id="far-value" style="position: fixed; bottom: 200px; left: 6%; transform: translateX(-50%);">{{ end_step }}</span>
+            <span id="near-value" style="position: fixed; bottom: 200px; left: 6%; transform: translateX(-50%);">{{ end_step }}</span>
         </div>
     </div>
 </template>

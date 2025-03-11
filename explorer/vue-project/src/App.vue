@@ -3,7 +3,6 @@ import Explorer from './components/Explorer.vue';
 import InputDisplay from './components/InputDisplay.vue';
 import ImageDisplay from './components/ImageDisplay.vue';
 import InterventionDisplay from './components/InterventionDisplay.vue';
-import TimestepDisplay from './components/TimestepDisplay.vue';
 
 export default {
   name: 'App',
@@ -20,9 +19,7 @@ export default {
     Explorer,
     ImageDisplay,
     InterventionDisplay,
-    InputDisplay,
-    TimestepDisplay,
-    TimestepDisplay
+    InputDisplay
 },
 
     methods: {
@@ -32,7 +29,7 @@ export default {
       this.$forceUpdate()
     },
     updateAddends(addends) {
-      this.$refs.explorer_container.setGrids(addends)
+      this.$refs.explorer_container.setGrids(addends, this.imageUrl)
     }
   }
 }

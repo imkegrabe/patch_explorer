@@ -13,11 +13,12 @@ export function getColor(value) {
     // };
 
     const cmapCool2 = (x) => {
-        const r = 255; // absolute values now...
+        const r = 0; // absolute values now...
         // const g = x < 0 ? 255 : 0;
         const g = 0;
-        const b = 255;
-        const alpha = Math.abs(255 * x ); //*2
+        const b = 0;
+        x = Math.sqrt(Math.abs(x))
+        const alpha =  Math.abs(255 * (1-x) ) / 15; //*2
         return [r, g, b, alpha]
     };
 

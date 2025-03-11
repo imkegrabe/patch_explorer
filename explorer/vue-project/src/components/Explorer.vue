@@ -55,7 +55,7 @@ export default {
         this.setGrids = init(canvas, this.globalSelections);
 
         // Set grids to example.
-        this.setGrids(this.allGrids)
+        // this.setGrids(this.allGrids)
 
         // canvas.height = height;
 

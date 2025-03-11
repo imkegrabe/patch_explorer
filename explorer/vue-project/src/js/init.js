@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { onClick, setGrids, onMouseMove} from './events';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 
 export function init(element, global_selections) {
 
@@ -9,6 +10,7 @@ export function init(element, global_selections) {
     // const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
     const camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0, 100 );
     camera.position.set(0, 0, 100);
+    
 
     // RENDERER
     const renderer = new THREE.WebGLRenderer();
@@ -62,28 +64,26 @@ export function init(element, global_selections) {
     
     const nearSlider = document.getElementById("near-slider");
     const farSlider = document.getElementById("far-slider");
-
-    const nearValue = document.getElementById("near-value");
-    const farValue = document.getElementById("far-value");
-
     // const range = ref([0, 100]);
 
     nearSlider.addEventListener("input", () => {
-        let nearValueNum = Number(nearSlider.value) * 2;
+        let nearValueNum = 100 - (Number(nearSlider.value) * 2);
 
         camera.near = nearValueNum;
         camera.updateProjectionMatrix();
     });
 
     farSlider.addEventListener("input", () => {
-        let farValueNum = Number(farSlider.value) * 2;
+        let farValueNum = 100 - (Number(farSlider.value) * 2);
 
         camera.far = farValueNum;
         camera.updateProjectionMatrix();
     });
 
+    let texture_loader = new THREE.TextureLoader()
+
     // Get setGrids handle.
-    return setGrids(scene, meshes, focused, global_selections);
+    return setGrids(scene, meshes, focused, global_selections, texture_loader);
 
 
 }

@@ -5,7 +5,7 @@ import { toHandlerKey } from "vue";
 import { grid_to_image, destroy, splitImage, updateImage } from "./grids";
 
 // focus specific head image.
-export function focus(scene, image, focused){
+export function focus(scene, image, focused) {
 
     // Get THREE.Group of pixels
     let group = splitImage(image);
@@ -20,11 +20,11 @@ export function focus(scene, image, focused){
 }
 
 // defocus a head image Mesh by destroying its expanded pixels and re-showing the image.
-export function defocus(focused){
+export function defocus(focused) {
 
     updateImage(focused.image, focused.pixels)
 
-    for (let i = 0; i < focused.pixels.children.length; i++){
+    for (let i = 0; i < focused.pixels.children.length; i++) {
         destroy(focused.pixels.children[i]);
     }
     focused.pixels.removeFromParent();
@@ -33,15 +33,15 @@ export function defocus(focused){
     focused.pixels = null;
 }
 
-export function setPixel(pixel, value){
+export function setPixel(pixel, value) {
 
-    if (value && pixel.material.color.b !== 1.0){
+    if (value && pixel.material.color.b !== 1.0) {
         pixel.material.color.r = 1.0;
         pixel.material.color.g = 0.0;
         pixel.material.color.b = 1.0;
         pixel.material.transparent = true;
     }
-    else if (!value && pixel.material.color.b === 1.0){
+    else if (!value && pixel.material.color.b === 1.0) {
         pixel.material.color.b = 0.0;
         pixel.material.color.r = 0.0;
         pixel.material.color.g = 1.0;
@@ -54,40 +54,39 @@ export function setPixel(pixel, value){
 
 // This function returns a function that should be called when the canvas is clicked
 // This is functional programming :)
-export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focused){
+export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focused) {
 
-    function inner(event){
+    function inner(event) {
 
-        console.log('click')
         event.preventDefault();
 
         // Theres no nice vue "onclick", we need to find out what Meshes you clicked on via raytracing
-        mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-        mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+        mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+        mouse.y = - (event.clientY / renderer.domElement.clientHeight) * 2 + 1;
 
-        raycaster.setFromCamera( mouse, camera );
+        raycaster.setFromCamera(mouse, camera);
 
         raycaster.near = camera.near
         raycaster.far = camera.far
 
         // If something is currently focused, we need to either click on a pixel to further select it.
         // Otherwise de-select it.
-        if (focused.image !== null){
-            var intersects = raycaster.intersectObjects( focused.pixels.children, false );
+        if (focused.image !== null) {
+            var intersects = raycaster.intersectObjects(focused.pixels.children, false);
 
-            if (intersects.length > 0){
+            if (intersects.length > 0) {
                 // Here is where we would call a function to select pixels.
                 // Here is where we would call a function to select pixels.
-                if (event.shiftKey){
+                if (event.shiftKey) {
 
                     let transparent = event.ctrlKey;
 
-                    for (let i = 0; i < focused.pixels.children.length; i++){
+                    for (let i = 0; i < focused.pixels.children.length; i++) {
                         let pixel = focused.pixels.children[i]
                         setPixel(pixel, transparent);
                     }
                 }
-                else{
+                else {
                     let pixel = intersects[0].object
                     setPixel(pixel, pixel.material.color.b !== 1.0)
                 }
@@ -98,10 +97,10 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focus
         }
 
         // Now we want to check if we clicked any image meshes to split up and select.
-        var intersects = raycaster.intersectObjects( meshes, false );
+        var intersects = raycaster.intersectObjects(meshes, false);
 
-        if (intersects.length > 0){
-           focus(scene, intersects[0].object, focused);
+        if (intersects.length > 0) {
+            focus(scene, intersects[0].object, focused);
         }
     }
 
@@ -109,29 +108,29 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focus
 
 }
 
-export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, focused){
+export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, focused) {
 
-    function inner(event){
+    function inner(event) {
         event.preventDefault();
 
         // Theres no nice vue "onclick", we need to find out what Meshes you clicked on via raytracing
-        mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-        mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+        mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+        mouse.y = - (event.clientY / renderer.domElement.clientHeight) * 2 + 1;
 
-        raycaster.setFromCamera( mouse, camera );
+        raycaster.setFromCamera(mouse, camera);
 
         raycaster.near = camera.near
         raycaster.far = camera.far
 
         // If something is currently focused, we need to either click on a pixel to further select it.
         // Otherwise de-select it.
-        if (focused.image !== null && event.shiftKey){
-            var intersects = raycaster.intersectObjects( focused.pixels.children, false );
+        if (focused.image !== null && event.shiftKey) {
+            var intersects = raycaster.intersectObjects(focused.pixels.children, false);
 
-            if (intersects.length > 0){
+            if (intersects.length > 0) {
 
                 let transparent = event.ctrlKey;
-            
+
                 let pixel = intersects[0].object
                 setPixel(pixel, transparent)
 
@@ -147,19 +146,19 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, f
 let padding = 2;
 
 // Function to return the function that should be called when there are new grids from the server
-export function setGrids(scene, meshes, focused, global_selections){
+export function setGrids(scene, meshes, focused, global_selections, texture_loader) {
 
-    function inner(grids){
+    function inner(grids, image_url) {
 
         // First destroy any existing meshes. Maybe instead update meshes? That sounds annoying.
-        for (let i = 0; i < meshes.length; i++){
+        for (let i = 0; i < meshes.length; i++) {
             destroy(meshes[i]);
         }
 
         // Do the same with focused head pixels.
         // console.log(focused.image !== null)
-        if (focused.image !== null){
-           defocus(focused)
+        if (focused.image !== null) {
+            defocus(focused)
         }
 
         global_selections.length = 0;
@@ -168,89 +167,118 @@ export function setGrids(scene, meshes, focused, global_selections){
         focused.image = null;
         focused.pixels = null;
 
-        // looooop through layers - main array with all layers is called grids and is in NOW 5D - [ layers [ TIMESTEPS [ heads [ rows [ cols ]]]]]
-        let x_offset = 0 //-grids[0][0].length / 2;
+        texture_loader.load(
+            image_url,
+            function (texture) {
+                // in this example we create the material when the texture is loaded
+                // looooop through layers - main array with all layers is called grids and is in NOW 5D - [ layers [ TIMESTEPS [ heads [ rows [ cols ]]]]]
+                let x_offset = 0 //-grids[0][0].length / 2;
 
-        //LAYERS
-        for (let layer_idx = 0; layer_idx < grids.length; layer_idx++){
+                //LAYERS
+                for (let layer_idx = 0; layer_idx < grids.length; layer_idx++) {
 
-            // group doesnt work yet - do we need it tho?
-            // let group = new THREE.Group();
-            // group.position.set(layer_idx*layer_offset, 0, 0);
-            // scene.add(group);
+                    // group doesnt work yet - do we need it tho?
+                    // let group = new THREE.Group();
+                    // group.position.set(layer_idx*layer_offset, 0, 0);
+                    // scene.add(group);
 
-            // TIMESTEPS
-            let timesteps = grids[layer_idx];
+                    // TIMESTEPS
+                    let timesteps = grids[layer_idx];
 
-            // unwrapping the vue proxy
-            function unwrapProxy(proxy) {
-                return proxy?.__v_raw || proxy;
-            }
-            timesteps = timesteps.map(unwrapProxy).map(item => Array.isArray(item) ? Array.from(item) : item);            
-            console.log(timesteps)
+                    // unwrapping the vue proxy
+                    function unwrapProxy(proxy) {
+                        return proxy?.__v_raw || proxy;
+                    }
+                    timesteps = timesteps.map(unwrapProxy).map(item => Array.isArray(item) ? Array.from(item) : item);
+                    console.log(timesteps)
 
-            //NORMALIZE PER LAYER HERE ... hm not working - in None
-            // console.log(Math.max(...timesteps.map(Math.abs)));
+                    //NORMALIZE PER LAYER HERE ... hm not working - in None
+                    // console.log(Math.max(...timesteps.map(Math.abs)));
 
-            let z_offset = 0
+                    let z_offset = 0
 
-            var layer_selections = [];
+                    var layer_selections = [];
 
-            // loop through timesteps
-            for (let timestep_idx = 0; timestep_idx < timesteps.length; timestep_idx++){           
-
-                //HEADS
-                let heads = timesteps[timestep_idx]
-                
-                //initial offset for heads - where to start the column on y
-                let y_offset = -(64*3.5 + padding*3.5) + grids[layer_idx][0][0].length*3.5 + padding*3.5; 
+                    let size = timesteps[0][0].length;
 
 
-                //loop through heads which are all the grids at layer x and timestep x
-                for (let head_idx = 0; head_idx < heads.length; head_idx++){
-                    let grid = heads[head_idx];
-
-                    // transform grid into image
-                    let image = grid_to_image(grid);
-
+                    const geometry11 = new THREE.PlaneGeometry( size, size, 16, 16 );
+                    const material11 = new THREE.MeshBasicMaterial( { map: texture });
                     
 
-                    if (timestep_idx === 0){
-                        var head_selections = [];
-                        image.selections = head_selections; //list 
-                        layer_selections.push(head_selections); //list is global
+                    // loop through timesteps
+                    for (let timestep_idx = 0; timestep_idx < timesteps.length; timestep_idx++) {
+
+                        //HEADS
+                        let heads = timesteps[timestep_idx]
+
+                        //initial offset for heads - where to start the column on y
+                        let y_offset = -(64 * 3.5 + padding * 3.5) + grids[layer_idx][0][0].length * 3.5 + padding * 3.5;
+
+
+                        //loop through heads which are all the grids at layer x and timestep x
+                        for (let head_idx = 0; head_idx < heads.length; head_idx++) {
+                            let grid = heads[head_idx];
+
+                            // transform grid into image
+                            let image = grid_to_image(grid);
+
+                            if (timestep_idx === 0) {
+                                var head_selections = [];
+                                image.selections = head_selections; //list 
+                                layer_selections.push(head_selections); //list is global
+                            }
+                            else {
+                                var head_selections = layer_selections[head_idx];
+                                image.selections = head_selections;
+                            }
+
+                            image.ggs = global_selections;
+
+                            if (timestep_idx ===  0){
+                                const plane11 = new THREE.Mesh( geometry11, material11 );
+                                plane11.position.set(x_offset + grid.length / 2 - 380 - 20, y_offset + 231 - 20, 1);
+                                
+                                scene.add(plane11);
+                            }
+
+
+                            image.position.set(x_offset + grid.length / 2 - 380 - 20, y_offset + 231 - 20, z_offset); //moving to the ~center so it looks good with header...
+
+                            // console.log("layer", layer_idx, "head", head_idx, image.position)
+                            // group.add(image);
+
+                            scene.add(image);
+                            y_offset -= grid.length + padding;
+
+                            meshes.push(image);
+
+                        };
+
+                        z_offset += padding;
+
+
+
                     }
-                    else {
-                        var head_selections = layer_selections[head_idx];
-                        image.selections = head_selections;
-                    }
 
-                    image.ggs = global_selections;
-                   
+                    global_selections.push(layer_selections);
 
-                    image.position.set(x_offset + grid.length/2 -380-20, y_offset+231-20, z_offset); //moving to the ~center so it looks good with header...
+                    //move ... into x direction for the next layer
+                    x_offset += grids[layer_idx][0][0].length + 20;
+                }
+            },
 
-                    // console.log("layer", layer_idx, "head", head_idx, image.position)
-                    // group.add(image);
+            // onProgress callback currently not supported
+            undefined,
 
-                    scene.add(image);
-                    y_offset -= grid.length + padding;
-
-                    meshes.push(image);
-
-                };
-
-                z_offset += padding;
-
-            
-            
+            // onError callback
+            function (err) {
+                console.error('An error happened.');
             }
+        )
 
-            global_selections.push(layer_selections);
-            
-            //move ... into x direction for the next layer
-            x_offset += grids[layer_idx][0][0].length + 20;
-        }
+
+
     }
 
     return inner
