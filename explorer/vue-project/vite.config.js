@@ -7,7 +7,10 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 // https://vite.dev/config/
 export default defineConfig({
   server: {
-    allowedHosts: ['.ngrok-free.app']
+    allowedHosts: ['.ngrok-free.app'],
+    
+    // host:'0.0.0.0', //Arnab's line
+    // port: 5137, //choose between 443 and 5173
   },
   plugins: [
     vue(),

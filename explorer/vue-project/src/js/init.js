@@ -33,6 +33,7 @@ export function init(element, global_selections) {
     }
     renderer.setAnimationLoop(animate);
 
+    //PANNING CONTROLS
     window.addEventListener("keydown", (event) => {
         const panSpeed = 5; // Adjust this value for desired speed
     
