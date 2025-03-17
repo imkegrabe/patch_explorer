@@ -1,8 +1,9 @@
 <template>
     <div class="timestep-container">
-        <SelectButton id="view-selection" v-model="value" :options="options" style="position: fixed; bottom: 100px; left: 10%; color: white;"/>
+        <SelectButton id="view-selection" v-model="value" :options="options"/>
+        <p>Selected: {{ value }} </p>
             
-        <Slider v-model="value" id="timestep-slider" range orientation="vertical" style="position: fixed; bottom: 200px; left: 10%; color: white;"/>
+        <Slider v-model="value" id="timestep-slider" range orientation="vertical"/>
 
         <div class="double-slider">
             <input type="range" id="near-slider" min="0" max="100" step="2" value="0" style="position: fixed; bottom: 200px; left: 3%; transform: translateX(-50%) rotate(-90deg);">
@@ -32,6 +33,10 @@ const options = ref(['2D', '3D']);
     position: absolute;
     display: flex;
     flex-direction: column;
+    position: fixed; 
+    bottom: 100px; 
+    left: 10%; 
+    color: white;
 }
 
 .double-slider{
