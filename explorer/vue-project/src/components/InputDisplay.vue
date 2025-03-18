@@ -21,7 +21,7 @@ export default {
     data() {
         return {
             prompt_value: "unicorn",
-            seed_value: 79,
+            seed_value: 93244,
         }
     },
     methods: {

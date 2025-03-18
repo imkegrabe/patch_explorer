@@ -2,13 +2,18 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { onClick, setGrids, onMouseMove} from './events';
 
+export let camera1, camera2, cameraActive;
+
 export function init(element, global_selections) {
 
     // CAMERA
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
-    // const camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0, 100 );
-    camera.position.set(0, 0, 100);
+    camera1 = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
+    camera2 = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0, 100 );
+    // camera1.position.set(0, 0, 100);
+    // camera2.position.set(0, 0, 100);
+
+    cameraActive = camera2;
 
     // RENDERER
     const renderer = new THREE.WebGLRenderer();
@@ -17,7 +22,7 @@ export function init(element, global_selections) {
     element.appendChild(renderer.domElement);
 
     // CONTROLS
-    const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(cameraActive, renderer.domElement);
     controls.enableRotate = false;
     // Make click and drag pan not rotate
     controls.mouseButtons = {
@@ -29,7 +34,7 @@ export function init(element, global_selections) {
     controls.update();
 
     function animate() {
-        renderer.render(scene, camera);
+        renderer.render(scene, cameraActive);
     }
     renderer.setAnimationLoop(animate);
 
@@ -39,19 +44,19 @@ export function init(element, global_selections) {
     
         switch (event.key) {
             case "ArrowLeft":
-                camera.position.x -= panSpeed;
+                cameraActive.position.x -= panSpeed;
                 controls.target.x -= panSpeed; // Ensures consistent panning
                 break;
             case "ArrowRight":
-                camera.position.x += panSpeed;
+                cameraActive.position.x += panSpeed;
                 controls.target.x += panSpeed;
                 break;
             case "ArrowUp":
-                camera.position.y += panSpeed; // Optional: For vertical movement
+                cameraActive.position.y += panSpeed; // Optional: For vertical movement
                 controls.target.y += panSpeed;
                 break;
             case "ArrowDown":
-                camera.position.y -= panSpeed;
+                cameraActive.position.y -= panSpeed;
                 controls.target.y -= panSpeed;
                 break;
         }
@@ -68,8 +73,8 @@ export function init(element, global_selections) {
     // let global_selections = [] // stores the data structure: list of layer, heads, x, y coordinates...
 
     // Add click event
-    element.addEventListener("click", onClick(scene, renderer, camera, mouse, raycaster, meshes, focused));
-    element.addEventListener("mousemove", onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, focused));
+    element.addEventListener("click", onClick(scene, renderer, cameraActive, mouse, raycaster, meshes, focused));
+    element.addEventListener("mousemove", onMouseMove(scene, renderer, cameraActive, mouse, raycaster, meshes, focused));
 
     // adjust to browser drags
     window.addEventListener('resize', () => {
@@ -80,40 +85,29 @@ export function init(element, global_selections) {
         renderer.setSize(width, height);
 
         // update camera aspect ratio and projection matrix
-        camera.aspect = width / height;
-        camera.left = width / -2;
-        camera.right = width / 2;
-        camera.top = height / 2;
-        camera.bottom = height / -2;
-        camera.updateProjectionMatrix();
-    });
-    
-    const nearSlider = document.getElementById("near-slider");
-    const farSlider = document.getElementById("far-slider");
-
-    const nearValue = document.getElementById("near-value");
-    const farValue = document.getElementById("far-value");
-
-    // const range = ref([0, 100]);
-
-    nearSlider.addEventListener("input", () => {
-        let nearValueNum = Number(nearSlider.value);
-
-        camera.near = nearValueNum;
-        camera.updateProjectionMatrix();
-        nearValue.textContent = 50 - nearValueNum/2;
-    });
-
-    farSlider.addEventListener("input", () => {
-        let farValueNum = Number(farSlider.value);
-
-        camera.far = farValueNum;
-        camera.updateProjectionMatrix();
-        farValue.textContent = 50 - farValueNum/2;
+        cameraActive.aspect = width / height;
+        cameraActive.left = width / -2;
+        cameraActive.right = width / 2;
+        cameraActive.top = height / 2;
+        cameraActive.bottom = height / -2;
+        cameraActive.updateProjectionMatrix();
     });
 
     // Get setGrids handle.
     return setGrids(scene, meshes, focused, global_selections);
+}
 
+export function setCameraActive(cameraType) {
+    if (cameraType === '3D') {
+        cameraActive = camera1; 
+        cameraActive.position.set(0, 0, 100);
+        cameraActive.near = 0.01;
+        cameraActive.far = 1000;
+    } else if (cameraType === '2D') {
+        cameraActive = camera2;  
+        cameraActive.position.set(0, 0, 100);
+        cameraActive.near = 0;
+        cameraActive.far = 100;
 
+    }
 }

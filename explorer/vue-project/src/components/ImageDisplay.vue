@@ -42,6 +42,10 @@ export default {
 
 
 <style>
+.imagebar {
+    padding: 5px;
+}
+
 .image-container img {
     width: 256px;
     height: 256px;
@@ -49,7 +53,7 @@ export default {
     padding: 5px;
     display: block;
     align-items: center;
-    border-color: white;
+    border-color: rgb(0, 255, 0);
     border-style: solid;
 }
 </style>
