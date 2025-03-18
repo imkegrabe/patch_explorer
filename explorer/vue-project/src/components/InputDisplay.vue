@@ -43,11 +43,32 @@ export default {
             // }
 
             // Replace this to work for all interventions - hardcoded to Scaling right now
-            const intervention_instance_to_apply = {
-                name: 'Encoder',
-                args: [this.encoderValue],
-                selections: this.globalSelections
+//             const intervention_instance_to_apply = {
+//             name: this.interventionType,
+//             args: this.interventionType === 'scaling' 
+//                 ? [parseFloat(this.encoderValue)]  // Parse as float if Scaling
+//                 : [this.encoderValue],             // Use raw value otherwise
+//             selections: this.globalSelections
+// }
+            let intervention_instance_to_apply;
+            console.log('Current interventionType:', this.interventionType);
+
+            if (this.interventionType === 'Scaling') {
+                // If the intervention type is Scaling, parse encoderValue as a float
+                intervention_instance_to_apply = {
+                    name: 'Scaling',
+                    args: [parseFloat(this.encoderValue)],  // Convert to float for Scaling
+                    selections: this.globalSelections
+                };
+            } else {
+                // Default to Encoder intervention type
+                intervention_instance_to_apply = {
+                    name: 'Encoder',
+                    args: [this.encoderValue],  // Use raw encoderValue for Encoder
+                    selections: this.globalSelections
+                };
             }
+
 
             console.log(this.globalSelections)
 
@@ -80,12 +101,14 @@ export default {
 
             //GENERATED ADDENDS
 
+            console.log("requesting addends")
             response = await fetch(this.host + '/addends', {
                 method: 'GET',
 
             })
 
             var addends = await response.json()
+            console.log("addends spit out")
 
             this.$emit('newAddends', addends)
         }
@@ -111,13 +134,17 @@ export default {
         </div>
 
         <div class="button-test">
-            <Button class="button" label="Generate" @click="generate" :disabled="loading" style="background-color: rgb(0, 255, 255); color: black; margin: 5%; margin-left: 5%;"/>
+            <Button class="button" label="Generate" @click="generate" :disabled="loading" style="background-color: rgb(0, 255, 0); color: black; margin: 5%; margin-left: 5%;"/>
         </div>
 
     </div>
 </template>
 
 <style>
+.prompt {
+    border-color: rgb(0, 255, 0);
+}
+
 .input-container {
     position: fixed;
     display: flex;
@@ -125,17 +152,19 @@ export default {
     justify-content: center;
     align-items: center;
     gap: 20px;
-    /* height: 7%; */
-    /* width:45%; */
-    margin-left: 30%;
-    color:white;
-    bottom:0;
-    /* background-color: rgba(0, 255, 255, 1); */
-    border-radius: 15px 15px 0px 0px;
-    border-color: white;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    /* max-width: 600px; */
+    
+    color:rgb(0, 255, 0);
+    bottom:5px;
+    border-radius: 10px 10px 10px 10px;
+    border-color: rgb(0, 255, 0);
     border-style: solid;
     padding-left: 10px;
     padding-right: 10px;
+    border-width: 2px;
 }
 
 </style>
