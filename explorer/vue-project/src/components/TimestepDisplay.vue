@@ -41,6 +41,7 @@ import { cameraActive, setCameraActive } from '../js/init.js';
 // the reactive vue variables
 const range = ref([0, 50]);
 
+//function to update timesteps wrt slider
 watch(range, ([near, far]) => {
     if (cameraActive) {
         cameraActive.near = near;
@@ -49,6 +50,7 @@ watch(range, ([near, far]) => {
     }
 });
 
+//function to switch between 2D and 3D
 function switchCamera() {
     console.log("changing cam");
     setCameraActive(value.value);

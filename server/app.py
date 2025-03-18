@@ -143,7 +143,7 @@ async def addends():
 
     cached_addends = None
 
-    data = [tensor.tolist() for tensor in addends]
+    data = [tensor.mul(255).to(torch.int8).tolist() for tensor in addends]
     # with open("/share/u/imgr/nnsight-folder/collaborative_diffusion/explorer/vue-project/src/assets/addends.json", "w") as f:
     #     json.dump(data, f)
 

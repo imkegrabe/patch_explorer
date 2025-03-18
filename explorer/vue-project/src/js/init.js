@@ -10,10 +10,10 @@ export function init(element, global_selections) {
     const scene = new THREE.Scene();
     camera1 = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
     camera2 = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0, 100 );
-    // camera1.position.set(0, 0, 100);
-    // camera2.position.set(0, 0, 100);
+    camera1.position.set(0, 0, 100);
+    camera2.position.set(0, 0, 100);
 
-    cameraActive = camera2;
+    cameraActive = camera1;
 
     // RENDERER
     const renderer = new THREE.WebGLRenderer();
@@ -61,7 +61,7 @@ export function init(element, global_selections) {
                 break;
         }
     
-        controls.update(); // Ensure camera updates properly
+        controls.update();
     });
     
 
@@ -100,14 +100,20 @@ export function init(element, global_selections) {
 export function setCameraActive(cameraType) {
     if (cameraType === '3D') {
         cameraActive = camera1; 
+        
         cameraActive.position.set(0, 0, 100);
-        cameraActive.near = 0.01;
-        cameraActive.far = 1000;
+        // cameraActive.near = 0.01;
+        // cameraActive.far = 1000;
+
     } else if (cameraType === '2D') {
         cameraActive = camera2;  
-        cameraActive.position.set(0, 0, 100);
-        cameraActive.near = 0;
-        cameraActive.far = 100;
-
+        
+        // cameraActive.position.set(0, 0, 100);
+        // cameraActive.near = 0;
+        // cameraActive.far = 100;
+        
     }
+    cameraActive.updateProjectionMatrix();
+    controls.object = cameraActive;
+    controls.update();
 }
