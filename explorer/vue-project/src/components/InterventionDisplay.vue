@@ -3,23 +3,31 @@
 
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
+import Dropdown from 'primevue/dropdown';
+
 
 export default {
     name: "InterventionDisplay",
     components: {
         Button,
-        InputText
+        InputText,
+        Dropdown,
     },
     
     props: {
         encoderValue: String,
+        interventionType: String,
     },
 
     data() {
         return {
             sidebar_visible: false,
-            
-        }
+            selectedIntervention: null,
+            interventions: [
+                { name: 'Encoding', code: 'Encoding'},
+                { name: 'Scaling', code: 'Scaling'}
+            ]            
+        };
     },
     methods: {
         toggle(){
@@ -32,43 +40,56 @@ export default {
 
 <template>
      <div class="intervention-display" v-if="sidebar_visible"> 
-        <div class="encoding">
-            <label>Encoding: </label>
+
+        <div class="chooser">
+            <Dropdown 
+                v-model="selectedIntervention"
+                :options="interventions" 
+                optionLabel="name" 
+                placeholder="Intervention"
+                class="bla"
+                @change="$emit('update:interventionType', selectedIntervention.code)"
+            />
+            
             <InputText
                 type="text"
                 :value="encoderValue"
                 @input="$emit('update:encoderValue', $event.target.value)" 
             />
-            <small></small>
-        </div>
-         
+         </div>
+
      </div> 
 
-     <Button class="interventionbutton" label="Interventions" severity="info" @click="sidebar_visible = !sidebar_visible" /> 
+     <Button class="button" label="Interventions" severity="info" @click="sidebar_visible = !sidebar_visible" style="position:fixed;top:10px;left:20px;background-color:rgba(0, 255, 255, 1); color:black" /> 
      
 </template>
 
 
 <style>
-.interventionbutton {
-    position:fixed;
-    right:0px;
-    /* background-color:rgba(0, 255, 255, 1); */
-    border-color: rgb(0, 255, 0);
-    color:black;
-    transform: rotate(-90deg);
-    align-items: right;
-}
 
-.intervention-display{
+.intervention-display {
     position: absolute;
-    height:100vh;
-    width: 15%;
+    left: 0;
+    height: 100vh;
+    width: 250px;
     background-color: rgba(255, 255, 255, 0);
     flex-direction: column;
     align-items: center;
     display: flex;
-    flex-direction: row;
 }
+
+.chooser {
+    position: relative;
+    left: 0;
+    height: 100vh;
+    width: 250px;
+    background-color: rgba(255, 255, 255, 0);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    
+}
+
 
 </style>

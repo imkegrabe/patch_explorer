@@ -36,7 +36,7 @@ export default {
             <img :src="imageUrl" alt="Image" />
         </div>
     </div>
-    <Button class="imagebutton" label="Output" severity="info" @click="imagebar_visible = !imagebar_visible"></Button>
+    <Button class="imagebutton" label="<" severity="info" @click="imagebar_visible = !imagebar_visible"></Button>
 
 </template>
 
@@ -45,8 +45,9 @@ export default {
 .imagebutton {
     position:fixed;
     right:0px;
-    border-color: rgb(0, 255, 0);
-    transform: rotate(-90deg);
+    border-color: rgb(0, 255, 0) !important;
+    /* transform: rotate(-90deg); */
+    background-color: rgb(0, 255, 0) !important;
 }
 
 
