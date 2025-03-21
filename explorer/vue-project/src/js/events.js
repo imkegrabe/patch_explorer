@@ -205,7 +205,7 @@ export function setGrids(scene, meshes, focused, global_selections){
 
                 };
 
-                z_offset += padding;
+                z_offset += 3;
 
             global_selections.push(layer_selections);
             

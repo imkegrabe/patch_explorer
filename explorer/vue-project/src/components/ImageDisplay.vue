@@ -36,12 +36,20 @@ export default {
             <img :src="imageUrl" alt="Image" />
         </div>
     </div>
-    <Button class="button" label="Output" severity="info" @click="imagebar_visible = !imagebar_visible" style="position:fixed;top:10px;right:20px;background-color:rgba(0, 255, 255, 1); color:black" /> 
+    <Button class="imagebutton" label="Output" severity="info" @click="imagebar_visible = !imagebar_visible"></Button>
 
 </template>
 
 
 <style>
+.imagebutton {
+    position:fixed;
+    right:0px;
+    border-color: rgb(0, 255, 0);
+    transform: rotate(-90deg);
+}
+
+
 .imagebar {
     padding: 5px;
 }
@@ -50,7 +58,7 @@ export default {
     width: 256px;
     height: 256px;
     /* object-fit: contain; */
-    padding: 5px;
+    padding: 0px;
     display: block;
     align-items: center;
     border-color: rgb(0, 255, 0);

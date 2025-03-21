@@ -31,7 +31,7 @@ export function init(element, global_selections) {
         RIGHT: THREE.MOUSE.ROTATE      
     };
     controls.enablePan = true;
-    controls.update();
+    // controls.update();
 
     function animate() {
         renderer.render(scene, cameraActive);

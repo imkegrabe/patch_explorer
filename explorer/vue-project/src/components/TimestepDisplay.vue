@@ -44,8 +44,8 @@ const range = ref([0, 50]);
 //function to update timesteps wrt slider
 watch(range, ([near, far]) => {
     if (cameraActive) {
-        cameraActive.near = near;
-        cameraActive.far = far;
+        cameraActive.near = near * 3;
+        cameraActive.far = far * 3;
         cameraActive.updateProjectionMatrix();
     }
 });

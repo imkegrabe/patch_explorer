@@ -44,7 +44,7 @@ export default {
     <Explorer class="explorer" position="absolute" ref="explorer_container" :globalSelections="globalSelections"></Explorer>
 
     <div class="header">
-      <img src="@/assets/patch-explorer.svg" alt="Header Image saying Patch Explorer in pixels font" />
+      <img src="@/assets/patch-explorer-logo-green.svg" alt="Header Image saying Patch Explorer in pixels font" />
     </div>
 
     <InterventionDisplay
@@ -124,7 +124,7 @@ export default {
 .header img {
   max-height: 100%; /* Ensures the image doesn’t overflow the header’s height */
   width: auto; /* Maintains the aspect ratio */
-  height: 120px; /* Set a specific height for better control */
+  height: 100px; /* Set a specific height for better control */
   display: block;
 }
 

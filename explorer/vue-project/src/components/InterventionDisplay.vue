@@ -44,22 +44,31 @@ export default {
          
      </div> 
 
-     <Button class="button" label="Interventions" severity="info" @click="sidebar_visible = !sidebar_visible" style="position:fixed;top:10px;left:20px;background-color:rgba(0, 255, 255, 1); color:black" /> 
+     <Button class="interventionbutton" label="Interventions" severity="info" @click="sidebar_visible = !sidebar_visible" /> 
      
 </template>
 
 
 <style>
+.interventionbutton {
+    position:fixed;
+    right:0px;
+    /* background-color:rgba(0, 255, 255, 1); */
+    border-color: rgb(0, 255, 0);
+    color:black;
+    transform: rotate(-90deg);
+    align-items: right;
+}
 
-    .intervention-display{
-        position: absolute;
-        height:100vh;
-        width: 15%;
-        background-color: rgba(255, 255, 255, 0);
-        flex-direction: column;
-        align-items: center;
-        display: flex;
-        flex-direction: row;
-    }
+.intervention-display{
+    position: absolute;
+    height:100vh;
+    width: 15%;
+    background-color: rgba(255, 255, 255, 0);
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+}
 
 </style>
