@@ -64,7 +64,7 @@ const options = ref(['2D', '3D']);
     flex-direction: column;
     position: fixed; 
     bottom: 100px; 
-    left: 5%; 
+    left: 0%; 
     color: white;
     align-items: center;
 }

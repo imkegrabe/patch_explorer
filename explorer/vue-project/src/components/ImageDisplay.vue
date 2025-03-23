@@ -15,7 +15,7 @@ export default {
     },
     data() {
         return {
-            imagebar_visible: false,
+            imagebar_visible: true,
         }
     },
     methods: {
@@ -36,8 +36,9 @@ export default {
             <img :src="imageUrl" alt="Image" />
         </div>
     </div>
+    <!--
     <Button class="imagebutton" label="<" severity="info" @click="imagebar_visible = !imagebar_visible"></Button>
-
+    -->
 </template>
 
 

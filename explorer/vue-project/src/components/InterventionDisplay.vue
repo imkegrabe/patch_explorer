@@ -21,7 +21,7 @@ export default {
 
     data() {
         return {
-            sidebar_visible: false,
+            sidebar_visible: true,
             selectedIntervention: null,
             interventions: [
                 { name: 'Encoding', code: 'Encoding'},
@@ -59,9 +59,9 @@ export default {
          </div>
 
      </div> 
-
+     <!--
      <Button class="button" label="Interventions" severity="info" @click="sidebar_visible = !sidebar_visible" style="position:fixed;top:10px;left:20px;background-color:rgba(0, 255, 255, 1); color:black" /> 
-     
+    -->
 </template>
 
 
