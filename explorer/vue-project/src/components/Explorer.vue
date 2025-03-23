@@ -2,7 +2,7 @@
 
 import { init } from '@/js/init';
 // import gridData from '@/assets/gridData.json';
-import gridData from '@/assets/addends.json';
+// import gridData from '@/assets/addends.json';
 // import title from '@/assets/title.json';
 // import { grid_to_image } from '@/js/grids';
 // import Sidebar from 'primevue/sidebar';
@@ -17,7 +17,8 @@ export default {
         return {
             // testgrids: [[[[1, .3, .5], [.6, 1, .8], [.1, .34, .6]], [[1, .23, .25], [.6, .1, .48], [.31, .49, .36]]], [[[1, .3, .5], [.6, 1, .8], [.1, .34, .6]], [[1, .23, .25], [.6, .1, .48], [.31, .49, .36]]]],
             setGrids: null,
-            allGrids: gridData,
+            // allGrids: gridData,
+            allGrids: [],
             loading: false,
             ImageUrl: null,
             interventions: [],
