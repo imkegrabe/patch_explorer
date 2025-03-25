@@ -10,8 +10,8 @@ export function init(element, global_selections) {
     const scene = new THREE.Scene();
     camera1 = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
     camera2 = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0, 100 );
-    camera1.position.set(0, 0, 100);
-    camera2.position.set(0, 0, 100);
+    camera1.position.set(0, 0, 150);
+    camera2.position.set(0, 0, 150);
 
     cameraActive = camera1;
 
