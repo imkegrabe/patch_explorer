@@ -13,6 +13,8 @@ export default {
       isImageRowVisible: true,
       globalSelections: [],
       encoderValue: "",
+      start_step: 0,
+      end_step: 50
     }
   },
 
@@ -33,7 +35,12 @@ export default {
     },
     updateAddends(addends) {
       this.$refs.explorer_container.setGrids(addends)
-    }
+    },
+    updateTimesteps({ start_step, end_step }) {
+       this.start_step = start_step;
+       this.end_step = end_step;
+       console.log(start_step, end_step)
+     }
   }
 }
 </script>
@@ -66,13 +73,14 @@ export default {
       :loading="false"  
       :temp="[]"
       :encoderValue="encoderValue"
+      :start_step="start_step"
+      :end_step="end_step"
     ></InputDisplay>
 
     <!-- <input type="range" id="z-slider" min="2" max="100" value="99" style="position: fixed; bottom: 200px; left: 5%; transform: translateX(-50%) rotate(-90deg);">
     <span id="slider-value" style="position: fixed; bottom: 200px; left: 4%; transform: translateX(-50%);">50</span> -->
 
-    <TimestepDisplay></TimestepDisplay>
-
+    <TimestepDisplay @updateTimesteps="updateTimesteps" ></TimestepDisplay>
 
   </div>
 </template>
