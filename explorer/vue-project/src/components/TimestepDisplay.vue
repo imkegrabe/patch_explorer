@@ -35,6 +35,8 @@ const emit = defineEmits(['changeViewMode']);
 // the reactive vue variables
 const range = ref([0, 50]);
 
+// const emitTimesteps = defineEmits2(['updateTimesteps']);
+
 //function to update timesteps wrt slider
 watch(range, ([near, far]) => {
     if (cameraActive) {
@@ -51,6 +53,11 @@ function switchCamera() {
     emit('changeViewMode', value.value);
 }
 
+// function to update timesteps wrt slider
+// watch(range, ([near, far]) => {
+//      emitTimesteps('updateTimesteps', { start_step: near, end_step: far });
+//  });
+ 
 const value = ref('3D');
 const options = ref(['2D', '3D']);
 // const range = ref([0, 100]); // Uncomment if you plan to use this

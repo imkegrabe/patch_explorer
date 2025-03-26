@@ -68,7 +68,7 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focus
 
         raycaster.setFromCamera( mouse, camera );
         raycaster.near = camera.near;
-        raycaster.near = camera.near;
+        // raycaster.near = camera.near;
 
 
         // If something is currently focused, we need to either click on a pixel to further select it.

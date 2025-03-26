@@ -17,6 +17,8 @@ export default {
         temp: Object,
         globalSelections: Array,
         encoderValue: String,
+        start_step: Number,
+        end_step: Number
     },
     data() {
         return {
@@ -28,49 +30,28 @@ export default {
         async generate() {
             const interventions_to_apply = []
 
-            // for (const intervention of this.interventions) {
-
-            //     for (const intervention_instance of intervention.instances) {
-
-            //         const intervention_instance_to_apply = {
-            //             name: intervention.name,
-            //             args: Array.from(intervention_instance.field_values),
-            //             modules: Array.from(intervention_instance.envoys)
-            //         }
-
-            //         interventions_to_apply.push(intervention_instance_to_apply)
-            //     }
-            // }
-
-            // Replace this to work for all interventions - hardcoded to Scaling right now
-//             const intervention_instance_to_apply = {
-//             name: this.interventionType,
-//             args: this.interventionType === 'scaling' 
-//                 ? [parseFloat(this.encoderValue)]  // Parse as float if Scaling
-//                 : [this.encoderValue],             // Use raw value otherwise
-//             selections: this.globalSelections
-// }
             let intervention_instance_to_apply;
-            console.log('Current interventionType:', this.interventionType);
-
-            if (this.interventionType === 'Scaling') {
-                // If the intervention type is Scaling, parse encoderValue as a float
-                intervention_instance_to_apply = {
-                    name: 'Scaling',
-                    args: [parseFloat(this.encoderValue)],  // Convert to float for Scaling
-                    selections: this.globalSelections
-                };
-            } else {
-                // Default to Encoder intervention type
-                intervention_instance_to_apply = {
-                    name: 'Encoder',
-                    args: [this.encoderValue],  // Use raw encoderValue for Encoder
-                    selections: this.globalSelections
-                };
+             console.log('Current interventionType:', this.interventionType);
+ 
+             if (this.interventionType === 'Scaling') {
+                 // If the intervention type is Scaling, parse encoderValue as a float
+                 intervention_instance_to_apply = {
+                     name: 'Scaling',
+                     args: [parseFloat(this.encoderValue)],  // Convert to float for Scaling
+                     selections: this.globalSelections
+                 };
+             } else {
+                 // Default to Encoder intervention type
+                 intervention_instance_to_apply = {
+                     name: 'Encoder',
+                     args: [this.encoderValue],  // Use raw encoderValue for Encoder
+                     selections: this.globalSelections,
+                     start_step: this.start_step,
+                     end_step: this.end_step
+                 };
             }
 
-
-            console.log(this.globalSelections)
+            console.log("applying intervention", intervention_instance_to_apply) //(this.globalSelections)
 
             interventions_to_apply.push(intervention_instance_to_apply)
 
