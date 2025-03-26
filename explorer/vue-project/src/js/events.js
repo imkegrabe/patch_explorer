@@ -5,7 +5,7 @@ import { toHandlerKey } from "vue";
 import { grid_to_image, destroy, splitImage, updateImage } from "./grids";
 
 // focus specific head image.
-export function focus(scene, image, focused){
+export function focus(scene, image, focused) {
 
     // Get THREE.Group of pixels
     let group = splitImage(image);
@@ -20,11 +20,11 @@ export function focus(scene, image, focused){
 }
 
 // defocus a head image Mesh by destroying its expanded pixels and re-showing the image.
-export function defocus(focused){
+export function defocus(focused) {
 
     updateImage(focused.image, focused.pixels)
 
-    for (let i = 0; i < focused.pixels.children.length; i++){
+    for (let i = 0; i < focused.pixels.children.length; i++) {
         destroy(focused.pixels.children[i]);
     }
     focused.pixels.removeFromParent();
@@ -33,22 +33,17 @@ export function defocus(focused){
     focused.pixels = null;
 }
 
-// export function setPixel(pixel, value){
-//     pixel.material.transparent = value;
-// }
-export function setPixel(pixel, value){
 
-    if (value && pixel.material.color.b !== 1.0){
-        pixel.material.color.r = 1.0;
-        pixel.material.color.g = 0.0;
-        pixel.material.color.b = 1.0;
-        pixel.material.transparent = true;
-    }
-    else if (!value && pixel.material.color.b === 1.0){
-        pixel.material.color.b = 0.0;
-        pixel.material.color.r = 0.0;
+const alpha = .6;
+
+export function setPixel(pixel, value) {
+
+    if (value) {
         pixel.material.color.g = 1.0;
-        pixel.material.transparent = false;
+        pixel.material.opacity = alpha
+    }
+    else{
+        pixel.material.opacity = 0.0;
     }
 
     pixel.material.needsUpdate = true;
@@ -57,40 +52,37 @@ export function setPixel(pixel, value){
 
 // This function returns a function that should be called when the canvas is clicked
 // This is functional programming :)
-export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focused){
+export function onClick(scene, renderer, camera, mouse, raycaster, selection_meshes, focused) {
 
-    function inner(event){
+    function inner(event) {
         event.preventDefault();
 
         // Theres no nice vue "onclick", we need to find out what Meshes you clicked on via raytracing
-        mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-        mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+        mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+        mouse.y = - (event.clientY / renderer.domElement.clientHeight) * 2 + 1;
 
-        raycaster.setFromCamera( mouse, camera );
-        raycaster.near = camera.near;
-        raycaster.near = camera.near;
-
+        raycaster.setFromCamera(mouse, camera);
 
         // If something is currently focused, we need to either click on a pixel to further select it.
         // Otherwise de-select it.
-        if (focused.image !== null){
-            var intersects = raycaster.intersectObjects( focused.pixels.children, false );
+        if (focused.image !== null) {
+            var intersects = raycaster.intersectObjects(focused.pixels.children, false);
 
-            if (intersects.length > 0){
+            if (intersects.length > 0) {
                 // Here is where we would call a function to select pixels.
-                if (event.shiftKey){
+                if (event.shiftKey) {
 
-                    let transparent = event.ctrlKey;
+                    let transparent = !event.ctrlKey;
 
-                    for (let i = 0; i < focused.pixels.children.length; i++){
+                    for (let i = 0; i < focused.pixels.children.length; i++) {
                         let pixel = focused.pixels.children[i]
                         setPixel(pixel, transparent);
                     }
                 }
-                else{
+                else {
                     let pixel = intersects[0].object
                     // setPixel(pixel, !pixel.material.transparent)
-                    setPixel(pixel, pixel.material.color.b !== 1.0) // for green
+                    setPixel(pixel, pixel.material.opacity === 0.0) // for green
                 }
                 return
             }
@@ -99,10 +91,10 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focus
         }
 
         // Now we want to check if we clicked any image meshes to split up and select.
-        var intersects = raycaster.intersectObjects( meshes, false );
+        var intersects = raycaster.intersectObjects(selection_meshes, false);
 
-        if (intersects.length > 0){
-           focus(scene, intersects[0].object, focused);
+        if (intersects.length > 0) {
+            focus(scene, intersects[0].object, focused);
         }
     }
 
@@ -110,26 +102,26 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focus
 
 }
 
-export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, focused){
+export function onMouseMove(scene, renderer, camera, mouse, raycaster, selection_meshes, focused) {
 
-    function inner(event){
+    function inner(event) {
         event.preventDefault();
 
         // Theres no nice vue "onclick", we need to find out what Meshes you clicked on via raytracing
-        mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-        mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+        mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+        mouse.y = - (event.clientY / renderer.domElement.clientHeight) * 2 + 1;
 
-        raycaster.setFromCamera( mouse, camera );
+        raycaster.setFromCamera(mouse, camera);
 
         // If something is currently focused, we need to either click on a pixel to further select it.
         // Otherwise de-select it.
-        if (focused.image !== null && event.shiftKey){
-            var intersects = raycaster.intersectObjects( focused.pixels.children, false );
+        if (focused.image !== null && event.shiftKey) {
+            var intersects = raycaster.intersectObjects(focused.pixels.children, false);
 
-            if (intersects.length > 0){
+            if (intersects.length > 0) {
 
-                let transparent = event.ctrlKey;
-            
+                let transparent = !event.ctrlKey;
+
                 let pixel = intersects[0].object
                 setPixel(pixel, transparent)
 
@@ -143,99 +135,135 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, meshes, f
 }
 
 let padding = 2;
-
 // Function to return the function that should be called when there are new grids from the server
-export function setGrids(scene, meshes, focused, global_selections){
+export function setGrids(scene, selection_meshes, timestep_groups, focused, global_selections) {
 
-    function inner(grids){
+    function inner(grids) {
+        const startTime = performance.now();
+        
+        // Clear existing state
+        selection_meshes.forEach(mesh => destroy(mesh));
+        selection_meshes.length = 0;
 
-        // First destroy any existing meshes. Maybe instead update meshes? That sounds annoying.
-        for (let i = 0; i < meshes.length; i++){
-            destroy(meshes[i]);
+        if (focused.image) {
+            defocus(focused);
         }
-
-        // Do the same with focused head pixels.
-        // console.log(focused.image !== null)
-        if (focused.image !== null){
-           defocus(focused)
-        }
-
-        global_selections.length = 0;
-
-        meshes.length = 0;
         focused.image = null;
         focused.pixels = null;
 
-        // looooop through layers - main array with all layers is called grids and is in NOW 5D - [ layers [ TIMESTEPS [ heads [ rows [ cols ]]]]]
-        let x_offset = 0 //-grids[0][0].length / 2;
-        
-//LAYERS
-        for (let layer_idx = 0; layer_idx < grids.length; layer_idx++){
+        global_selections.length = 0;
+        timestep_groups.length = 0;
+        // Helper function to unwrap Vue proxies
+        const unwrapProxy = proxy => proxy?.__v_raw || proxy;
 
-            // group doesnt work yet - do we need it tho?
-            // let group = new THREE.Group();
-            // group.position.set(layer_idx*layer_offset, 0, 0);
-            // scene.add(group);
+        // Calculate timesteps and create groups
+        const timestepCount = grids[0].length;
+        const headPositions = [];
+        const headDimensions = [];
 
-            // TIMESTEPS
-            let timesteps = grids[layer_idx];
-            
-            // unwrapping the vue proxy
-            function unwrapProxy(proxy) {
-                return proxy?.__v_raw || proxy;
-            }
-            timesteps = timesteps.map(unwrapProxy).map(item => Array.isArray(item) ? Array.from(item) : item);            
-            console.log(timesteps)
+        // Process each timestep
+        for (let timestep_idx = 0; timestep_idx < timestepCount; timestep_idx++) {
+            const timestepGroup = new THREE.Group();
+            timestepGroup.position.set(0, 0, timestep_idx * 3);
+            scene.add(timestepGroup);
+            timestep_groups.push(timestepGroup);
 
-            //NORMALIZE PER LAYER HERE ... hm not working - in None
-            // console.log(Math.max(...timesteps.map(Math.abs)));
+            let layer_x_offset = 0;
 
-            let z_offset = 0
+            // Process each layer
+            grids.forEach((layer, layer_idx) => {
+                const timesteps = layer.map(unwrapProxy).map(item =>
+                    Array.isArray(item) ? Array.from(item) : item
+                );
+                const heads = timesteps[timestep_idx];
 
-            // loop through timesteps
-            for (let timestep_idx = 0; timestep_idx < timesteps.length; timestep_idx++){           
+                // Calculate initial y offset
+                let head_y_offset = -(64 * 3.5 + padding * 3.5) +
+                    layer[0][0].length * 3.5 + padding * 3.5;
 
-                //HEADS
-                let heads = timesteps[timestep_idx]
-                
-                //initial offset for heads - where to start the column on y
-                let y_offset = -(64*3.5 + padding*3.5) + grids[layer_idx][0][0].length*3.5 + padding*3.5;
+                const layer_selections = [];
+                if (timestep_idx === 0) {   
+                    global_selections.push(layer_selections);
+                }
 
-            var layer_selections = [];
+                // Process each head
+                heads.forEach((grid, head_idx) => {
+                    const image = grid_to_image(grid);
+                    const head_selections = [];
+                    layer_selections.push(head_selections);
 
-            //loop through heads which are all the grids at layer x and timestep x
-            for (let head_idx = 0; head_idx < heads.length; head_idx++){
-                let grid = heads[head_idx];
+                    // Position image
+                    const posX = layer_x_offset + grid.length / 2 - 380 - 20;
+                    const posY = head_y_offset + 231 - 20;
+                    image.position.set(posX, posY, 0);
 
-// transform grid into image
-                let image = grid_to_image(grid);
+                    // Store position data for first timestep
+                    if (timestep_idx === 0) {
+                        headPositions.push({
+                            layer: layer_idx,
+                            head: head_idx,
+                            x: posX,
+                            y: posY,
+                            selections: head_selections
+                        });
+                        headDimensions.push({
+                            width: grid.length,
+                            height: grid[0].length
+                        });
+                    }
 
-                var head_selections = [];
-                image.selections = head_selections; //list 
-                layer_selections.push(head_selections); //list is global
+                    timestepGroup.add(image);
+                    head_y_offset -= grid.length + padding;
+                });
 
-                image.position.set(x_offset + grid.length/2 -380-20, y_offset+231-20, z_offset); //moving to the ~center so it looks good with header...
-
-                // console.log("layer", layer_idx, "head", head_idx, image.position)
-                // group.add(image);
-
-                scene.add(image);
-                y_offset -= grid.length + padding;
-
-                meshes.push(image);
-
-            };
-
-z_offset += 3;
-
-            global_selections.push(layer_selections);
-            
-            }
-            
-            //move ... into x direction for the next layer
-            x_offset += grids[layer_idx][0][0].length + 20;
+                layer_x_offset += layer[0][0].length + 20;
+            });
         }
+
+        // Create selection overlay
+        const selectionGroup = new THREE.Group();
+        selectionGroup.position.set(0, 0, timestepCount * 3 + 1);
+        scene.add(selectionGroup);
+
+        // Create selection meshes
+        headPositions.forEach((headPos, idx) => {
+            const { width: gridWidth, height: gridHeight } = headDimensions[idx];
+
+            // Create a data texture with one pixel per grid cell with RGBA format
+            const size = gridWidth * gridHeight;
+            const data = new Uint8Array(4 * size); // RGBA values (4 bytes per pixel)
+            // Create the data texture with RGBA format
+            const texture = new THREE.DataTexture(
+                data,
+                gridWidth,
+                gridHeight,
+                THREE.RGBAFormat // Use RGBA instead of RGB
+            );
+            texture.needsUpdate = true;
+
+            // Create mesh with the texture
+            const mesh = new THREE.Mesh(
+                new THREE.PlaneGeometry(gridWidth, gridHeight),
+                new THREE.MeshBasicMaterial({
+                    map: texture,
+                    transparent: true,  // Enable transparency
+                })
+            );
+
+            mesh.selections = headPos.selections;
+
+            mesh.selections.push(1,2,3);
+
+            mesh.position.set(headPos.x, headPos.y, 0);
+            selectionGroup.add(mesh);
+            selection_meshes.push(mesh);
+        });
+
+        console.log("global_selections:", global_selections)
+        
+        const endTime = performance.now();
+        console.log(`setGrids inner function took ${endTime - startTime} ms to execute`);
     }
 
-    return inner
+    return inner;
 }

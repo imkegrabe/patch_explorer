@@ -80,35 +80,44 @@ export default {
 
             this.$emit('loading')
 
-            let response
-
-            response = await fetch(this.host + '/generate', {
+            const generateStartTime = performance.now();
+            
+            let response = await fetch(this.host + '/generate', {
                 method: 'POST',
                 body: JSON.stringify(request),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-
-            })
+            });
+            
+            const generateEndTime = performance.now();
+            console.log(`Generate fetch took ${generateEndTime - generateStartTime} ms`);
 
             //GENERATED IMAGE
-            var image = await response.blob()
+            const startTime = performance.now();
             
+            var image = await response.blob();
             var url = URL.createObjectURL(image);
+            
+            const endTime = performance.now();
+            console.log(`Image blob processing took ${endTime - startTime} ms`);
 
             this.$emit('newImageUrl', url)
 
             //GENERATED ADDENDS
 
             console.log("requesting addends")
+            const addendsStartTime = performance.now();
+            
             response = await fetch(this.host + '/addends', {
                 method: 'GET',
-
             })
 
-            var addends = await response.json()
-            console.log("addends spit out")
+            var addends = await response.json();
+            
+            const addendsEndTime = performance.now();
+            console.log(`Addends fetch and processing took ${addendsEndTime - addendsStartTime} ms`);
 
             this.$emit('newAddends', addends)
         }

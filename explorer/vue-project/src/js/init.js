@@ -2,18 +2,18 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { onClick, setGrids, onMouseMove} from './events';
 
-export let camera1, camera2, cameraActive;
+export let camera1, camera2, cameraActive, timestep_groups;
 
 export function init(element, global_selections) {
 
     // CAMERA
     const scene = new THREE.Scene();
     camera1 = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
-    camera2 = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0, 100 );
-    camera1.position.set(0, 0, 150);
-    camera2.position.set(0, 0, 150);
+    camera2 = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0, 200 );
+    camera1.position.set(0, 0, 153);
+    camera2.position.set(0, 0, 153);
 
-    cameraActive = camera1;
+    cameraActive = camera2;
 
     // RENDERER
     const renderer = new THREE.WebGLRenderer();
@@ -73,17 +73,18 @@ export function init(element, global_selections) {
         controls2.update();
     
     // Define state vars here
+    timestep_groups = [];
     let raycaster = new THREE.Raycaster();
     let mouse = new THREE.Vector2();
-    let meshes = [];
+    let selection_meshes = [];
     let focused = { 'image': null, 'pixels': null } // currently opened head and its patches
     // let global_selections = [] // stores the data structure: list of layer, heads, x, y coordinates...
 
     // Add click event
-    element.addEventListener("click", onClick(scene, renderer, camera1, mouse, raycaster, meshes, focused));
-    element.addEventListener("mousemove", onMouseMove(scene, renderer, camera1, mouse, raycaster, meshes, focused));
-    element.addEventListener("click", onClick(scene, renderer, camera2, mouse, raycaster, meshes, focused));
-    element.addEventListener("mousemove", onMouseMove(scene, renderer, camera2, mouse, raycaster, meshes, focused));
+    // element.addEventListener("click", onClick(scene, renderer, camera1, mouse, raycaster, selection_meshes, focused));
+    // element.addEventListener("mousemove", onMouseMove(scene, renderer, camera1, mouse, raycaster, selection_meshes, focused));
+    element.addEventListener("click", onClick(scene, renderer, camera2, mouse, raycaster, selection_meshes, focused));
+    element.addEventListener("mousemove", onMouseMove(scene, renderer, camera2, mouse, raycaster, selection_meshes, focused));
 
     // adjust to browser drags
     window.addEventListener('resize', () => {
@@ -110,7 +111,7 @@ export function init(element, global_selections) {
     });
 
     // Get setGrids handle.
-    return setGrids(scene, meshes, focused, global_selections);
+    return setGrids(scene, selection_meshes, timestep_groups, focused, global_selections);
 }
 
 export function setCameraActive(cameraType) {

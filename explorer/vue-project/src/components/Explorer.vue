@@ -55,10 +55,6 @@ export default {
         // Returns a function to call when new grids are returned from the server.
         this.setGrids = init(canvas, this.globalSelections);
 
-        // Set grids to example.
-        this.setGrids(this.allGrids)
-
-        // canvas.height = height;
 
     }
 }

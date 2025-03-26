@@ -26,7 +26,7 @@ export function getColor(value) {
         const g = x < 0 ? 255 : 0;
         // const g = 0;
         const b = 255;
-        const alpha = Math.abs(x / 5 ); //*2
+        const alpha = Math.abs(x); //*2
         return [r, g, b, alpha]
     };
 
@@ -35,32 +35,37 @@ export function getColor(value) {
 
 // Convert a grid to a threejs texture.
 export function grid_to_texture(grid) {
-
-    let size = grid.length;
-
-    // Need to create a flattened list of colors
-    // In the form [r1,g2,b1,a1,r2,g2,b2,...]
-    let texture = new Uint8Array(size * size * 4);
-
-    for (let row = size-1; row >= 0; row--) { // we loop through the grid just to get the shape
+    const size = grid.length;
+    
+    // Create a flattened list of colors in the form [r1,g1,b1,a1,r2,g2,b2,...]
+    const data = new Uint8Array(size * size * 4);
+    
+    // Pre-calculate the flip index to avoid repeated calculations
+    const lastRowIndex = size - 1;
+    
+    // Process the grid in a single pass with optimized indexing
+    for (let row = 0; row < size; row++) {
+        const flippedRow = lastRowIndex - row; // Calculate flipped row index once
+        const rowOffset = row * size * 4;
+        
         for (let col = 0; col < size; col++) {
-            let index = (row * size + col) * 4;
-
-            let rgba = getColor(grid[size-(row+1)][col]); // then start with the value from the last row, because image data is upsite down hehe :)
-
-            texture[index] = rgba[0];
-            texture[index + 1] = rgba[1];
-            texture[index + 2] = rgba[2];
-            texture[index + 3] = rgba[3];
+            const pixelOffset = rowOffset + col * 4;
+            const rgba = getColor(grid[flippedRow][col]);
+            
+            // Set all 4 values at once using array destructuring
+            data[pixelOffset] = rgba[0];
+            data[pixelOffset + 1] = rgba[1];
+            data[pixelOffset + 2] = rgba[2];
+            data[pixelOffset + 3] = rgba[3];
         }
     }
-
-    texture = new THREE.DataTexture(texture, size, size);
-    // Need this or else the colors are weird.
-    texture.colorSpace = THREE.SRGBColorSpace
+    
+    // Create the texture from the data
+    const texture = new THREE.DataTexture(data, size, size);
+    texture.colorSpace = THREE.SRGBColorSpace;
     texture.needsUpdate = true;
-
-    return texture
+    
+    return texture;
 }
 
 // Converts a grid to a single image Mesh Plane with the heatmap as a texture.
@@ -126,12 +131,16 @@ let split_padding = 0;
 export function splitImage(image){
 
     let pixels = image_to_pixels(image);
-    let position = image.position;
+    
+    // Get the absolute world position of the image
+    let worldPosition = new THREE.Vector3();
+    image.getWorldPosition(worldPosition);
 
     let size = pixels.length;
 
     let group = new THREE.Group()
-    group.position.set(position.x, position.y)
+    // Set the group position to the absolute world position of the image
+    group.position.set(worldPosition.x, worldPosition.y, worldPosition.z)
 
     let offset = -size / 2 + .5 - (split_padding * (size / 2));
 
@@ -156,7 +165,6 @@ export function splitImage(image){
 export function convert(i, row_len) {
 
     let row_idx = Math.floor(i / row_len);  // row index in original matrix
-    console.log("old row is", row_idx)
     let col_idx = i % row_len;  //column index
     
     // Calculate new row index
@@ -167,37 +175,6 @@ export function convert(i, row_len) {
 
     return new_index
     }
-
-// transfers the pixel-meshes transparency to the image-mesh
-// export function updateImage(image, pixels){ 
-
-//     let texture = image.material.map.source.data.data; //images texture
-//     let size = pixels.children.length;
-//     console.log("pixels.children.length", size)
-
-//     image.selections.length = 0 //to clear selections
-    
-//     let row_len = Math.sqrt(size)
-    
-//     for (let index = 0; index < size; index++){
-//         let aindex = index * 4 + 3;
-//         let pixel = pixels.children[index];
-
-//         let a = alpha;
-
-//         if (!pixel.material.transparent){ //instead of setting the 
-//             a = 255;
-//             let patch_index = convert(index, row_len)
-//             image.selections.push(patch_index)   //next: push coordinates to image.selections which is global (defined in setGrids)
-//         }
-
-//         texture[aindex] = a;
-//     }
-//     console.log("image.selections:", image.selections) // image here means head!
-
-//     image.material.map.needsUpdate = true;
-
-// }
 
 export function updateImage(image, pixels){ 
 
@@ -214,9 +191,10 @@ export function updateImage(image, pixels){
         let r = pixel.material.color.r;
         let g = pixel.material.color.g;
         let b = pixel.material.color.b;
+        let a = pixel.material.opacity;
 
 
-        if (b !== 1.0){ //instead of setting the 
+        if (a !== 0.0){ 
             let patch_index = convert(index, row_len)
             image.selections.push(patch_index)   //next: push coordinates to image.selections which is global (defined in setGrids)
         }
@@ -224,15 +202,13 @@ export function updateImage(image, pixels){
         texture[index * 4 + 0] = r * 255;
         texture[index * 4 + 1] = g * 255;
         texture[index * 4 + 2] = b * 255;
-        if (!pixel.material.transparent){
-            texture[index * 4 + 3] = 255;
-        }
+        texture[index * 4 + 3] = a * 255;
     }
+    
     console.log("image.selections:", image.selections)
     console.log("image.selections:", image.ggs) // image here means head!
 
     image.material.map.needsUpdate = true;
-
 }
 
 export function destroy(mesh){

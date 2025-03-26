@@ -28,7 +28,7 @@
 import { ref, watch } from 'vue';
 import SelectButton from 'primevue/selectbutton';
 import Slider from 'primevue/slider';
-import { cameraActive, setCameraActive } from '../js/init.js';
+import { cameraActive, setCameraActive, timestep_groups } from '../js/init.js';
 
 const emit = defineEmits(['changeViewMode']);
 
@@ -38,9 +38,9 @@ const range = ref([0, 50]);
 //function to update timesteps wrt slider
 watch(range, ([near, far]) => {
     if (cameraActive) {
-        cameraActive.near = (50-near) * 3;
-        cameraActive.far = (50-far) * 3;
-        cameraActive.updateProjectionMatrix();
+        timestep_groups.forEach((group, index) => {
+            group.visible = (index >= near && index <= far);
+        });
     }
 });
 
@@ -51,7 +51,7 @@ function switchCamera() {
     emit('changeViewMode', value.value);
 }
 
-const value = ref('3D');
+const value = ref('2D');
 const options = ref(['2D', '3D']);
 // const range = ref([0, 100]); // Uncomment if you plan to use this
 </script>
