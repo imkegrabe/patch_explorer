@@ -1,4 +1,4 @@
-// this file should have everything to do with handling events from the user.
+// THis file should have everything to do with handling events from the user.
 
 import * as THREE from 'three';
 import { toHandlerKey } from "vue";
@@ -33,8 +33,25 @@ export function defocus(focused){
     focused.pixels = null;
 }
 
+// export function setPixel(pixel, value){
+//     pixel.material.transparent = value;
+// }
 export function setPixel(pixel, value){
-    pixel.material.transparent = value;
+
+    if (value && pixel.material.color.b !== 1.0){
+        pixel.material.color.r = 1.0;
+        pixel.material.color.g = 0.0;
+        pixel.material.color.b = 1.0;
+        pixel.material.transparent = true;
+    }
+    else if (!value && pixel.material.color.b === 1.0){
+        pixel.material.color.b = 0.0;
+        pixel.material.color.r = 0.0;
+        pixel.material.color.g = 1.0;
+        pixel.material.transparent = false;
+    }
+
+    pixel.material.needsUpdate = true;
 }
 
 
@@ -50,6 +67,9 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focus
         mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
 
         raycaster.setFromCamera( mouse, camera );
+        raycaster.near = camera.near;
+        raycaster.near = camera.near;
+
 
         // If something is currently focused, we need to either click on a pixel to further select it.
         // Otherwise de-select it.
@@ -69,7 +89,8 @@ export function onClick(scene, renderer, camera, mouse, raycaster, meshes, focus
                 }
                 else{
                     let pixel = intersects[0].object
-                    setPixel(pixel, !pixel.material.transparent)
+                    // setPixel(pixel, !pixel.material.transparent)
+                    setPixel(pixel, pixel.material.color.b !== 1.0) // for green
                 }
                 return
             }
@@ -147,8 +168,8 @@ export function setGrids(scene, meshes, focused, global_selections){
 
         // looooop through layers - main array with all layers is called grids and is in NOW 5D - [ layers [ TIMESTEPS [ heads [ rows [ cols ]]]]]
         let x_offset = 0 //-grids[0][0].length / 2;
-
-        //LAYERS
+        
+//LAYERS
         for (let layer_idx = 0; layer_idx < grids.length; layer_idx++){
 
             // group doesnt work yet - do we need it tho?
@@ -158,7 +179,7 @@ export function setGrids(scene, meshes, focused, global_selections){
 
             // TIMESTEPS
             let timesteps = grids[layer_idx];
-
+            
             // unwrapping the vue proxy
             function unwrapProxy(proxy) {
                 return proxy?.__v_raw || proxy;
@@ -178,34 +199,34 @@ export function setGrids(scene, meshes, focused, global_selections){
                 let heads = timesteps[timestep_idx]
                 
                 //initial offset for heads - where to start the column on y
-                let y_offset = -(64*3.5 + padding*3.5) + grids[layer_idx][0][0].length*3.5 + padding*3.5; 
+                let y_offset = -(64*3.5 + padding*3.5) + grids[layer_idx][0][0].length*3.5 + padding*3.5;
 
-                var layer_selections = [];
+            var layer_selections = [];
 
-                //loop through heads which are all the grids at layer x and timestep x
-                for (let head_idx = 0; head_idx < heads.length; head_idx++){
-                    let grid = heads[head_idx];
+            //loop through heads which are all the grids at layer x and timestep x
+            for (let head_idx = 0; head_idx < heads.length; head_idx++){
+                let grid = heads[head_idx];
 
-                    // transform grid into image
-                    let image = grid_to_image(grid);
+// transform grid into image
+                let image = grid_to_image(grid);
 
-                    var head_selections = [];
-                    image.selections = head_selections; //list 
-                    layer_selections.push(head_selections); //list is global
+                var head_selections = [];
+                image.selections = head_selections; //list 
+                layer_selections.push(head_selections); //list is global
 
-                    image.position.set(x_offset + grid.length/2 -380-20, y_offset+231-20, z_offset); //moving to the ~center so it looks good with header...
+                image.position.set(x_offset + grid.length/2 -380-20, y_offset+231-20, z_offset); //moving to the ~center so it looks good with header...
 
-                    // console.log("layer", layer_idx, "head", head_idx, image.position)
-                    // group.add(image);
+                // console.log("layer", layer_idx, "head", head_idx, image.position)
+                // group.add(image);
 
-                    scene.add(image);
-                    y_offset -= grid.length + padding;
+                scene.add(image);
+                y_offset -= grid.length + padding;
 
-                    meshes.push(image);
+                meshes.push(image);
 
-                };
+            };
 
-                z_offset += 3;
+z_offset += 3;
 
             global_selections.push(layer_selections);
             

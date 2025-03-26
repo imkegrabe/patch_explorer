@@ -21,22 +21,29 @@ export function init(element, global_selections) {
     renderer.setClearColor(0x111111, 1); //background color, opacity
     element.appendChild(renderer.domElement);
 
-    // CONTROLS
-    const controls = new OrbitControls(cameraActive, renderer.domElement);
-    controls.enableRotate = false;
-    // Make click and drag pan not rotate
-    controls.mouseButtons = {
-        LEFT: THREE.MOUSE.PAN,         
-        MIDDLE: THREE.MOUSE.DOLLY,     
-        RIGHT: THREE.MOUSE.ROTATE      
-    };
-    controls.enablePan = true;
-    // controls.update();
-
     function animate() {
         renderer.render(scene, cameraActive);
     }
     renderer.setAnimationLoop(animate);
+
+    // CONTROLS
+    const controls1 = new OrbitControls(camera1, renderer.domElement);
+    const controls2 = new OrbitControls(camera2, renderer.domElement);
+    controls1.enableRotate = false;
+    controls2.enableRotate = false;
+    // // Make click and drag pan not rotate
+    controls1.mouseButtons = {
+        LEFT: THREE.MOUSE.PAN,         
+        MIDDLE: THREE.MOUSE.DOLLY,     
+        RIGHT: THREE.MOUSE.ROTATE      
+    };
+    controls2.mouseButtons = {
+        LEFT: THREE.MOUSE.PAN,         
+        MIDDLE: THREE.MOUSE.DOLLY,     
+        RIGHT: THREE.MOUSE.ROTATE      
+    };
+    controls1.enablePan = true;
+    controls2.enablePan = true;
 
     //PANNING CONTROLS
     window.addEventListener("keydown", (event) => {
@@ -59,12 +66,12 @@ export function init(element, global_selections) {
                 cameraActive.position.y -= panSpeed;
                 controls.target.y -= panSpeed;
                 break;
-        }
+            }
+        });
     
-        controls.update();
-    });
+        controls1.update();
+        controls2.update();
     
-
     // Define state vars here
     let raycaster = new THREE.Raycaster();
     let mouse = new THREE.Vector2();
@@ -73,8 +80,10 @@ export function init(element, global_selections) {
     // let global_selections = [] // stores the data structure: list of layer, heads, x, y coordinates...
 
     // Add click event
-    element.addEventListener("click", onClick(scene, renderer, cameraActive, mouse, raycaster, meshes, focused));
-    element.addEventListener("mousemove", onMouseMove(scene, renderer, cameraActive, mouse, raycaster, meshes, focused));
+    element.addEventListener("click", onClick(scene, renderer, camera1, mouse, raycaster, meshes, focused));
+    element.addEventListener("mousemove", onMouseMove(scene, renderer, camera1, mouse, raycaster, meshes, focused));
+    element.addEventListener("click", onClick(scene, renderer, camera2, mouse, raycaster, meshes, focused));
+    element.addEventListener("mousemove", onMouseMove(scene, renderer, camera2, mouse, raycaster, meshes, focused));
 
     // adjust to browser drags
     window.addEventListener('resize', () => {
@@ -85,12 +94,19 @@ export function init(element, global_selections) {
         renderer.setSize(width, height);
 
         // update camera aspect ratio and projection matrix
-        cameraActive.aspect = width / height;
-        cameraActive.left = width / -2;
-        cameraActive.right = width / 2;
-        cameraActive.top = height / 2;
-        cameraActive.bottom = height / -2;
-        cameraActive.updateProjectionMatrix();
+        camera1.aspect = width / height;
+        camera1.left = width / -2;
+        camera1.right = width / 2;
+        camera1.top = height / 2;
+        camera1.bottom = height / -2;
+        camera1.updateProjectionMatrix();
+
+        camera2.aspect = width / height;
+        camera2.left = width / -2;
+        camera2.right = width / 2;
+        camera2.top = height / 2;
+        camera2.bottom = height / -2;
+        camera2.updateProjectionMatrix();
     });
 
     // Get setGrids handle.
@@ -101,7 +117,7 @@ export function setCameraActive(cameraType) {
     if (cameraType === '3D') {
         cameraActive = camera1; 
         
-        cameraActive.position.set(0, 0, 100);
+        // cameraActive.position.set(0, 0, 150);
         // cameraActive.near = 0.01;
         // cameraActive.far = 1000;
 
@@ -113,6 +129,7 @@ export function setCameraActive(cameraType) {
         // cameraActive.far = 100;
         
     }
+    controls = new OrbitControls(cameraActive, renderer.domElement);
     cameraActive.updateProjectionMatrix();
     controls.object = cameraActive;
     controls.update();
