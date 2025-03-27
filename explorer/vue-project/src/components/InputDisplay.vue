@@ -17,6 +17,7 @@ export default {
         temp: Object,
         globalSelections: Array,
         encoderValue: String,
+        interventionType: String,
         start_step: Number,
         end_step: Number
     },
@@ -31,29 +32,26 @@ export default {
             const interventions_to_apply = []
 
             let intervention_instance_to_apply;
-             console.log('Current interventionType:', this.interventionType);
-             // Log the start and end step values
-             console.log('Start step:', this.start_step);
-             console.log('End step:', this.end_step);
-             if (this.interventionType === 'Scaling') {
-                 // If the intervention type is Scaling, parse encoderValue as a float
-                 intervention_instance_to_apply = {
-                     name: 'Scaling',
-                     args: [parseFloat(this.encoderValue)],  // Convert to float for Scaling
-                     selections: this.globalSelections,
-                     start_step: this.start_step,
-                     end_step: this.end_step
-                 };
-             } else {
-                 // Default to Encoder intervention type
-                 intervention_instance_to_apply = {
-                     name: 'Encoder',
-                     args: [this.encoderValue],  // Use raw encoderValue for Encoder
-                     selections: this.globalSelections,
-                     start_step: this.start_step,
-                     end_step: this.end_step
-                 };
+            console.log('Current interventionType:', this.interventionType);
+
+            if (this.interventionType === 'Scaling') {
+                intervention_instance_to_apply = {
+                    name: 'Scaling',
+                    args: [parseFloat(this.encoderValue)],
+                    selections: this.globalSelections,
+                    start_step: this.start_step,
+                    end_step: this.end_step
+                };
+            } else {
+                intervention_instance_to_apply = {
+                    name: 'Encoder',
+                    args: [this.encoderValue],
+                    selections: this.globalSelections,
+                    start_step: this.start_step,
+                    end_step: this.end_step
+                };
             }
+
 
             console.log("applying intervention", intervention_instance_to_apply) //(this.globalSelections)
 
@@ -65,44 +63,35 @@ export default {
 
             this.$emit('loading')
 
-            const generateStartTime = performance.now();
-            
-            let response = await fetch(this.host + '/generate', {
+            let response
+
+            response = await fetch(this.host + '/generate', {
                 method: 'POST',
                 body: JSON.stringify(request),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-            });
-            
-            const generateEndTime = performance.now();
-            console.log(`Generate fetch took ${generateEndTime - generateStartTime} ms`);
+
+            })
 
             //GENERATED IMAGE
-            const startTime = performance.now();
+            var image = await response.blob()
             
-            var image = await response.blob();
             var url = URL.createObjectURL(image);
-            
-            const endTime = performance.now();
-            console.log(`Image blob processing took ${endTime - startTime} ms`);
 
             this.$emit('newImageUrl', url)
 
             //GENERATED ADDENDS
 
             console.log("requesting addends")
-            const addendsStartTime = performance.now();
-            
             response = await fetch(this.host + '/addends', {
                 method: 'GET',
+
             })
 
-            var addends = await response.json();
-            
-            const addendsEndTime = performance.now();
-            console.log(`Addends fetch and processing took ${addendsEndTime - addendsStartTime} ms`);
+            var addends = await response.json()
+            console.log("addends spit out")
 
             this.$emit('newAddends', addends)
         }
@@ -160,7 +149,5 @@ export default {
     padding-right: 10px;
     border-width: 2px;
 }
-
-
 
 </style>
