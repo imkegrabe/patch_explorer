@@ -47,21 +47,22 @@ export default {
                 :options="interventions" 
                 optionLabel="name" 
                 placeholder="Intervention"
-                class="bla"
+                class="dropdown"
                 @change="$emit('update:interventionType', selectedIntervention.code)"
             />
             
             <InputText
                 type="text"
+                class="args"
                 :value="encoderValue"
                 @input="$emit('update:encoderValue', $event.target.value)" 
             />
          </div>
 
      </div> 
-     <!--
-     <Button class="button" label="Interventions" severity="info" @click="sidebar_visible = !sidebar_visible" style="position:fixed;top:10px;left:20px;background-color:rgba(0, 255, 255, 1); color:black" /> 
-    -->
+
+     <!--<Button class="button" label="Interventions" severity="info" @click="sidebar_visible = !sidebar_visible" style="position:fixed;top:10px;left:20px;background-color:rgba(0, 255, 255, 1); color:black" />  -->
+     
 </template>
 
 
@@ -90,6 +91,5 @@ export default {
     display: flex;
     
 }
-
 
 </style>

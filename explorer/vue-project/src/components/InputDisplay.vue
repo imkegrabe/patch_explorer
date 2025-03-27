@@ -12,6 +12,7 @@ const props = defineProps({
     temp: Object,
     globalSelections: Array,
     encoderValue: String,
+    interventionType: String,
     start_step: Number,
     end_step: Number
 });
@@ -30,20 +31,32 @@ async function generate() {
         isGenerating.value = true;
         emit('loading');
         
-        // Create the intervention object
-        const intervention = {
-            name: 'Encoder',
-            args: [props.encoderValue],
-            selections: props.globalSelections,
-            start_step: props.start_step,
-            end_step: props.end_step
-        };
+        let intervention_instance_to_apply;
+        console.log('Current interventionType:', this.interventionType);
+
+        if (this.interventionType === 'Scaling') {
+            intervention_instance_to_apply = {
+                name: 'Scaling',
+                args: [parseFloat(this.encoderValue)],
+                selections: this.globalSelections,
+                start_step: this.start_step,
+                end_step: this.end_step
+            };
+        } else {
+            intervention_instance_to_apply = {
+                name: 'Encoder',
+                args: [this.encoderValue],
+                selections: this.globalSelections,
+                start_step: this.start_step,
+                end_step: this.end_step
+            };
+        }
         
         // Create the request
         const request = {
             prompt: prompt_value.value,
             seed: seed_value.value,
-            interventions: [intervention]
+            interventions: [intervention_instance_to_apply]
         };
         
         console.log("Request:", request);

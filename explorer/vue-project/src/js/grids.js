@@ -5,28 +5,13 @@ import * as THREE from 'three';
 let alpha = 255;
 
 export function getColor(value) {
-    const cmapCool = (x) => {
-        const r = Math.floor(255 * x);
-        const g = Math.floor(255 * (1 - x));
-        const b = 255;
-        return [r, g, b, alpha]
-    };
-
-    const cmapCool2 = (x) => {
-        const r = x !== 0 ? 255 : 0; // absolute values now...
-        // const g = x < 0 ? 255 : 0;
-        const g = 0;
-        const b = 255;
-        const alpha = Math.abs(255 * x * 2); //*2
-        return [r, g, b, alpha]
-    };
 
     const cmapCool3 = (x) => {
         const r = x > 0 ? 255 : 0;
         const g = x < 0 ? 255 : 0;
         // const g = 0;
         const b = 255;
-        const alpha = Math.abs(x); //*2
+        const alpha = Math.abs(x / 5); //*2
         return [r, g, b, alpha]
     };
 
