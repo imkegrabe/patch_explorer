@@ -32,23 +32,23 @@ async function generate() {
         emit('loading');
         
         let intervention_instance_to_apply;
-        console.log('Current interventionType:', this.interventionType);
+        console.log('Current interventionType:', props.interventionType);
 
-        if (this.interventionType === 'Scaling') {
+        if (props.interventionType === 'Scaling') {
             intervention_instance_to_apply = {
                 name: 'Scaling',
-                args: [parseFloat(this.encoderValue)],
-                selections: this.globalSelections,
-                start_step: this.start_step,
-                end_step: this.end_step
+                args: [parseFloat(props.encoderValue)],
+                selections: props.globalSelections,
+                start_step: props.start_step,
+                end_step: props.end_step
             };
         } else {
             intervention_instance_to_apply = {
                 name: 'Encoder',
-                args: [this.encoderValue],
-                selections: this.globalSelections,
-                start_step: this.start_step,
-                end_step: this.end_step
+                args: [props.encoderValue],
+                selections: props.globalSelections,
+                start_step: props.start_step,
+                end_step: props.end_step
             };
         }
         

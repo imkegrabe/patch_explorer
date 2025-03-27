@@ -180,6 +180,7 @@ export function setGrids(scene, selection_meshes, timestep_meshes, focused, glob
                     data[i] = 0;
                 }
                 mesh.visible = false;
+                mesh.selections.length = 0;
                 mesh.material.map.needsUpdate = true;
             });
             console.timeEnd('clear-selection-meshes');

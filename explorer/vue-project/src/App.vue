@@ -35,6 +35,7 @@ export default {
     },
     updateAddends(addends) {
       this.$refs.explorer_container.setGrids(addends)
+      this.$refs.timestep_display.resetRange()
     },
     updateTimesteps({ start_step, end_step }) {
       this.start_step = start_step;
