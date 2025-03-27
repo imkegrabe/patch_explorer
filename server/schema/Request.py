@@ -10,6 +10,10 @@ class InterventionRequestModel(BaseModel):
     selections: List[List[List[int]]]
 
     args: List[Any] = []
+    
+    start_step: int = 0
+
+    end_step: int = 50
 
 
 class RequestModel(BaseModel):

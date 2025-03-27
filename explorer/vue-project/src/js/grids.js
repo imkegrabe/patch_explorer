@@ -52,7 +52,7 @@ export function grid_to_texture(grid) {
             const pixelOffset = rowOffset + col * 4;
             const rgba = getColor(grid[flippedRow][col]);
             
-            // Set all 4 values at once using array destructuring
+            // Set all 4 values at once without array destructuring for better performance
             data[pixelOffset] = rgba[0];
             data[pixelOffset + 1] = rgba[1];
             data[pixelOffset + 2] = rgba[2];
@@ -60,8 +60,13 @@ export function grid_to_texture(grid) {
         }
     }
     
-    // Create the texture from the data
-    const texture = new THREE.DataTexture(data, size, size);
+    // Create the texture from the data - simplify to avoid color issues
+    const texture = new THREE.DataTexture(
+        data, 
+        size, 
+        size, 
+        THREE.RGBAFormat
+    );
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.needsUpdate = true;
     
@@ -70,27 +75,27 @@ export function grid_to_texture(grid) {
 
 // Converts a grid to a single image Mesh Plane with the heatmap as a texture.
 export function grid_to_image(grid) {
-
     let texture = grid_to_texture(grid);
-
     let size = grid.length;
-
     let geometry = new THREE.PlaneGeometry(size, size);
 
     let material = new THREE.MeshBasicMaterial({ map: texture, transparent:true});
 
     let mesh = new THREE.Mesh(geometry, material);
-
-    return mesh
+    // Keep frustum culling but don't change other properties
+    mesh.frustumCulled = true;
+    
+    return mesh;
 }
 
 // Converts an image Mesh to individual pixel Meshes
 export function image_to_pixels(image){
-
     // Heres the flattened rgba array we created earlier in grid_to_texture.
     let texture = image.material.map.source.data;
     let size = texture.height;
 
+    // Shared geometry for all pixels
+    let geometry = new THREE.PlaneGeometry(1, 1);
     let pixels = [];
 
     // Loop through pixel positions from the size of the image Mesh.
@@ -98,7 +103,6 @@ export function image_to_pixels(image){
         let _pixels = [];
 
         for (let col = 0; col < size; col++){
-
             let index = (col * size + row) * 4;
 
             // Get rgb data e.x [127,127,255]
@@ -107,15 +111,19 @@ export function image_to_pixels(image){
             let b = texture.data[index+2];
             let a = texture.data[index+3];
 
-            // Make a 1x1 pixel
-            let geometry = new THREE.PlaneGeometry(1, 1);
-
             // color it using a string
             let color = new THREE.Color(`rgb(${r}, ${g}, ${b})`)
                 
-            // let material = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide, transparent:true, opacity:alpha/255});
-            let material = new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide, transparent:true, opacity:a/255});
+            let material = new THREE.MeshBasicMaterial({ 
+                color: color, 
+                side: THREE.FrontSide , 
+                transparent: true, 
+                opacity: a/255,
+                // Restore original transparency handling
+                depthWrite: true
+            });
             let mesh = new THREE.Mesh(geometry, material);
+            mesh.frustumCulled = true;
 
             _pixels.push(mesh);
         }

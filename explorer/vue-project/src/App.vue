@@ -24,10 +24,9 @@ export default {
     InterventionDisplay,
     InputDisplay,
     TimestepDisplay,
-    TimestepDisplay
-},
+  },
 
-    methods: {
+  methods: {
     updateImage(url) {
       this.imageUrl = url;
       console.log("updating image")
@@ -35,12 +34,16 @@ export default {
     },
     updateAddends(addends) {
       this.$refs.explorer_container.setGrids(addends)
+      this.$refs.timestep_display.resetRange()
     },
     updateTimesteps({ start_step, end_step }) {
        this.start_step = start_step;
        this.end_step = end_step;
        console.log(start_step, end_step)
-     }
+     },
+    changeViewMode(mode) {
+      console.log("Changing view mode to:", mode);
+    }
   }
 }
 </script>
@@ -77,10 +80,15 @@ export default {
       :end_step="end_step"
     ></InputDisplay>
 
+    <TimestepDisplay 
+      ref="timestep_display"
+      @updateTimesteps="updateTimesteps" 
+      @changeViewMode="changeViewMode">
+    </TimestepDisplay>
+
     <!-- <input type="range" id="z-slider" min="2" max="100" value="99" style="position: fixed; bottom: 200px; left: 5%; transform: translateX(-50%) rotate(-90deg);">
     <span id="slider-value" style="position: fixed; bottom: 200px; left: 4%; transform: translateX(-50%);">50</span> -->
 
-    <TimestepDisplay @updateTimesteps="updateTimesteps" ></TimestepDisplay>
 
   </div>
 </template>
@@ -92,53 +100,65 @@ export default {
 
 .image-row {
   position: fixed;
-    right: 0;
-    height: 100%; /* Adjust height as needed */
-    color: white;
-    display: flex;
-    justify-content: center; /* Distributes buttons evenly */
-    align-items: center;
-    z-index: 100; /* Ensures it stays above other content */
+  right: 0;
+  height: 100%;
+  /* Adjust height as needed */
+  color: white;
+  display: flex;
+  justify-content: center;
+  /* Distributes buttons evenly */
+  align-items: center;
+  z-index: 100;
+  /* Ensures it stays above other content */
 }
 
 .control-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 60px; /* Adjust height as needed */
-    background-color: #222; /* Dark background for contrast */
-    color: white;
-    display: flex;
-    justify-content: space-around; /* Distributes buttons evenly */
-    align-items: center;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5); /* Adds a subtle shadow */
-    z-index: 100; /* Ensures it stays above other content */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  /* Adjust height as needed */
+  background-color: #222;
+  /* Dark background for contrast */
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  /* Distributes buttons evenly */
+  align-items: center;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+  /* Adds a subtle shadow */
+  z-index: 100;
+  /* Ensures it stays above other content */
 }
 
 .header {
-    position: fixed;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px;
-    /* width: 150vh; */
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px;
+  /* width: 150vh; */
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 .header img {
-  max-height: 100%; /* Ensures the image doesn’t overflow the header’s height */
-  width: auto; /* Maintains the aspect ratio */
-  height: 100px; /* Set a specific height for better control */
+  max-height: 100%;
+  /* Ensures the image doesn't overflow the header's height */
+  width: auto;
+  /* Maintains the aspect ratio */
+  height: 100px;
+  /* Set a specific height for better control */
   display: block;
 }
 
 @media (max-width: 768px) {
-    .header img {
-        width: 90%; /* Shrinks the image to fit smaller screens */
-    }
+  .header img {
+    width: 90%;
+    /* Shrinks the image to fit smaller screens */
+  }
 }
 </style>

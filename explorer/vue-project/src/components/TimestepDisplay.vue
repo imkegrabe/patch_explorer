@@ -8,7 +8,7 @@
             range 
             :min="0"
             :max="50"
-            step="1"
+            :step="1"
             orientation="vertical"
             />
         
@@ -28,22 +28,64 @@
 import { ref, watch } from 'vue';
 import SelectButton from 'primevue/selectbutton';
 import Slider from 'primevue/slider';
-import { cameraActive, setCameraActive, timestep_groups } from '../js/init.js';
+import { cameraActive, setCameraActive, timestep_groups, requestRender, forceRender } from '../js/init.js';
 
-const emit = defineEmits(['changeViewMode']);
+const emit = defineEmits(['changeViewMode', 'updateTimesteps']);
 
 // the reactive vue variables
 const range = ref([0, 50]);
 
-// const emitTimesteps = defineEmits2(['updateTimesteps']);
+// Function to reset the slider to default range
+function resetRange() {
+    range.value = [0, 50];
+    updateVisibility(0, 50);
+}
+
+// Make resetRange available to parent components
+defineExpose({ resetRange });
+
+// Function to update visibility with debouncing for smoother updates
+let updateTimeout = null;
+function updateVisibility(near, far) {
+    // Clear any pending timeouts
+    if (updateTimeout) {
+        clearTimeout(updateTimeout);
+    }
+    
+    // Immediately update visibility for better responsiveness
+    if (cameraActive && timestep_groups) {
+        timestep_groups.forEach((group, index) => {
+            // Update group visibility
+            const isVisible = (index >= near && index <= far);
+            
+            // Only modify the DOM if visibility changed
+            if (group.visible !== isVisible) {
+                group.visible = isVisible;
+            }
+            
+            // Add to scene if not already there
+            if (isVisible && !group.parent) {
+                cameraActive.parent.add(group);
+            }
+        });
+        
+        // Force render to see changes immediately - use direct rendering
+        forceRender();
+        
+        // Also schedule a regular render
+        requestRender();
+    }
+    
+    // Emit the timestep values to parent component with slight delay
+    // to avoid too many events during rapid slider movement
+    updateTimeout = setTimeout(() => {
+        emit('updateTimesteps', { start_step: near, end_step: far });
+    }, 50);
+}
 
 //function to update timesteps wrt slider
 watch(range, ([near, far]) => {
-    if (cameraActive) {
-        timestep_groups.forEach((group, index) => {
-            group.visible = (index >= near && index <= far);
-        });
-    }
+    updateVisibility(near, far);
 });
 
 //function to switch between 2D and 3D
@@ -51,6 +93,9 @@ function switchCamera() {
     console.log("changing cam");
     setCameraActive(value.value);
     emit('changeViewMode', value.value);
+    
+    // Update visibility after camera switch to ensure correct state
+    updateVisibility(range.value[0], range.value[1]);
 }
 
 const value = ref('2D');

@@ -32,13 +32,17 @@ export default {
 
             let intervention_instance_to_apply;
              console.log('Current interventionType:', this.interventionType);
- 
+             // Log the start and end step values
+             console.log('Start step:', this.start_step);
+             console.log('End step:', this.end_step);
              if (this.interventionType === 'Scaling') {
                  // If the intervention type is Scaling, parse encoderValue as a float
                  intervention_instance_to_apply = {
                      name: 'Scaling',
                      args: [parseFloat(this.encoderValue)],  // Convert to float for Scaling
-                     selections: this.globalSelections
+                     selections: this.globalSelections,
+                     start_step: this.start_step,
+                     end_step: this.end_step
                  };
              } else {
                  // Default to Encoder intervention type
@@ -156,5 +160,7 @@ export default {
     padding-right: 10px;
     border-width: 2px;
 }
+
+
 
 </style>
