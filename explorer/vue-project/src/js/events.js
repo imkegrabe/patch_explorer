@@ -2,7 +2,7 @@
 
 import * as THREE from 'three';
 import { toHandlerKey } from "vue";
-import { grid_to_image, destroy, splitImage, updateImage } from "./grids";
+import { destroy, splitImage, updateImage, initialize, load} from "./grids";
 import { requestRender, forceRender } from "./init";
 
 // focus specific head image.
@@ -70,6 +70,7 @@ export function onClick(scene, renderer, camera, mouse, raycaster, selection_mes
             var intersects = raycaster.intersectObjects(focused.pixels.children, false);
 
             if (intersects.length > 0) {
+                console.log('intersectscfocus', intersects[0].object);
                 // Here is where we would call a function to select pixels.
                 if (event.shiftKey) {
 
@@ -95,6 +96,7 @@ export function onClick(scene, renderer, camera, mouse, raycaster, selection_mes
         var intersects = raycaster.intersectObjects(selection_meshes, false);
 
         if (intersects.length > 0) {
+            console.log('intersects', intersects[0].object);
             focus(scene, intersects[0].object, focused);
         }
     }
@@ -137,222 +139,80 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, selection
 
 let padding = 2;
 // Function to return the function that should be called when there are new grids from the server
-export function setGrids(scene, selection_meshes, timestep_groups, focused, global_selections) {
-    // Pre-declare variables outside loops for performance
-    let layer_x_offset, head_y_offset, posX, posY;
-    let image, gridWidth, gridHeight, texture, mesh;
-    let size, data;
-    
+export function setGrids(scene, selection_meshes, timestep_meshes, focused, global_selections) {
+    let cache = null;
     function inner(grids) {
-        const startTime = performance.now();
+        // Use cached result if available
+        console.time('setGrids-execution');
         
-        // Request early render to show something is happening - use direct rendering
-        forceRender();
-        
-        // Use a more efficient scene clearing approach
-        function clearScene(scene) {
-            // First clean up focused pixels if they exist
-            if (focused.image !== null || focused.pixels !== null) {
-                // Clean up any expanded pixels
-                if (focused.pixels) {
-                    // Properly dispose of all pixel meshes in the group
-                    for (let i = 0; i < focused.pixels.children.length; i++) {
-                        destroy(focused.pixels.children[i]);
-                    }
-                    // Remove from scene
-                    if (focused.pixels.parent) {
-                        focused.pixels.parent.remove(focused.pixels);
-                    }
-                }
-                
-                // Reset focused object
-                focused.image = null;
-                focused.pixels = null;
-            }
-            
-            // Clear timestep groups
-            timestep_groups.forEach(group => {
-                scene.remove(group);
-                group.traverse(obj => {
-                    if (obj.geometry) obj.geometry.dispose();
-                    if (obj.material) {
-                        if (Array.isArray(obj.material)) {
-                            obj.material.forEach(mat => {
-                                if (mat.map) mat.map.dispose();
-                                mat.dispose();
-                            });
-                        } else {
-                            if (obj.material.map) obj.material.map.dispose();
-                            obj.material.dispose();
-                        }
-                    }
-                });
+        if (!cache) {
+            console.time('initialize-grids');
+            cache = initialize(grids);
+            console.timeEnd('initialize-grids');
+
+            console.time('add-meshes-to-scene');
+            cache[0].forEach(mesh => {
+                scene.add(mesh);
+                timestep_meshes.push(mesh);
             });
-            
-            // Clear selection meshes
-            selection_meshes.forEach(mesh => {
-                if (mesh.parent) {
-                    mesh.parent.remove(mesh);
-                }
-                if (mesh.geometry) mesh.geometry.dispose();
-                if (mesh.material) {
-                    if (mesh.material.map) mesh.material.map.dispose();
-                    mesh.material.dispose();
-                }
-            });
-            
-            // Also remove any selection group from the scene
-            const selectionGroup = scene.children.find(child => 
-                child instanceof THREE.Group && child.userData && child.userData.isSelectionGroup);
-            if (selectionGroup) {
-                scene.remove(selectionGroup);
-            }
-            
-            // Reset arrays
-            selection_meshes.length = 0;
-            timestep_groups.length = 0;
-            global_selections.length = 0;
-        }
 
-        clearScene(scene);
-        
-        // Helper function to unwrap Vue proxies
-        const unwrapProxy = proxy => proxy?.__v_raw || proxy;
+            scene.add(cache[1]);
 
-        // Calculate timesteps and create groups
-        const timestepCount = grids[0].length;
-        const headPositions = [];
-        const headDimensions = [];
-        
-        // Create all timestep groups at once for better batching
-        for (let timestep_idx = 0; timestep_idx < timestepCount; timestep_idx++) {
-            const timestepGroup = new THREE.Group();
-            timestepGroup.position.set(0, 0, timestep_idx * 3);
-            scene.add(timestepGroup);
-            timestep_groups.push(timestepGroup);
-        }
-
-
-        // Process each timestep
-        for (let timestep_idx = 0; timestep_idx < timestepCount; timestep_idx++) {
-            layer_x_offset = 0;
-            const timestepGroup = timestep_groups[timestep_idx];
-
-            // Process each layer
-            grids.forEach((layer, layer_idx) => {
-                const timesteps = layer.map(unwrapProxy).map(item =>
-                    Array.isArray(item) ? Array.from(item) : item
-                );
-                const heads = timesteps[timestep_idx];
-
-                // Calculate initial y offset
-                head_y_offset = -(64 * 3.5 + padding * 3.5) +
-                    layer[0][0].length * 3.5 + padding * 3.5;
-
-                const layer_selections = [];
-                if (timestep_idx === 0) {   
-                    global_selections.push(layer_selections);
-                }
-                
-                // Process heads in batch
-                heads.forEach((grid, head_idx) => {
-                    image = grid_to_image(grid);
-                    const head_selections = [];
+            cache[1].children.forEach(child => {
+                let layer_selections = [];
+                child.children.forEach(mesh => {
+                    let head_selections = [];
+                    mesh.selections = head_selections;
+                    mesh.visible = false;
+                    selection_meshes.push(mesh);
                     layer_selections.push(head_selections);
-
-                    // Position image
-                    posX = layer_x_offset + grid.length / 2 - 380 - 20;
-                    posY = head_y_offset + 231 - 20;
-                    image.position.set(posX, posY, 0);
-
-                    // Store position data for first timestep
-                    if (timestep_idx === 0) {
-                        headPositions.push({
-                            layer: layer_idx,
-                            head: head_idx,
-                            x: posX,
-                            y: posY,
-                            selections: head_selections
-                        });
-                        headDimensions.push({
-                            width: grid.length,
-                            height: grid[0].length
-                        });
-                    }
-
-                    timestepGroup.add(image);
-                    head_y_offset -= grid.length + padding;
                 });
-
-                layer_x_offset += layer[0][0].length + 20;
+                global_selections.push(layer_selections);
             });
-            
-            // Force render update every few timesteps to show progress - use direct rendering
-            if (timestep_idx % 5 === 0) {
-                forceRender();
-            }
+            console.timeEnd('add-meshes-to-scene');
+        }
+        else {
+            console.time('clear-selection-meshes');
+            // Clear all selection meshes data
+            selection_meshes.forEach(mesh => {
+                const data = mesh.material.map.image.data;
+                for (let i = 0; i < data.length; i++) {
+                    data[i] = 0;
+                }
+                mesh.visible = false;
+                mesh.material.map.needsUpdate = true;
+            });
+            console.timeEnd('clear-selection-meshes');
         }
 
-        // Create selection overlay
-        const selectionGroup = new THREE.Group();
-        selectionGroup.position.set(0, 0, timestepCount * 3 + 1);
-        selectionGroup.userData = { isSelectionGroup: true }; // Mark for identification
-        scene.add(selectionGroup);
-
-        // Pre-create geometries and reuse them
-        const geometriesCache = new Map();
+        console.time('load-grids');
+        load(grids, cache[0]);
+        console.timeEnd('load-grids');
         
-        // Create selection meshes with optimized batching
-        headPositions.forEach((headPos, idx) => {
-            const { width: gridWidth, height: gridHeight } = headDimensions[idx];
-
-            // Create a data texture with one pixel per grid cell with RGBA format
-            const size = gridWidth * gridHeight;
-            const data = new Uint8Array(4 * size); // RGBA values (4 bytes per pixel)
-            
-            // Create the data texture with RGBA format
-            const texture = new THREE.DataTexture(
-                data,
-                gridWidth,
-                gridHeight,
-                THREE.RGBAFormat // Use RGBA instead of RGB
-            );
-            texture.needsUpdate = true;
-
-            // Get cached geometry or create new one
-            let geometry = geometriesCache.get(`${gridWidth}x${gridHeight}`);
-            if (!geometry) {
-                geometry = new THREE.PlaneGeometry(gridWidth, gridHeight);
-                geometriesCache.set(`${gridWidth}x${gridHeight}`, geometry);
+        console.time('cleanup-focused');
+        if (focused.image !== null || focused.pixels !== null) {
+            // Clean up any expanded pixels
+            if (focused.pixels) {
+                // Properly dispose of all pixel meshes in the group
+                for (let i = 0; i < focused.pixels.children.length; i++) {
+                    destroy(focused.pixels.children[i]);
+                }
+                // Remove from scene
+                if (focused.pixels.parent) {
+                    focused.pixels.parent.remove(focused.pixels);
+                }
             }
             
-            // Create mesh with the texture
-            const mesh = new THREE.Mesh(
-                geometry,
-                new THREE.MeshBasicMaterial({
-                    map: texture,
-                    transparent: true,  // Enable transparency
-                })
-            );
+            // Reset focused object
+            focused.image = null;
+            focused.pixels = null;
+        }
+        console.timeEnd('cleanup-focused');
 
-            mesh.selections = headPos.selections;
-            mesh.position.set(headPos.x, headPos.y, 0);
-            selectionGroup.add(mesh);
-            selection_meshes.push(mesh);
-        });
-        
-        const endTime = performance.now();
-        console.log(`setGrids inner function took ${endTime - startTime} ms to execute`);
-        
-        // Dispose geometry cache to prevent memory leaks
-        geometriesCache.forEach(geometry => geometry.dispose());
-        geometriesCache.clear();
-
-        // Force final rendering after setting grids - use direct rendering
-        forceRender();
-        
-        // Also schedule a regular render to ensure animation loop is updated
         requestRender();
+        console.timeEnd('setGrids-execution');
+        
+       
     }
 
     return inner;

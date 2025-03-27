@@ -1,144 +1,121 @@
-<script>
+<script setup>
+import { ref } from 'vue';
 import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
 
-export default {
-    name: 'Input',
-    components: {
-        Button,
-        InputNumber,
-        InputText
-    },
-    props: {
-        host: String,
-        interventions: Array,
-        loading: Boolean,
-        temp: Object,
-        globalSelections: Array,
-        encoderValue: String,
-        start_step: Number,
-        end_step: Number
-    },
-    data() {
-        return {
-            prompt_value: "unicorn",
-            seed_value: 93244,
-        }
-    },
-    methods: {
-        async generate() {
-            const interventions_to_apply = []
+// Define props
+const props = defineProps({
+    host: String,
+    interventions: Array,
+    loading: Boolean,
+    temp: Object,
+    globalSelections: Array,
+    encoderValue: String,
+    start_step: Number,
+    end_step: Number
+});
 
-            let intervention_instance_to_apply;
-             console.log('Current interventionType:', this.interventionType);
-             // Log the start and end step values
-             console.log('Start step:', this.start_step);
-             console.log('End step:', this.end_step);
-             if (this.interventionType === 'Scaling') {
-                 // If the intervention type is Scaling, parse encoderValue as a float
-                 intervention_instance_to_apply = {
-                     name: 'Scaling',
-                     args: [parseFloat(this.encoderValue)],  // Convert to float for Scaling
-                     selections: this.globalSelections,
-                     start_step: this.start_step,
-                     end_step: this.end_step
-                 };
-             } else {
-                 // Default to Encoder intervention type
-                 intervention_instance_to_apply = {
-                     name: 'Encoder',
-                     args: [this.encoderValue],  // Use raw encoderValue for Encoder
-                     selections: this.globalSelections,
-                     start_step: this.start_step,
-                     end_step: this.end_step
-                 };
-            }
+// Define emits
+const emit = defineEmits(['loading', 'newImageUrl', 'newAddends']);
 
-            console.log("applying intervention", intervention_instance_to_apply) //(this.globalSelections)
+// Reactive state
+const prompt_value = ref("unicorn");
+const seed_value = ref(93244);
+const isGenerating = ref(false);
 
-            interventions_to_apply.push(intervention_instance_to_apply)
-
-            const request = { prompt: this.prompt_value, seed: this.seed_value, interventions: interventions_to_apply }
-
-            console.log(request)
-
-            this.$emit('loading')
-
-            const generateStartTime = performance.now();
-            
-            let response = await fetch(this.host + '/generate', {
-                method: 'POST',
-                body: JSON.stringify(request),
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-            });
-            
-            const generateEndTime = performance.now();
-            console.log(`Generate fetch took ${generateEndTime - generateStartTime} ms`);
-
-            //GENERATED IMAGE
-            const startTime = performance.now();
-            
-            var image = await response.blob();
-            var url = URL.createObjectURL(image);
-            
-            const endTime = performance.now();
-            console.log(`Image blob processing took ${endTime - startTime} ms`);
-
-            this.$emit('newImageUrl', url)
-
-            //GENERATED ADDENDS
-
-            console.log("requesting addends")
-            const addendsStartTime = performance.now();
-            
-            response = await fetch(this.host + '/addends', {
-                method: 'GET',
-            })
-
-            var addends = await response.json();
-            
-            const addendsEndTime = performance.now();
-            console.log(`Addends fetch and processing took ${addendsEndTime - addendsStartTime} ms`);
-
-            this.$emit('newAddends', addends)
-        }
+// Generate function
+async function generate() {
+    try {
+        isGenerating.value = true;
+        emit('loading');
+        
+        // Create the intervention object
+        const intervention = {
+            name: 'Encoder',
+            args: [props.encoderValue],
+            selections: props.globalSelections,
+            start_step: props.start_step,
+            end_step: props.end_step
+        };
+        
+        // Create the request
+        const request = {
+            prompt: prompt_value.value,
+            seed: seed_value.value,
+            interventions: [intervention]
+        };
+        
+        console.log("Request:", request);
+        
+        // Generate the image
+        const startTime = performance.now();
+        console.log("Starting image generation request...");
+        
+        const imageResponse = await fetch(`${props.host}/generate`, {
+            method: 'POST',
+            body: JSON.stringify(request),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+        });
+        
+        const endTime = performance.now();
+        console.log(`Image generation completed in ${(endTime - startTime).toFixed(2)}ms`);
+        
+        // Process the image
+        console.log("Starting image processing...");
+        const imageStartTime = performance.now();
+        const image = await imageResponse.blob();
+        const url = URL.createObjectURL(image);
+        const imageEndTime = performance.now();
+        console.log(`Image processing completed in ${(imageEndTime - imageStartTime).toFixed(2)}ms`);
+        emit('newImageUrl', url);
+        
+        // Get the addends data
+        console.log("Starting addends fetch...");
+        const addendsStartTime = performance.now();
+        
+        const addendsResponse = await fetch(`${props.host}/addends`, {
+            method: 'GET',
+        });
+        
+        const addends = await addendsResponse.json();
+        const addendsEndTime = performance.now();
+        console.log(`Addends fetch and processing completed in ${(addendsEndTime - addendsStartTime).toFixed(2)}ms`);
+        emit('newAddends', addends);
+    } catch (error) {
+        console.error("Generation error:", error);
+    } finally {
+        isGenerating.value = false;
     }
 }
 </script>
 
-
-
 <template>
     <div class="input-container">
-
-        <div class="prompt">
-            <label>Prompt: </label>
-            <InputText type="text" v-model="prompt_value" />
-            <small></small>
+        <div class="input-group">
+            <label for="prompt">Prompt: </label>
+            <InputText id="prompt" type="text" v-model="prompt_value" />
         </div>
 
-        <div class="seed">
-            <label>Seed: </label>
-            <InputNumber v-model="seed_value" inputId="integeronly" :step="1" :min="0"/>
-            <small></small>
+        <div class="input-group">
+            <label for="seed">Seed: </label>
+            <InputNumber id="seed" v-model="seed_value" :step="1" :min="0" />
         </div>
 
-        <div class="button-test">
-            <Button class="button" label="Generate" @click="generate" :disabled="loading" style="background-color: rgb(0, 255, 0); color: black; margin: 5%; margin-left: 5%;"/>
-        </div>
-
+        <Button 
+            class="generate-button" 
+            label="Generate" 
+            icon="pi pi-play" 
+            @click="generate" 
+            :disabled="loading || isGenerating" 
+            :loading="isGenerating" />
     </div>
 </template>
 
-<style>
-.prompt {
-    border-color: rgb(0, 255, 0);
-}
-
+<style scoped>
 .input-container {
     position: fixed;
     display: flex;
@@ -149,18 +126,58 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     width: auto;
-    /* max-width: 600px; */
-    
-    color:rgb(0, 255, 0);
-    bottom:5px;
-    border-radius: 10px 10px 10px 10px;
-    border-color: rgb(0, 255, 0);
-    border-style: solid;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-width: 2px;
+    color: rgb(0, 255, 0);
+    bottom: 5px;
+    border-radius: 10px;
+    border: 2px solid rgb(0, 255, 0);
+    padding: 10px 15px;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
 }
 
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
+.input-group label {
+    font-weight: 600;
+    white-space: nowrap;
+}
 
+.generate-button {
+    background-color: rgb(0, 255, 0);
+    color: black;
+    border: none;
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+}
+
+.generate-button:hover:not(:disabled) {
+    background-color: rgb(0, 220, 0);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.generate-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+:deep(.p-inputtext),
+:deep(.p-inputnumber-input) {
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+    border-color: rgb(0, 255, 0);
+}
+
+:deep(.p-inputtext:focus),
+:deep(.p-inputnumber-input:focus) {
+    box-shadow: 0 0 0 2px rgba(0, 255, 0, 0.2);
+    border-color: rgb(0, 255, 0);
+}
 </style>
