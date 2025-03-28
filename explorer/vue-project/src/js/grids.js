@@ -18,7 +18,7 @@ export function getColor(value) {
     return cmapCool3(value);
 }
 
-let layer_padding = 8;
+let layer_padding = 20;
 let head_padding = 5;
 let timestep_padding = 3;
 
