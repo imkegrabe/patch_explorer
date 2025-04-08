@@ -160,13 +160,14 @@ export function setGrids(scene, selection_meshes, timestep_meshes, focused, glob
 
             cache[1].children.forEach(child => {
                 let layer_selections = [];
-                child.children.forEach(mesh => {
+                for (let i = child.children.length - 1; i >= 0; i--) {
+                    let mesh = child.children[i];
                     let head_selections = [];
                     mesh.selections = head_selections;
                     mesh.visible = false;
                     selection_meshes.push(mesh);
                     layer_selections.push(head_selections);
-                });
+                }
                 global_selections.push(layer_selections);
             });
             console.timeEnd('add-meshes-to-scene');
