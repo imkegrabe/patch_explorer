@@ -14,8 +14,11 @@ def split(q, k , v, attn):
     q = attn.head_to_batch_dim(q)
     k = attn.head_to_batch_dim(k)
     v = attn.head_to_batch_dim(v)
+    
+    heads = attn.heads
 
     attn_probs = attn.get_attention_scores(q, k)
+    
     # b: batch, t: tokens
     valued_attn_probs = torch.einsum(
         "bth, bst -> bsth", v, attn_probs
@@ -23,12 +26,12 @@ def split(q, k , v, attn):
     valued_attn_probs_sum = valued_attn_probs.sum(dim=2)  # addends
 
     valued_attn_probs_sum_cond = valued_attn_probs_sum[
-        -8:
+        -heads:
     ]  # only for the conditional image
     
     # MLP WEIGHTS
     mlp_weights = attn.to_out[0].weight.to(torch.bfloat16)
-    mlp_weights_byhead = mlp_weights.reshape(mlp_weights.shape[0], -1, 8)
+    mlp_weights_byhead = mlp_weights.reshape(mlp_weights.shape[0], -1, heads)
 
     # # ADDENDUM BY HEAD AFTER MLP: h: heads, s: spatial (patches), d: head dim, o: residual dim
     addendum_byhead = torch.einsum( 
