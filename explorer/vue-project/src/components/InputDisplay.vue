@@ -115,7 +115,7 @@ async function generate() {
 
         <div class="input-group">
             <label for="seed">Seed: </label>
-            <InputNumber id="seed" v-model="seed_value" :step="1" :min="0" />
+            <InputNumber id="seed" v-model="seed_value" :step="1" :min="0" :useGrouping="false" fluid />
         </div>
 
         <Button 
