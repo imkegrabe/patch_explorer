@@ -142,20 +142,27 @@ async def request(request: RequestModel):
 
 
 @app.get("/addends")
-async def addends():
-
+async def addends(show_timesteps: bool = False):
     global cached_addends
 
     addends = cached_addends
-
     cached_addends = None
 
-    data = [tensor.mul(255).to(torch.int8).tolist() for tensor in addends]
-    # with open("/share/u/imgr/nnsight-folder/collaborative_diffusion/explorer/vue-project/src/assets/addends.json", "w") as f:
-    #     json.dump(data, f)
+    # First multiply by 255 and convert to int8
+    data = [tensor.mul(255).to(torch.int8) for tensor in addends]
+    
+    print(show_timesteps)
+    print(data[0].shape)
+
+    if not show_timesteps:
+        # Average across timesteps dimension while keeping the dimension
+        data = [tensor.float().mean(dim=0, keepdim=True).to(torch.int8) for tensor in data]
+
+    # Convert to list
+    data = [tensor.tolist() for tensor in data]
 
     return JSONResponse(content=data)
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8004, workers=1)
+    uvicorn.run(app, host="0.0.0.0", port=8005, workers=1)

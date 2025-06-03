@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
+import Checkbox from 'primevue/checkbox';
 
 // Define props
 const props = defineProps({
@@ -18,12 +19,15 @@ const props = defineProps({
 });
 
 // Define emits
-const emit = defineEmits(['loading', 'newImageUrl', 'newAddends']);
+const emit = defineEmits(['loading', 'newImageUrl', 'newAddends', 'update:showTimesteps']);
 
 // Reactive state
 const prompt_value = ref("unicorn");
 const seed_value = ref(93244);
 const isGenerating = ref(false);
+const showTimesteps = ref(false);
+
+
 
 // Generate function
 async function generate() {
@@ -90,13 +94,14 @@ async function generate() {
         console.log("Starting addends fetch...");
         const addendsStartTime = performance.now();
         
-        const addendsResponse = await fetch(`${props.host}/addends`, {
+        const addendsResponse = await fetch(`${props.host}/addends?show_timesteps=${showTimesteps.value}`, {
             method: 'GET',
         });
         
         const addends = await addendsResponse.json();
         const addendsEndTime = performance.now();
         console.log(`Addends fetch and processing completed in ${(addendsEndTime - addendsStartTime).toFixed(2)}ms`);
+        emit('showTimesteps', showTimesteps.value)
         emit('newAddends', addends);
     } catch (error) {
         console.error("Generation error:", error);
@@ -108,6 +113,7 @@ async function generate() {
 
 <template>
     <div class="input-container">
+        
         <div class="input-group">
             <label for="prompt">Prompt: </label>
             <InputText id="prompt" type="text" v-model="prompt_value" />
@@ -116,6 +122,11 @@ async function generate() {
         <div class="input-group">
             <label for="seed">Seed: </label>
             <InputNumber id="seed" v-model="seed_value" :step="1" :min="0" :useGrouping="false" fluid />
+        </div>
+
+        <div class="input-group">
+            <Checkbox id="timesteps" v-model="showTimesteps" :binary="true" />
+            <label for="timesteps">Timesteps</label>
         </div>
 
         <Button 
@@ -192,5 +203,16 @@ async function generate() {
 :deep(.p-inputnumber-input:focus) {
     box-shadow: 0 0 0 2px rgba(0, 255, 0, 0.2);
     border-color: rgb(0, 255, 0);
+}
+
+:deep(.p-checkbox) {
+    .p-checkbox-box {
+        border-color: rgb(0, 255, 0);
+        
+        &.p-highlight {
+            background-color: rgb(0, 255, 0);
+            border-color: rgb(0, 255, 0);
+        }
+    }
 }
 </style>

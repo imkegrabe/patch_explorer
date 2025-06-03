@@ -4,6 +4,7 @@ import InputDisplay from './components/InputDisplay.vue';
 import ImageDisplay from './components/ImageDisplay.vue';
 import InterventionDisplay from './components/InterventionDisplay.vue';
 import TimestepDisplay from './components/TimestepDisplay.vue';
+import { setAlphaDivisor } from './js/grids';
 
 export default {
   name: 'App',
@@ -15,7 +16,8 @@ export default {
       encoderValue: "",
       interventionType: "",
       start_step: 0,
-      end_step: 50
+      end_step: 50,
+      showTimesteps: false
     }
   },
 
@@ -41,6 +43,11 @@ export default {
       this.start_step = start_step;
       this.end_step = end_step;
       console.log(start_step, end_step)
+    },
+    updateShowTimesteps(value) {
+      this.showTimesteps = value;
+      console.log("updating showTimesteps", value)
+      setAlphaDivisor(value);
     }
   }
 }
@@ -72,7 +79,7 @@ export default {
       @newImageUrl="(url) => updateImage(url)" 
       @newAddends="(addends) => updateAddends(addends)"
       :globalSelections="globalSelections"
-      :host="'https://bippu.baulab.us'" 
+      :host="'http://localhost:8005'" 
       :interventions="[]" 
       :loading="false"  
       :temp="[]"
@@ -80,9 +87,10 @@ export default {
       :interventionType="interventionType"
       :start_step="start_step"
       :end_step="end_step"
+      @showTimesteps="updateShowTimesteps"
     ></InputDisplay>
 
-    <TimestepDisplay @updateTimesteps="updateTimesteps" ref="timestep_display"></TimestepDisplay>
+    <TimestepDisplay v-show="showTimesteps" @updateTimesteps="updateTimesteps" ref="timestep_display"></TimestepDisplay>
 
   </div>
 </template>

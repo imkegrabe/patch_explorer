@@ -2,16 +2,19 @@
 
 import * as THREE from 'three';
 
-let alpha = 255;
+let alpha_divisor = 5;
+
+export function setAlphaDivisor(showTimesteps) {
+    alpha_divisor = showTimesteps ? 5 : .25;
+}
 
 export function getColor(value) {
-
     const cmapCool3 = (x) => {
         const r = x > 0 ? 255 : 0;
         const g = x < 0 ? 255 : 0;
         // const g = 0;
         const b = 255;
-        const alpha = Math.abs(x / 5); //*2
+        const alpha = Math.abs(x / alpha_divisor); //*2
         return [r, g, b, alpha]
     };
 
@@ -22,7 +25,7 @@ let layer_padding = 20;
 let head_padding = 5;
 let timestep_padding = 3;
 
-export function initialize(grids_by_layer) {
+export function initialize(grids_by_layer, num_timesteps=50) {
     let height = 0;
     let width = 0;
 
@@ -91,7 +94,7 @@ export function initialize(grids_by_layer) {
 
     let geometry = new THREE.PlaneGeometry(width, height);
 
-    for (let timestep_idx = 0; timestep_idx < grids_by_layer[0].length; timestep_idx++) {
+    for (let timestep_idx = 0; timestep_idx < num_timesteps; timestep_idx++) {
         let data = new Uint8Array(width * height * 4);
 
         let texture = new THREE.DataTexture(
@@ -159,7 +162,7 @@ export function load(grids_by_layer, timestep_images) {
                     const index = 4 * (y * texture_width + x);
                     
                     // Update all timesteps for this pixel position
-                    for (let timestep_idx = 0; timestep_idx < textureCount; timestep_idx++) {
+                    for (let timestep_idx = 0; timestep_idx < layer.length; timestep_idx++) {
                         const value = layer[timestep_idx][head_idx][head_y][head_x];
                         const rgba = getColor(value);
                         const texture = textures[timestep_idx];
@@ -169,6 +172,15 @@ export function load(grids_by_layer, timestep_images) {
                         texture[index + 2] = rgba[2]; // B
                         texture[index + 3] = rgba[3]; // A
                     }
+
+                // If there are more timestep images than timesteps in the layer, set remaining to 0
+                for (let timestep_idx = layer.length; timestep_idx < textureCount; timestep_idx++) {
+                    const texture = textures[timestep_idx];
+                    texture[index] = 0;     // R
+                    texture[index + 1] = 0; // G
+                    texture[index + 2] = 0; // B
+                    texture[index + 3] = 0; // A
+                }
                 }
             }
             // Add padding between heads
