@@ -5,12 +5,12 @@ import torch
 
 from .interventions import DiffusionIntervention
 
-def load(id: str = "CompVis/stable-diffusion-v1-4"):
+def load(id: str = "stabilityai/sd-turbo"):
     
     return DiffusionModel(id, dispatch=True).to('cuda:0').to(torch.bfloat16)
 
 
-def run(model:DiffusionModel, prompt:str, n_steps:int = 50, seed:int=40, interventions: List[DiffusionIntervention] = []):
+def run(model:DiffusionModel, prompt:str, n_steps:int = 4, seed:int=40, interventions: List[DiffusionIntervention] = []):
     
     with model.generate(prompt, num_inference_steps=n_steps, seed=seed, validate=False, scan=False) as tracer:
         

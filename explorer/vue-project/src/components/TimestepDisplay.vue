@@ -7,7 +7,7 @@
             id="timestep-slider" 
             range 
             :min="1"
-            :max="50"
+            :max="4"
             :step="1"
             orientation="vertical"
             />
@@ -33,12 +33,12 @@ import { cameraActive, setCameraActive, timestep_groups, requestRender, forceRen
 const emit = defineEmits(['changeViewMode', 'updateTimesteps']);
 
 // the reactive vue variables
-const range = ref([1, 50]);
+const range = ref([1, 4]);
 
 // Function to reset the slider to default range
 function resetRange() {
-    range.value = [1, 50];
-    updateVisibility(1, 50);
+    range.value = [1, 4];
+    updateVisibility(1, 4);
 }
 
 // Make resetRange available to parent components
@@ -82,7 +82,7 @@ function updateVisibility(near, far) {
     // to avoid too many events during rapid slider movement
     updateTimeout = setTimeout(() => {
         emit('updateTimesteps', { start_step: near - 1, end_step: far - 1 });
-    }, 50);
+    }, 4);
 }
 
 //function to update timesteps wrt slider

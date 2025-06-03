@@ -15,7 +15,7 @@ export default {
       encoderValue: "",
       interventionType: "",
       start_step: 0,
-      end_step: 50
+      end_step: 4
     }
   },
 
@@ -72,7 +72,7 @@ export default {
       @newImageUrl="(url) => updateImage(url)" 
       @newAddends="(addends) => updateAddends(addends)"
       :globalSelections="globalSelections"
-      :host="'https://bippu.baulab.us'" 
+      :host="'http://localhost:8005'" 
       :interventions="[]" 
       :loading="false"  
       :temp="[]"

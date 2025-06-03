@@ -11,7 +11,7 @@ export function getColor(value) {
         const g = x < 0 ? 255 : 0;
         // const g = 0;
         const b = 255;
-        const alpha = Math.abs(x / 5); //*2
+        const alpha = Math.abs(x / 1); //*2
         return [r, g, b, alpha]
     };
 

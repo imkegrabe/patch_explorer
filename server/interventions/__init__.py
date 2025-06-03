@@ -14,7 +14,7 @@ class DiffusionIntervention:
         envoys: List[Envoy],
         selections: Dict[str, Dict[int, List[str]]] = None,
         start_step: int = 0,
-        end_step: int = 50,
+        end_step: int = 4,
     ) -> None:
 
         self.model = model
