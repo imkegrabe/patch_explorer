@@ -256,9 +256,11 @@ export function splitImage(image) {
     let size = pixels.length;
 
     let group = new THREE.Group()
+    let border = new THREE.Group()
     // Set the group position to the absolute world position of the image
     group.position.set(worldPosition.x, worldPosition.y, worldPosition.z)
-
+    border.position.set(worldPosition.x, worldPosition.y, worldPosition.z)
+    
     let offset = -size / 2 + .5 - (split_padding * (size / 2));
 
     for (let col = 0; col < size; col++) {
@@ -276,7 +278,28 @@ export function splitImage(image) {
             group.add(pixel)
         }
     }
-    return group;
+    // === GREEN STROKE BORDER ===
+    let half = (size * (1 + split_padding)) / 2 - 0.5;
+    let edgeOffset = 0.5;
+
+    const strokeGeometry = new THREE.BufferGeometry();
+    const strokeMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+
+    const points = [
+        new THREE.Vector3(-half - edgeOffset, -half - edgeOffset, 0.01),
+        new THREE.Vector3( half + edgeOffset, -half - edgeOffset, 0.01),
+        new THREE.Vector3( half + edgeOffset,  half + edgeOffset, 0.01),
+        new THREE.Vector3(-half - edgeOffset,  half + edgeOffset, 0.01),
+        new THREE.Vector3(-half - edgeOffset, -half - edgeOffset, 0.01), // close loop
+    ];
+
+    strokeGeometry.setFromPoints(points);
+    const line = new THREE.Line(strokeGeometry, strokeMaterial);
+
+    // line.position.copy(group.position);
+    border.add(line);
+    
+    return group, border;
 }
 
 export function convert(i, row_len) {

@@ -9,9 +9,11 @@ import { requestRender, forceRender } from "./init";
 export function focus(scene, image, focused) {
 
     // Get THREE.Group of pixels
-    let group = splitImage(image);
+    let group, border;
+    [group, border] = splitImage(image);
     // Add group to scene
     scene.add(group);
+    scene.add(border);
     // Make original image-mesh invisible
     image.visible = false;
 
