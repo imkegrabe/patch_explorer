@@ -39,10 +39,41 @@ export default {
         toggle() {
             this.sidebar_visible = !this.sidebar_visible;
         },
-        onInterventionChange() {
-            this.$emit('update:interventionType', this.selectedIntervention.code);
-            this.$emit('update:encoderValue', '');
+        showDropdownMessage() {
+        
+        const splitMsg = document.getElementById('split-image-message');
+        if (splitMsg) splitMsg.remove();
+
+        const existing = document.getElementById('dropdown-message');
+        if (!existing) {
+            const div = document.createElement('div');
+            div.id = 'dropdown-message';
+            div.innerHTML = 'Click on a patch grid to target intervention.<br> Then generate again.';
+            div.style.position = 'fixed';
+            div.style.bottom = '10px'; // So it sits above the SplitImage message
+            div.style.left = '10px';
+            div.style.background = 'rgba(0, 0, 0, 0)';
+            div.style.color = 'rgb(0,255,0)';
+            div.style.padding = '6px 10px';
+            div.style.fontFamily = 'Courier, monospace';
+            div.style.fontSize = '14px';
+            div.style.borderRadius = '4px';
+            div.style.zIndex = '9999';
+
+            document.body.appendChild(div);
+
+            setTimeout(() => {
+                const el = document.getElementById('dropdown-message');
+                if (el) el.remove();
+            }, 3000);
         }
+    },
+
+    onInterventionChange() {
+        this.$emit('update:interventionType', this.selectedIntervention.code);
+        this.$emit('update:encoderValue', '');
+        this.showDropdownMessage();  // Show message on dropdown change
+    }
     }
 }
 </script>
