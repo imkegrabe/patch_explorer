@@ -156,8 +156,8 @@ export default {
 
 .info-link {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 20px;
+      right: 20px;
       font-family: Courier, monospace;
       font-size: 20px;
       text-decoration: none;
