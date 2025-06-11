@@ -192,27 +192,4 @@ async function generate() {
     cursor: not-allowed;
 }
 
-:deep(.p-inputtext),
-:deep(.p-inputnumber-input) {
-    background-color: rgba(0, 0, 0, 0.3);
-    color: white;
-    border-color: rgb(0, 255, 0);
-}
-
-:deep(.p-inputtext:focus),
-:deep(.p-inputnumber-input:focus) {
-    box-shadow: 0 0 0 2px rgba(0, 255, 0, 0.2);
-    border-color: rgb(0, 255, 0);
-}
-
-:deep(.p-checkbox) {
-    .p-checkbox-box {
-        border-color: rgb(0, 255, 0);
-        
-        &.p-highlight {
-            background-color: rgb(0, 255, 0);
-            border-color: rgb(0, 255, 0);
-        }
-    }
-}
 </style>
