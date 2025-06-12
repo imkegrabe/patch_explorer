@@ -116,12 +116,12 @@ async function generate() {
         
         <div class="input-group">
             <label for="prompt">Prompt: </label>
-            <InputText id="prompt" type="text" v-model="prompt_value" />
+            <InputText id="prompt" type="text" v-model="prompt_value" style="background-color: rgba(255, 255, 255, 0) !important;  color: rgb(0, 255, 0) !important;"/>
         </div>
 
         <div class="input-group">
             <label for="seed">Seed: </label>
-            <InputNumber id="seed" v-model="seed_value" :step="1" :min="0" :useGrouping="false" fluid />
+            <InputNumber id="seed" v-model="seed_value" :step="1" :min="0" :useGrouping="false" fluid style="background-color: rgba(255, 255, 255, 0) !important;  color: rgb(0, 255, 0) !important;"/>
         </div>
 
         <div class="input-group">
@@ -139,7 +139,7 @@ async function generate() {
     </div>
 </template>
 
-<style scoped>
+<style>
 .input-container {
     position: fixed;
     display: flex;
@@ -192,4 +192,19 @@ async function generate() {
     cursor: not-allowed;
 }
 
+.p-inputtext {
+  background-color: rgba(255, 255, 255, 0) !important;
+  color: rgb(0, 255, 0) !important;
+}
+
+.p-inputnumber input {
+  background-color: rgba(255, 255, 255, 0) !important;
+  color: rgb(0, 255, 0) !important;
+}
+
+.generate-button.p-button {
+  background-color: rgb(0, 255, 0) !important;
+  color: black !important;
+  border: none !important;
+}
 </style>

@@ -94,10 +94,13 @@ export default {
     
     <a href="https://patch.baulab.info" class="info-link" title="More info">i</a>
 
+    <div id="overlay-highlight" class="highlight-overlay" style="display: none;"></div>
+
+
   </div>
 </template>
 
-<style scoped>
+<style>
 #app {
   background-color: white;
 }
@@ -178,4 +181,13 @@ export default {
     .info-link:hover {
       background-color: #ddd;
     }
+  
+    .highlight-overlay {
+  display: block !important;
+  --x: 50vw;
+  --y: 50vh;
+  mask-image: radial-gradient(circle 150px at var(--x) var(--y), transparent 0%, black 100%);
+  -webkit-mask-image: radial-gradient(circle 150px at var(--x) var(--y), transparent 0%, black 100%);
+}
+
 </style>

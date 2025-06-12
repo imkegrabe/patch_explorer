@@ -129,18 +129,25 @@ export default {
 
 .dropdown {
     width: 200px;
-    background-color: black;
+    background-color: rgb(0, 0, 0) !important;
+    color: rgb(0, 255, 0) !important;
+    border: 1px solid rgb(0, 255, 0);
 }
 
+/* Text inside the dropdown label */
 .dropdown .p-dropdown-label {
-    color: limegreen !important;
+    color: rgb(0, 255, 0) !important; /* Light green */
 }
 
-.p-dropdown-item {
-    color: limegreen !important;
+.dropdown .p-dropdown-item {
+    color: rgb(0, 255, 0) !important;
 }
 
 .args {
     width: 200px;
+    background-color: rgba(255, 255, 255, 0) !important;
+    color: rgb(0, 255, 0) !important;
+    border: 1px solid rgb(0, 255, 0);
 }
+
 </style>
