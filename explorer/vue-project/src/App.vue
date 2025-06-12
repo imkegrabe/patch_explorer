@@ -4,7 +4,6 @@ import InputDisplay from './components/InputDisplay.vue';
 import ImageDisplay from './components/ImageDisplay.vue';
 import InterventionDisplay from './components/InterventionDisplay.vue';
 import TimestepDisplay from './components/TimestepDisplay.vue';
-import { setAlphaDivisor } from './js/grids';
 
 export default {
   name: 'App',
@@ -16,8 +15,7 @@ export default {
       encoderValue: "",
       interventionType: "",
       start_step: 0,
-      end_step: 50,
-      showTimesteps: false
+      end_step: 50
     }
   },
 
@@ -43,11 +41,6 @@ export default {
       this.start_step = start_step;
       this.end_step = end_step;
       console.log(start_step, end_step)
-    },
-    updateShowTimesteps(value) {
-      this.showTimesteps = value;
-      console.log("updating showTimesteps", value)
-      setAlphaDivisor(value);
     }
   }
 }
@@ -79,7 +72,7 @@ export default {
       @newImageUrl="(url) => updateImage(url)" 
       @newAddends="(addends) => updateAddends(addends)"
       :globalSelections="globalSelections"
-      :host="'http://localhost:8005'" 
+      :host="'https://bippu.baulab.us'" 
       :interventions="[]" 
       :loading="false"  
       :temp="[]"
@@ -87,20 +80,14 @@ export default {
       :interventionType="interventionType"
       :start_step="start_step"
       :end_step="end_step"
-      @showTimesteps="updateShowTimesteps"
     ></InputDisplay>
 
-    <TimestepDisplay v-show="showTimesteps" @updateTimesteps="updateTimesteps" ref="timestep_display"></TimestepDisplay>
-    
-    <a href="https://patch.baulab.info" class="info-link" title="More info">i</a>
-
-    <div id="overlay-highlight" class="highlight-overlay" style="display: none;"></div>
-
+    <TimestepDisplay @updateTimesteps="updateTimesteps" ref="timestep_display"></TimestepDisplay>
 
   </div>
 </template>
 
-<style>
+<style scoped>
 #app {
   background-color: white;
 }
@@ -156,38 +143,4 @@ export default {
         width: 90%; /* Shrinks the image to fit smaller screens */
     }
 }
-
-.info-link {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-family: Courier, monospace;
-      font-size: 20px;
-      text-decoration: none;
-      color: #000;
-      background-color: rgb(0, 255, 0);
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      box-shadow: 0 0 2px rgba(0,0,0,0.2);
-      cursor: pointer;
-      z-index: 10000;
-    }
-
-    .info-link:hover {
-      background-color: #ddd;
-    }
-  
-    .highlight-overlay {
-  display: block !important;
-  --x: 50vw;
-  --y: 50vh;
-  mask-image: radial-gradient(circle 150px at var(--x) var(--y), transparent 0%, black 100%);
-  -webkit-mask-image: radial-gradient(circle 150px at var(--x) var(--y), transparent 0%, black 100%);
-}
-
 </style>
