@@ -91,6 +91,8 @@ export default {
     ></InputDisplay>
 
     <TimestepDisplay v-show="showTimesteps" @updateTimesteps="updateTimesteps" ref="timestep_display"></TimestepDisplay>
+
+    <a href="https://patch.baulab.info" class="info-link" title="More info">i</a>
   </div>
 </template>
 
@@ -150,4 +152,31 @@ export default {
         width: 90%; /* Shrinks the image to fit smaller screens */
     }
 }
+
+.info-link {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      top: 20px;
+      right: 20px;
+      font-family: Courier, monospace;
+      font-size: 20px;
+      text-decoration: none;
+      color: #000;
+      background-color: rgb(0, 255, 0);
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 0 2px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 10000;
+    }
+
+.info-link:hover {
+      background-color: #ddd;
+    }
 </style>
