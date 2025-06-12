@@ -1,4 +1,11 @@
-# collaborative_diffusion
-✨ Tool for working collaboratively with diffusion based image generation models and their hidden representations. ✨
+# patch_explorer
 
+https://patch.baulab.info
+<br>
+✨ 
+<br>
+Tool for diffusion-based image generation via models' hidden representations.
+<br>
+🦄
+<br>
 `bash run.sh`
