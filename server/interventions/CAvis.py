@@ -3,11 +3,10 @@ from typing import Any, List
 
 import torch
 import math
-from nnsight import Envoy, trace, apply, cond
+from nnsight import Envoy
 
 from . import DiffusionIntervention
 
-@trace
 def split(q, k , v, attn):
     
     
@@ -80,5 +79,5 @@ class CAVisIntervention(DiffusionIntervention):
         addendum_byhead = split(q, k, v, attn)    
         
         
-        apply(self.addends[attn.path].append, addendum_byhead.cpu().save())
+        self.addends[attn.path].append(addendum_byhead.cpu())
         

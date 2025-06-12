@@ -38,18 +38,15 @@ class DiffusionIntervention:
                     patches.extend(head_patches)
 
                 self.selections[module_name] = tuple(torch.Tensor(patches).t().to(int))
-        
-        print(self.selections)
-        
+                
     def intervene(self, envoy: Envoy):
         pass
 
-    def __call__(self):
+    def __call__(self, tracer):
 
-        for envoy in self.envoys:
-
-            with envoy.iter[self.start_step:self.end_step]:
-        
+        with tracer.iter[self.start_step:self.end_step]:
+            
+            for envoy in self.envoys:
                 self.intervene(envoy)
 
 

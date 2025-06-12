@@ -12,12 +12,15 @@ def load(id: str = "CompVis/stable-diffusion-v1-4"):
 
 def run(model:DiffusionModel, prompt:str, n_steps:int = 50, seed:int=40, interventions: List[DiffusionIntervention] = []):
     
-    with model.generate(prompt, num_inference_steps=n_steps, seed=seed, validate=False, scan=False) as tracer:
+    with model.generate(num_inference_steps=n_steps, seed=seed) as tracer:
         
         for intervention in interventions:
-            intervention()
+            with tracer.invoke():
+                intervention(tracer)
             
-        output = model.output.save()
+        with tracer.invoke(prompt):
+            
+            output = model.output.save()
         
     return output.images[0]
 

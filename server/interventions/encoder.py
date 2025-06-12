@@ -1,6 +1,6 @@
 from typing import List
 
-from nnsight import Envoy, trace, log
+from nnsight import Envoy
 import torch
 
 from ..schema.Intervention import FieldModel

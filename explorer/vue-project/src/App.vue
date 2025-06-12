@@ -79,7 +79,7 @@ export default {
       @newImageUrl="(url) => updateImage(url)" 
       @newAddends="(addends) => updateAddends(addends)"
       :globalSelections="globalSelections"
-      :host="'http://localhost:8005'" 
+      :host="'http://localhost:8004'" 
       :interventions="[]" 
       :loading="false"  
       :temp="[]"
