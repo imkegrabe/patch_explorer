@@ -207,4 +207,5 @@ async function generate() {
   color: black !important;
   border: none !important;
 }
+
 </style>
