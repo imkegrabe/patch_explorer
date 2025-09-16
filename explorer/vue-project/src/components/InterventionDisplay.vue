@@ -48,7 +48,7 @@ export default {
         if (!existing) {
             const div = document.createElement('div');
             div.id = 'dropdown-message';
-            div.innerHTML = 'Click on a patch grid to target intervention.<br> Then generate again.';
+            div.innerHTML = 'Click on a patch grid to target the intervention.<br> Then generate again.';
             div.style.position = 'fixed';
             div.style.bottom = '10px'; // So it sits above the SplitImage message
             div.style.left = '10px';
@@ -65,7 +65,7 @@ export default {
             setTimeout(() => {
                 const el = document.getElementById('dropdown-message');
                 if (el) el.remove();
-            }, 3000);
+            }, 7000);
         }
     },
 

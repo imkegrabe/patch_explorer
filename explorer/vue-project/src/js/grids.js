@@ -77,6 +77,10 @@ export function initialize(grids_by_layer, num_timesteps=50) {
             let mesh = new THREE.Mesh(geometry, material);
 
             mesh.position.set(head_width / 2, layer_height + head_height / 2);
+            
+            const meshName = `L${layer_idx}H${head_idx}`;
+            mesh.userData.name = meshName;
+            mesh.name = meshName; // optional, helps debug
 
             layer_selection_group.add(mesh);
 
