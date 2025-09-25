@@ -116,7 +116,7 @@ export function onClick(scene, renderer, camera, mouse, raycaster, selection_mes
         var intersects = raycaster.intersectObjects(selection_meshes, false);
 
         if (intersects.length > 0) {
-            console.log('intersects', intersects[0].object);
+            console.log('intersects when clicked', intersects[0].object);
             focus(scene, intersects[0].object, focused);
         }
     }
@@ -149,6 +149,22 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, selection
                 setPixel(pixel, transparent)
 
             }
+        }
+
+        var intersectsheads = raycaster.intersectObjects(selection_meshes, false);
+
+        const hoverLabel = document.getElementById("hover-head-label")
+        
+        if (intersectsheads.length > 0) {
+            console.log('hovering over head', intersectsheads[0].object)
+
+            const hovered = intersectsheads[0].object;
+            hoverLabel.textContent = hovered.name || "unnamed";
+            hoverLabel.style.display = "block";
+            hoverLabel.style.left = event.clientX + 10 + "px";
+            hoverLabel.style.top = event.clientY + 10 + "px";
+        } else {
+            hoverLabel.style.display = "none";
         }
 
     }

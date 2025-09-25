@@ -78,7 +78,7 @@ export function initialize(grids_by_layer, num_timesteps=50) {
 
             mesh.position.set(head_width / 2, layer_height + head_height / 2);
             
-            const meshName = `L${layer_idx}H${head_idx}`;
+            const meshName = `Layer ${layer_idx} Head ${head_idx}`;
             mesh.userData.name = meshName;
             mesh.name = meshName; // optional, helps debug
 
