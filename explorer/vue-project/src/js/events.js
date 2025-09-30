@@ -6,7 +6,7 @@ import { destroy, splitImage, updateImage, initialize, load} from "./grids";
 import { requestRender, forceRender } from "./init";
 
 // focus specific head image.
-export function focus(scene, image, focused) {
+export function focus(scene, image, focused, camera) {
 
     // Get THREE.Group of pixels
     let group = splitImage(image);
@@ -18,6 +18,21 @@ export function focus(scene, image, focused) {
     // Add the image and pixels to the focused object to be used later. How exciting! lol
     focused.image = image;
     focused.pixels = group;
+
+    const overlay = document.getElementById('overlay-highlight');
+    if (overlay) {
+        // Convert image position to screen coordinates
+        const vector = new THREE.Vector3();
+        image.getWorldPosition(vector);
+        vector.project(camera); // <--- camera must be passed in
+
+        const x = ((vector.x + 1) / 2) * window.innerWidth;
+        const y = ((-vector.y + 1) / 2) * window.innerHeight;
+
+        overlay.style.setProperty('--x', `${x}px`);
+        overlay.style.setProperty('--y', `${y}px`);
+        overlay.style.display = 'block';
+    }
 }
 
 // defocus a head image Mesh by destroying its expanded pixels and re-showing the image.
@@ -32,6 +47,11 @@ export function defocus(focused) {
     focused.image.visible = true;
     focused.image = null;
     focused.pixels = null;
+
+    const overlay = document.getElementById('overlay-highlight');
+    if (overlay) {
+      overlay.style.display = 'none';
+    }
 }
 
 
@@ -96,7 +116,7 @@ export function onClick(scene, renderer, camera, mouse, raycaster, selection_mes
         var intersects = raycaster.intersectObjects(selection_meshes, false);
 
         if (intersects.length > 0) {
-            console.log('intersects', intersects[0].object);
+            console.log('intersects when clicked', intersects[0].object);
             focus(scene, intersects[0].object, focused);
         }
     }
@@ -129,6 +149,22 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, selection
                 setPixel(pixel, transparent)
 
             }
+        }
+
+        var intersectsheads = raycaster.intersectObjects(selection_meshes, false);
+
+        const hoverLabel = document.getElementById("hover-head-label")
+        
+        if (intersectsheads.length > 0) {
+            console.log('hovering over head', intersectsheads[0].object)
+
+            const hovered = intersectsheads[0].object;
+            hoverLabel.textContent = hovered.name || "unnamed";
+            hoverLabel.style.display = "block";
+            hoverLabel.style.left = event.clientX + 10 + "px";
+            hoverLabel.style.top = event.clientY + 10 + "px";
+        } else {
+            hoverLabel.style.display = "none";
         }
 
     }

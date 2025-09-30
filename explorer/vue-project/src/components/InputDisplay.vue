@@ -26,14 +26,20 @@ const prompt_value = ref("unicorn");
 const seed_value = ref(93244);
 const isGenerating = ref(false);
 const showTimesteps = ref(false);
-
+const hasGeneratedOnce = ref(false);
+const showSecondInstruction = ref(false);
 
 
 // Generate function
 async function generate() {
     try {
+        if (!hasGeneratedOnce.value) {
+            hasGeneratedOnce.value = true;
+        }
+
         isGenerating.value = true;
         emit('loading');
+
         
         let intervention_instance_to_apply;
         console.log('Current interventionType:', props.interventionType);
@@ -103,6 +109,13 @@ async function generate() {
         console.log(`Addends fetch and processing completed in ${(addendsEndTime - addendsStartTime).toFixed(2)}ms`);
         emit('showTimesteps', showTimesteps.value)
         emit('newAddends', addends);
+
+    showSecondInstruction.value = true;
+    // Hide second instruction after 5 seconds
+    setTimeout(() => {
+        showSecondInstruction.value = false;
+    }, 7000);
+
     } catch (error) {
         console.error("Generation error:", error);
     } finally {
@@ -112,21 +125,34 @@ async function generate() {
 </script>
 
 <template>
+
+    <div v-if="!hasGeneratedOnce" class="centered-message">
+        <!-- <p>Explore the hidden layers of StableDiffusion 1.4</p> -->
+        <!-- <p>When generating images with diffusion models, we normally do not see the activation of their hidden layers.</p> -->
+        <p>Explore the role of cross-attention heads in SD 1.4 <br>through visualization and interaction.</p>
+    </div>
+
+    <div class="first-instruction">
+        <p v-if="!hasGeneratedOnce">Start by generating an image...</p>
+        <p v-else-if="showSecondInstruction">Explore the patch activations through zooming, <br> then apply an intervention on the left.</p>
+    </div>
+
     <div class="input-container">
         
         <div class="input-group">
             <label for="prompt">Prompt: </label>
-            <InputText id="prompt" type="text" v-model="prompt_value" />
+            <InputText id="prompt" type="text" v-model="prompt_value" style="background-color: rgba(255, 255, 255, 0) !important;  color: rgb(0, 255, 0) !important;"/>
         </div>
 
         <div class="input-group">
             <label for="seed">Seed: </label>
-            <InputNumber id="seed" v-model="seed_value" :step="1" :min="0" :useGrouping="false" fluid />
+            <InputNumber id="seed" v-model="seed_value" :step="1" :min="0" :useGrouping="false" fluid style="background-color: rgba(255, 255, 255, 0) !important;  color: rgb(0, 255, 0) !important;"/>
         </div>
 
-        <div class="input-group">
+        <div class="input-group tooltip-container">
             <Checkbox id="timesteps" v-model="showTimesteps" :binary="true" />
             <label for="timesteps">Timesteps</label>
+            <span class="tooltip-text">Load intermediate steps [very slow]</span>
         </div>
 
         <Button 
@@ -139,7 +165,7 @@ async function generate() {
     </div>
 </template>
 
-<style scoped>
+<style>
 .input-container {
     position: fixed;
     display: flex;
@@ -192,27 +218,87 @@ async function generate() {
     cursor: not-allowed;
 }
 
-:deep(.p-inputtext),
-:deep(.p-inputnumber-input) {
-    background-color: rgba(0, 0, 0, 0.3);
-    color: white;
-    border-color: rgb(0, 255, 0);
+.p-inputtext {
+  background-color: rgba(255, 255, 255, 0) !important;
+  color: rgb(0, 255, 0) !important;
 }
 
-:deep(.p-inputtext:focus),
-:deep(.p-inputnumber-input:focus) {
-    box-shadow: 0 0 0 2px rgba(0, 255, 0, 0.2);
-    border-color: rgb(0, 255, 0);
+.p-inputnumber input {
+  background-color: rgba(255, 255, 255, 0) !important;
+  color: rgb(0, 255, 0) !important;
 }
 
-:deep(.p-checkbox) {
-    .p-checkbox-box {
-        border-color: rgb(0, 255, 0);
-        
-        &.p-highlight {
-            background-color: rgb(0, 255, 0);
-            border-color: rgb(0, 255, 0);
-        }
-    }
+.generate-button.p-button {
+  background-color: rgb(0, 255, 0) !important;
+  color: black !important;
+  border: none !important;
 }
+
+.centered-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 20px 20px;
+    color: rgb(0, 255, 0);
+    font-size: 1.5rem;
+    font-weight: bold;
+    /* border: 2px solid rgb(0, 255, 0); */
+    /* border-radius: 12px; */
+    text-align: center;
+    z-index: 999;
+    pointer-events: none;
+}
+.tooltip-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: help; /* show help cursor on hover */
+}
+
+.tooltip-text {
+  visibility: hidden;
+  width: 220px;
+  background-color: rgb(0, 255, 0);
+  color: black;
+  text-align: center;
+  border-radius: 6px;
+  padding: 6px 10px;
+  position: absolute;
+  bottom: 125%; /* place above */
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1001;
+}
+
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.first-instruction {
+    position: fixed;
+    bottom: 1%;
+    /* transform: translate(-50%, -50%); */
+    background: rgba(0, 0, 0, 0);
+    padding: 20px 20px;
+    color: rgb(0, 255, 0);
+    font-size: '10px';
+    font-weight: bold;
+    /* border: 2px solid rgb(0, 255, 0); */
+    /* border-radius: 12px; */
+    /* text-align: center; */
+    z-index: 9999;
+
+}
+
 </style>

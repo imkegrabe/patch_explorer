@@ -35,7 +35,7 @@ export function init(element, global_selections) {
         powerPreference: 'high-performance'
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x111111, 1); //background color, opacity
+    renderer.setClearColor(0x000000, 1); //background color, opacity
     renderer.setPixelRatio(window.devicePixelRatio > 1 ? 2 : 1); // Limit pixel ratio for performance
     element.appendChild(renderer.domElement);
 

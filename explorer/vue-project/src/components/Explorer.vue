@@ -67,6 +67,7 @@ export default {
         <div ref="canvas" style="width: 100%; height: 100%; position: relative;">
         </div>
     </div>
+    <div id="hover-head-label"></div>
 </template>
 
 <style>
@@ -87,4 +88,17 @@ canvas {
     height: 100%; /* Ensure canvas scales vertically */
     
 }
+
+#hover-head-label {
+    position: absolute;
+    padding: 4px 8px;
+    background: rgba(0, 0, 0, 0);
+    color: rgb(0, 255, 0);
+    font-size: 20px;
+    border-radius: 4px;
+    pointer-events: none;
+    display: none;
+    z-index: 1000;
+}
+
 </style>
