@@ -18,7 +18,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      'npyjs': '/node_modules/npyjs/dist/index.js',
+      'reshape': '/node_modules/npyjs/dist/reshape.js'
     },
   },
 })

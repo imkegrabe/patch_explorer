@@ -1,17 +1,14 @@
-import base64
-import importlib
-import json
+
 from io import BytesIO
 from typing import Dict, List
-
+import numpy as np
 import torch
 import uvicorn
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.middleware.gzip import GZipMiddleware
 from PIL.Image import Image
 
-from nnsight.util import fetch_attr
 
 from . import util
 from .interventions import DiffusionIntervention
@@ -22,9 +19,6 @@ from .schema.Configuration import ConfigurationModel
 from .schema.Intervention import InterventionModel
 from .schema.Request import RequestModel
 
-# from pydantic import BaseModel
-# import numpy as np
-
 app = FastAPI()
 
 app.add_middleware(
@@ -34,6 +28,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(GZipMiddleware, minimum_size=1024)
 
 model = util.load()
 model._model.pipeline.safety_checker = None
@@ -144,25 +139,22 @@ async def request(request: RequestModel):
 @app.get("/addends")
 async def addends(show_timesteps: bool = False):
     global cached_addends
-
     addends = cached_addends
     cached_addends = None
 
-    # First multiply by 255 and convert to int8
-    data = [tensor.mul(255).to(torch.int8) for tensor in addends]
-    
-    print(show_timesteps)
-    print(data[0].shape)
+    arrays = {}
+    for i, tensor in enumerate(addends):
+        t = tensor.mul(255).to(torch.int8)
+        if not show_timesteps:
+            t = t.float().mean(dim=0, keepdim=True).to(torch.int8)
+        arrays[f"arr_{i}"] = t.cpu().numpy()
 
-    if not show_timesteps:
-        # Average across timesteps dimension while keeping the dimension
-        data = [tensor.float().mean(dim=0, keepdim=True).to(torch.int8) for tensor in data]
-
-    # Convert to list
-    data = [tensor.tolist() for tensor in data]
-
-    return JSONResponse(content=data)
+    buf = BytesIO()
+    # Use uncompressed NPZ to reduce client CPU work; rely on HTTP gzip
+    np.savez(buf, **arrays)
+    buf.seek(0)
+    return Response(content=buf.getvalue(), media_type="application/x-npz")
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8004, workers=1)
+    uvicorn.run(app, host="0.0.0.0", port=8003, workers=1)
