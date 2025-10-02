@@ -19,9 +19,15 @@
             v-model="value"
             :options="options"
             @change="switchCamera"/>
+            
         
             
     </div>
+<!-- 
+    <div v-if="show3DMessage" class="centered-message">
+    <p>3D-view loading...<br>...just for traversing the universe, no interventions possible.</p>
+    </div> -->
+
 </template>
 
 <script setup>
@@ -103,6 +109,19 @@ function switchCamera() {
 const value = ref('2D');
 const options = ref(['2D', '3D']);
 // const range = ref([0, 100]); // Uncomment if you plan to use this
+
+// message when switching to 3D
+// const show3DMessage = ref(false);
+// watch(value, (newVal) => {
+//     if (newVal === '3D') {
+//         show3DMessage.value = true;
+//         setTimeout(() => {
+//             show3DMessage.value = false;
+//         }, 4000); // disappears after 4 seconds
+//     }
+// });
+
+
 </script>
 
 <style>
@@ -130,6 +149,28 @@ const options = ref(['2D', '3D']);
 .Slider {
     padding: 10px;
     background: rgb(0, 255, 0);
+}
+
+.centered-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 20px 20px;
+    color: rgb(0, 255, 0);
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    z-index: 999;
+    pointer-events: none;
+    animation: fadeOut 4s forwards;
+}
+
+@keyframes fadeOut {
+    0% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0; }
 }
 
 </style>

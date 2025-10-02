@@ -23,7 +23,7 @@ export function getColor(value) {
 
 let layer_padding = 20;
 let head_padding = 5;
-let timestep_padding = 3;
+let timestep_padding = 10;
 
 export function initialize(grids_by_layer, num_timesteps=50) {
     let height = 0;

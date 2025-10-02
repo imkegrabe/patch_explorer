@@ -30,14 +30,16 @@ const showTimesteps = ref(false);
 const hasGeneratedOnce = ref(false);
 const showSecondInstruction = ref(false);
 
-
 // Generate function
+function restart() {
+    console.log("Resetting...");
+}
+
 async function generate() {
     try {
         if (!hasGeneratedOnce.value) {
             hasGeneratedOnce.value = true;
         }
-
         isGenerating.value = true;
         emit('loading');
 
@@ -180,22 +182,34 @@ async function generate() {
 
         <div class="input-group">
             <label for="seed">Seed: </label>
-            <InputNumber id="seed" v-model="seed_value" :step="1" :min="0" :useGrouping="false" fluid style="background-color: rgba(255, 255, 255, 0) !important;  color: rgb(0, 255, 0) !important;"/>
+            <InputNumber id="seed" v-model="seed_value" :step="1" :min="0" :useGrouping="false" fluid style="background-color: rgba(255, 255, 255, 0) !important; width: 80px;  color: rgb(0, 255, 0) !important;"/>
         </div>
 
         <div class="input-group tooltip-container">
             <Checkbox id="timesteps" v-model="showTimesteps" :binary="true" />
             <label for="timesteps">Timesteps</label>
-            <span class="tooltip-text">Load intermediate steps [very slow]</span>
+            <span class="tooltip-text">Load timestep vix</span>
         </div>
 
         <Button 
             class="generate-button" 
-            label="Generate" 
+            :label="hasGeneratedOnce ? 'RE-GENERATE' : 'GENERATE'" 
             icon="pi pi-play" 
             @click="generate" 
             :disabled="loading || isGenerating" 
-            :loading="isGenerating" />
+            :loading="isGenerating" 
+        />
+
+
+        <Button 
+            v-if="hasGeneratedOnce" 
+            class="restart-button" 
+            label="RESET" 
+            icon="pi pi-refresh" 
+            @click="restart" 
+            :disabled="isGenerating" 
+        />
+
     </div>
 </template>
 
@@ -260,12 +274,7 @@ async function generate() {
 .p-inputnumber input {
   background-color: rgba(255, 255, 255, 0) !important;
   color: rgb(0, 255, 0) !important;
-}
-
-.generate-button.p-button {
-  background-color: rgb(0, 255, 0) !important;
-  color: black !important;
-  border: none !important;
+  width: 10px;
 }
 
 .centered-message {
@@ -335,4 +344,27 @@ async function generate() {
 
 }
 
+.restart-button {
+    background-color: rgb(0, 255, 0) !important;
+    color: black;
+    border: none;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    /* width: 90px; */
+    
+}
+
+.restart-button:hover:not(:disabled) {
+    background-color: rgb(0, 255, 0) !important;
+    transform: translateY(-2px);
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); */
+    /* width: 90px; */
+}
+
+.generate-button.p-button {
+  background-color: rgb(0, 255, 0) !important;
+  color: black !important;
+  border: none !important;
+  width: 160px;
+}
 </style>
