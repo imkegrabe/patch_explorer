@@ -5,54 +5,67 @@ import { toHandlerKey } from "vue";
 import { destroy, splitImage, updateImage, initialize, load} from "./grids";
 import { requestRender, forceRender } from "./init";
 
-// focus specific head image.
-export function focus(scene, image, focused, camera) {
-
-    // Get THREE.Group of pixels
+export function focus(scene, image, focused) {
     let group = splitImage(image);
-    // Add group to scene
-    scene.add(group);
-    // Make original image-mesh invisible
-    image.visible = false;
 
-    // Add the image and pixels to the focused object to be used later. How exciting! lol
+    // Hide original image
+    image.visible = false;
     focused.image = image;
     focused.pixels = group;
 
-    const overlay = document.getElementById('overlay-highlight');
-    if (overlay) {
-        // Convert image position to screen coordinates
-        const vector = new THREE.Vector3();
-        image.getWorldPosition(vector);
-        vector.project(camera); // <--- camera must be passed in
+    // Add pixels
+    scene.add(group);
 
-        const x = ((vector.x + 1) / 2) * window.innerWidth;
-        const y = ((-vector.y + 1) / 2) * window.innerHeight;
+    // Create rectangle frame manually
+    const bbox = new THREE.Box3().setFromObject(image);
+    const min = bbox.min;
+    const max = bbox.max;
 
-        overlay.style.setProperty('--x', `${x}px`);
-        overlay.style.setProperty('--y', `${y}px`);
-        overlay.style.display = 'block';
-    }
+    const points = [
+        new THREE.Vector3(min.x, min.y, image.position.z),
+        new THREE.Vector3(max.x, min.y, image.position.z),
+
+        new THREE.Vector3(max.x, min.y, image.position.z),
+        new THREE.Vector3(max.x, max.y, image.position.z),
+
+        new THREE.Vector3(max.x, max.y, image.position.z),
+        new THREE.Vector3(min.x, max.y, image.position.z),
+
+        new THREE.Vector3(min.x, max.y, image.position.z),
+        new THREE.Vector3(min.x, min.y, image.position.z),
+    ];
+
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const line = new THREE.LineSegments(
+        geometry,
+        new THREE.LineBasicMaterial({ 
+            color: 0x39ff14, 
+            linewidth: 5})
+    );
+
+    scene.add(line);
+    focused.frame = line;
 }
 
+  
+
 // defocus a head image Mesh by destroying its expanded pixels and re-showing the image.
-export function defocus(focused) {
-
-    updateImage(focused.image, focused.pixels)
-
+export function defocus(focused, scene) {
+    updateImage(focused.image, focused.pixels);
+  
     for (let i = 0; i < focused.pixels.children.length; i++) {
         destroy(focused.pixels.children[i]);
     }
     focused.pixels.removeFromParent();
+
+    focused.frame.visible = false;
+
     focused.image.visible = true;
     focused.image = null;
     focused.pixels = null;
-
-    const overlay = document.getElementById('overlay-highlight');
-    if (overlay) {
-      overlay.style.display = 'none';
-    }
 }
+
+  
 
 
 const alpha = .6;
@@ -153,6 +166,7 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, selection
 
         var intersectsheads = raycaster.intersectObjects(selection_meshes, false);
 
+        // this is just to show the name when hovering over head
         const hoverLabel = document.getElementById("hover-head-label")
         
         if (intersectsheads.length > 0) {

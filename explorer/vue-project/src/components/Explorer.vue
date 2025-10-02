@@ -101,4 +101,8 @@ canvas {
     z-index: 1000;
 }
 
+body.brush-cursor {
+  cursor: crosshair;
+}
+
 </style>

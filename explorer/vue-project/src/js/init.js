@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { onClick, setGrids, onMouseMove} from './events';
-
 export let camera1, camera2, cameraActive, timestep_groups, controls1, controls2, controlsActive, renderer, needsRender;
 
 // Utility function to request rendering
@@ -22,6 +21,7 @@ export function forceRender() {
 export function init(element, global_selections) {
     // CAMERA
     const scene = new THREE.Scene();
+    
     camera1 = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 2000);
     camera2 = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, 0, 200 );
     camera1.position.set(0, 0, 153);
@@ -48,6 +48,7 @@ export function init(element, global_selections) {
         const delta = clock.getDelta();
         
         if (needsRender) {
+            // composer.render();
             renderer.render(scene, cameraActive);
             needsRender = false;
         }
@@ -148,6 +149,13 @@ export function init(element, global_selections) {
     // Add event listeners
     element.addEventListener("click", onClick(scene, renderer, cameraActive, mouse, raycaster, selection_meshes, focused));
     element.addEventListener("mousemove", onMouseMove(scene, renderer, cameraActive, mouse, raycaster, selection_meshes, focused));
+    window.addEventListener("mouseleave", () => {
+        const hoverLabel = document.getElementById("hover-head-label");
+        if (hoverLabel) {
+          hoverLabel.style.display = "none";
+        }
+      });
+      
 
     // Handle window resize
     const resizeHandler = () => {
@@ -192,3 +200,4 @@ export function setCameraActive(cameraType) {
     renderer.render(renderer.scene, cameraActive);
     controlsActive();
 }
+
