@@ -33,7 +33,7 @@ export default {
     <!-- will have loop here to contain all cached images... -->
         <div class="image-container">
             <!-- activate loading again... <Skeleton v-show="loading" class="loading" style="width: 100%; height:100%;"></Skeleton> -->
-            <img :src="imageUrl" alt="Generate an image to get started :)" />
+            <img :src="imageUrl" alt="Start by generating an image." />
         </div>
     </div>
     <!--

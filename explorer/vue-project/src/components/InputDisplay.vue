@@ -42,7 +42,6 @@ async function generate() {
         }
         isGenerating.value = true;
         emit('loading');
-
         
         let intervention_instance_to_apply;
         console.log('Current interventionType:', props.interventionType);
@@ -188,7 +187,7 @@ async function generate() {
         <div class="input-group tooltip-container">
             <Checkbox id="timesteps" v-model="showTimesteps" :binary="true" />
             <label for="timesteps">Timesteps</label>
-            <span class="tooltip-text">Load timestep vix</span>
+            <span class="tooltip-text">Load timestep viz</span>
         </div>
 
         <Button 
@@ -341,7 +340,6 @@ async function generate() {
     /* border-radius: 12px; */
     /* text-align: center; */
     z-index: 9999;
-
 }
 
 .restart-button {

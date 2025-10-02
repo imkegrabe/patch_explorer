@@ -17,8 +17,14 @@ export default {
       interventionType: "",
       start_step: 0,
       end_step: 50,
-      showTimesteps: false
+      showTimesteps: false,
+      isMobile : false,
     }
+  },
+
+  mounted() {
+    // Detect mobile devices
+    this.isMobile = window.innerWidth <= 768 || /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   },
 
   components: {
@@ -51,11 +57,21 @@ export default {
     }
   }
 }
+
+
 </script>
 
 
 
 <template>
+  <div v-if="isMobile" class="mobile-note">
+    For the best experience, please visit this site in a desktop browser. Learn more about the project
+    <a href="https://patch.baulab.info" target="_blank" rel="noopener" class="mobile-note-link">
+      here
+    </a>
+  </div>
+
+
   <div>
 
     <Explorer class="explorer" position="absolute" ref="explorer_container" :globalSelections="globalSelections"></Explorer>
@@ -64,18 +80,18 @@ export default {
       <img src="@/assets/patch-explorer-logo-green.svg" alt="Header Image saying Patch Explorer in pixels font" />
     </div>
 
-    <InterventionDisplay
+    <InterventionDisplay v-if="!isMobile"
       v-model:encoderValue="encoderValue"
       v-model:interventionType="interventionType"
     ></InterventionDisplay>
 
-    <div class="image-row">
+    <div v-if="!isMobile" class="image-row">
       <ImageDisplay
         :imageUrl="imageUrl"
         ></ImageDisplay>
     </div>
 
-    <InputDisplay position="absolute"
+    <InputDisplay v-if="!isMobile" position="absolute"
       @newImageUrl="(url) => updateImage(url)" 
       @newAddends="(addends) => updateAddends(addends)"
       :globalSelections="globalSelections"
@@ -90,9 +106,21 @@ export default {
       @showTimesteps="updateShowTimesteps"
     ></InputDisplay>
 
-    <TimestepDisplay v-show="showTimesteps" @updateTimesteps="updateTimesteps" ref="timestep_display"></TimestepDisplay>
+    <TimestepDisplay v-if="!isMobile" v-show="showTimesteps" @updateTimesteps="updateTimesteps" ref="timestep_display"></TimestepDisplay>
 
-    <a href="https://patch.baulab.info" class="info-link" title="More info">i</a>
+    <a v-if="!isMobile" href="https://patch.baulab.info" class="info-link" title="More info">i</a>
+
+<!-- Bottom-right logo with tooltip -->
+    <div class="tooltip-container built-with">
+      <a href="https://nnsight.net/" target="_blank" rel="noopener">
+        <img src="@/assets/nnsight_logo-3.svg" alt="Logo" class="built-with-logo" />
+      </a>
+      <!-- <div class="tooltip-text">
+        Built with Patch Explorer
+      </div> -->
+    </div>
+
+
   </div>
 </template>
 
@@ -179,4 +207,78 @@ export default {
 .info-link:hover {
       background-color: #ddd;
     }
+
+.mobile-note {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 20px 20px;
+    color: rgb(0, 255, 0);
+    font-size: 1.0rem;
+    /* font-weight: bold; */
+    /* border: 2px solid rgb(0, 255, 0); */
+    /* border-radius: 12px; */
+    text-align: center;
+    z-index: 999;
+    pointer-events: none;
+}
+
+.mobile-note a.mobile-note-link {
+  text-decoration: underline;
+  display: inline-block;
+  color: rgb(0, 255, 0);
+  font-weight: bold;
+  z-index: 1000;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.built-with {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  display: inline-flex;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* The logo itself */
+.built-with-logo {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+/* Tooltip styling */
+.tooltip-text {
+  visibility: hidden;
+  width: 220px;
+  background-color: rgb(0, 255, 0);
+  color: black;
+  text-align: center;
+  border-radius: 6px;
+  padding: 6px 10px;
+  position: absolute;
+  bottom: 125%; /* place tooltip above */
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1001;
+  right: 20px;
+}
+
+/* Show tooltip on hover */
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
 </style>
