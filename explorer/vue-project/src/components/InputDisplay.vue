@@ -1,10 +1,11 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, markRaw } from 'vue';
 import Button from 'primevue/button';
 import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
 import Checkbox from 'primevue/checkbox';
-
+import { unzipSync } from 'fflate';
+import { load } from "npyjs";
 // Define props
 const props = defineProps({
     host: String,
@@ -19,7 +20,7 @@ const props = defineProps({
 });
 
 // Define emits
-const emit = defineEmits(['loading', 'newImageUrl', 'newAddends', 'update:showTimesteps']);
+const emit = defineEmits(['loading', 'newImageUrl', 'newAddends', 'update:showTimesteps', 'showTimesteps']);
 
 // Reactive state
 const prompt_value = ref("unicorn");
@@ -29,17 +30,18 @@ const showTimesteps = ref(false);
 const hasGeneratedOnce = ref(false);
 const showSecondInstruction = ref(false);
 
-
 // Generate function
+function restart() {
+    console.log("Resetting...");
+}
+
 async function generate() {
     try {
         if (!hasGeneratedOnce.value) {
             hasGeneratedOnce.value = true;
         }
-
         isGenerating.value = true;
         emit('loading');
-
         
         let intervention_instance_to_apply;
         console.log('Current interventionType:', props.interventionType);
@@ -100,11 +102,44 @@ async function generate() {
         console.log("Starting addends fetch...");
         const addendsStartTime = performance.now();
         
-        const addendsResponse = await fetch(`${props.host}/addends?show_timesteps=${showTimesteps.value}`, {
-            method: 'GET',
-        });
-        
-        const addends = await addendsResponse.json();
+        const addendsResponse = await fetch(`${props.host}/addends?show_timesteps=${showTimesteps.value}`);
+        const buffer = new Uint8Array(await addendsResponse.arrayBuffer());
+
+        // Unzip .npz => a map of filename -> Uint8Array
+        const files = unzipSync(buffer);
+
+        // Parse each .npy inside the .npz
+        const addends = [];
+        for (const [name, data] of Object.entries(files)) {
+        // Parse from the correct slice of ArrayBuffer
+            const arrayBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+            const npy = await load(arrayBuffer);
+            const flat = npy.data; // Int8Array
+            const shape = npy.shape; // [T, heads, H, W]
+
+            const t = shape[0];
+            const heads = shape[1];
+            const h = shape[2];
+            const w = shape[3];
+
+            // Build typed row views per timestep and per head
+            const perTimestep = new Array(t);
+            for (let ti = 0; ti < t; ti++) {
+                const perHead = new Array(heads);
+                for (let hi = 0; hi < heads; hi++) {
+                    const rows = new Array(h);
+                    const baseTH = ((ti * heads) + hi) * h * w;
+                    for (let yi = 0; yi < h; yi++) {
+                        const start = baseTH + yi * w;
+                        rows[yi] = flat.subarray(start, start + w);
+                    }
+                    perHead[hi] = rows;
+                }
+                perTimestep[ti] = perHead;
+            }
+            addends.push(markRaw(perTimestep));
+        }
+        console.log('addends', addends);
         const addendsEndTime = performance.now();
         console.log(`Addends fetch and processing completed in ${(addendsEndTime - addendsStartTime).toFixed(2)}ms`);
         emit('showTimesteps', showTimesteps.value)
@@ -146,22 +181,34 @@ async function generate() {
 
         <div class="input-group">
             <label for="seed">Seed: </label>
-            <InputNumber id="seed" v-model="seed_value" :step="1" :min="0" :useGrouping="false" fluid style="background-color: rgba(255, 255, 255, 0) !important;  color: rgb(0, 255, 0) !important;"/>
+            <InputNumber id="seed" v-model="seed_value" :step="1" :min="0" :useGrouping="false" fluid style="background-color: rgba(255, 255, 255, 0) !important; width: 80px;  color: rgb(0, 255, 0) !important;"/>
         </div>
 
         <div class="input-group tooltip-container">
             <Checkbox id="timesteps" v-model="showTimesteps" :binary="true" />
             <label for="timesteps">Timesteps</label>
-            <span class="tooltip-text">Load intermediate steps [very slow]</span>
+            <span class="tooltip-text">Load timestep viz</span>
         </div>
 
         <Button 
             class="generate-button" 
-            label="Generate" 
+            :label="hasGeneratedOnce ? 'RE-GENERATE' : 'GENERATE'" 
             icon="pi pi-play" 
             @click="generate" 
             :disabled="loading || isGenerating" 
-            :loading="isGenerating" />
+            :loading="isGenerating" 
+        />
+
+
+        <Button 
+            v-if="hasGeneratedOnce" 
+            class="restart-button" 
+            label="RESET" 
+            icon="pi pi-refresh" 
+            @click="restart" 
+            :disabled="isGenerating" 
+        />
+
     </div>
 </template>
 
@@ -226,12 +273,7 @@ async function generate() {
 .p-inputnumber input {
   background-color: rgba(255, 255, 255, 0) !important;
   color: rgb(0, 255, 0) !important;
-}
-
-.generate-button.p-button {
-  background-color: rgb(0, 255, 0) !important;
-  color: black !important;
-  border: none !important;
+  width: 10px;
 }
 
 .centered-message {
@@ -298,7 +340,29 @@ async function generate() {
     /* border-radius: 12px; */
     /* text-align: center; */
     z-index: 9999;
-
 }
 
+.restart-button {
+    background-color: rgb(0, 255, 0) !important;
+    color: black;
+    border: none;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    /* width: 90px; */
+    
+}
+
+.restart-button:hover:not(:disabled) {
+    background-color: rgb(0, 255, 0) !important;
+    transform: translateY(-2px);
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); */
+    /* width: 90px; */
+}
+
+.generate-button.p-button {
+  background-color: rgb(0, 255, 0) !important;
+  color: black !important;
+  border: none !important;
+  width: 160px;
+}
 </style>

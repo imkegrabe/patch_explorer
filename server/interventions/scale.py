@@ -2,12 +2,12 @@ import math
 
 import torch
 
-from nnsight import Envoy, trace
+from nnsight import Envoy
 
 from ..schema.Intervention import FieldModel
 from . import DiffusionIntervention
 
-@trace
+
 def apply(hidden_states: torch.Tensor, factor, selection, attn):
 
     spatial_dim = hidden_states.shape[1]

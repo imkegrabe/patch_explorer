@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@primevue/themes": "^4.2.3",
+    "fflate": "^0.8.2",
+    "npyjs": "^1.0.2",
     "primevue": "^4.2.3",
     "three": "^0.170.0",
     "vue": "^3.5.12"

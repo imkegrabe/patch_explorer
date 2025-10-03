@@ -23,7 +23,7 @@ export function getColor(value) {
 
 let layer_padding = 20;
 let head_padding = 5;
-let timestep_padding = 3;
+let timestep_padding = 10;
 
 export function initialize(grids_by_layer, num_timesteps=50) {
     let height = 0;
@@ -78,7 +78,7 @@ export function initialize(grids_by_layer, num_timesteps=50) {
 
             mesh.position.set(head_width / 2, layer_height + head_height / 2);
             
-            const meshName = `Layer ${layer_idx} Head ${head_idx}`;
+            const meshName = `Layer ${layer_idx} Head ${7-head_idx}`;
             mesh.userData.name = meshName;
             mesh.name = meshName; // optional, helps debug
 
@@ -128,71 +128,85 @@ export function initialize(grids_by_layer, num_timesteps=50) {
 export function load(grids_by_layer, timestep_images) {
     const texture_width = timestep_images[0].material.map.image.width;
     const texture_height = timestep_images[0].material.map.image.height;
-    
+
     // Pre-allocate arrays for each timestep texture for faster access
     const textures = timestep_images.map(image => image.material.map.image.data);
     const textureCount = timestep_images.length;
-    
-    let x_offset = 0;
 
-    // First calculate the total height needed for each layer
+    // Pre-clear all textures once to avoid per-pixel zeroing in hot loops
+    for (let i = 0; i < textureCount; i++) {
+        textures[i].fill(0);
+    }
+
+    // Precompute per-layer geometry params
     const layerHeights = [];
+    const headHeights = [];
+    const headWidths = [];
     for (let layer_idx = 0; layer_idx < grids_by_layer.length; layer_idx++) {
         const layer = grids_by_layer[layer_idx];
         const head_height = layer[0][0].length;
+        const head_width = layer[0][0][0].length;
+        headHeights.push(head_height);
+        headWidths.push(head_width);
         const total_layer_height = (head_height * layer[0].length) + (head_padding * (layer[0].length - 1));
         layerHeights.push(total_layer_height);
     }
 
-    for (let layer_idx = 0; layer_idx < grids_by_layer.length; layer_idx++) {
-        const layer = grids_by_layer[layer_idx];
-        
-        // Calculate vertical centering offset for this layer
-        const layer_height = layerHeights[layer_idx];
-        const vertical_centering = Math.floor((texture_height - layer_height) / 2);
-        let y_offset = vertical_centering;
+    // Write per-timestep for better cache locality
+    for (let timestep_idx = 0; timestep_idx < textureCount; timestep_idx++) {
+        const texture = textures[timestep_idx];
 
-        const head_height = layer[0][0].length;
-        const head_width = layer[0][0][0].length;
+        let x_offset = 0;
 
-        for (let head_idx = 0; head_idx < layer[0].length; head_idx++) {
-            // Process all pixels for this head across all timesteps at once
-            for (let head_y = 0; head_y < head_height; head_y++) {
-                // Start from the bottom of the texture and work up
-                const y = texture_height - 1 - y_offset - head_y;
-                
-                for (let head_x = 0; head_x < head_width; head_x++) {
-                    const x = x_offset + head_x;
-                    const index = 4 * (y * texture_width + x);
-                    
-                    // Update all timesteps for this pixel position
-                    for (let timestep_idx = 0; timestep_idx < layer.length; timestep_idx++) {
-                        const value = layer[timestep_idx][head_idx][head_y][head_x];
-                        const rgba = getColor(value);
-                        const texture = textures[timestep_idx];
-                        
-                        texture[index] = rgba[0];     // R
-                        texture[index + 1] = rgba[1]; // G
-                        texture[index + 2] = rgba[2]; // B
-                        texture[index + 3] = rgba[3]; // A
-                    }
+        for (let layer_idx = 0; layer_idx < grids_by_layer.length; layer_idx++) {
+            const layer = grids_by_layer[layer_idx];
+            const head_height = headHeights[layer_idx];
+            const head_width = headWidths[layer_idx];
 
-                // If there are more timestep images than timesteps in the layer, set remaining to 0
-                for (let timestep_idx = layer.length; timestep_idx < textureCount; timestep_idx++) {
-                    const texture = textures[timestep_idx];
-                    texture[index] = 0;     // R
-                    texture[index + 1] = 0; // G
-                    texture[index + 2] = 0; // B
-                    texture[index + 3] = 0; // A
-                }
-                }
+            // If this layer does not have data for this timestep, skip (already zeroed)
+            if (timestep_idx >= layer.length) {
+                x_offset += head_width + layer_padding;
+                continue;
             }
-            // Add padding between heads
-            y_offset += head_height + head_padding;
-        }
 
-        // Add padding between layers
-        x_offset += head_width + layer_padding;
+            const layer_height = layerHeights[layer_idx];
+            const vertical_centering = Math.floor((texture_height - layer_height) / 2);
+            let y_offset = vertical_centering;
+
+            const headsAtTimestep = layer[timestep_idx]; // [num_heads][head_h][head_w]
+
+            for (let head_idx = 0; head_idx < headsAtTimestep.length; head_idx++) {
+                const headGrid = headsAtTimestep[head_idx];
+
+                for (let head_y = 0; head_y < head_height; head_y++) {
+                    const y = texture_height - 1 - y_offset - head_y;
+                    const rowBase = 4 * (y * texture_width + x_offset);
+                    const rowValues = headGrid[head_y];
+
+                    for (let head_x = 0; head_x < head_width; head_x++) {
+                        const value = rowValues[head_x];
+
+                        // Inline color mapping to avoid allocations
+                        const r = value > 0 ? 255 : 0;
+                        const g = value < 0 ? 255 : 0;
+                        const b = 255;
+                        const a = Math.abs(value / alpha_divisor);
+
+                        const index = rowBase + (head_x << 2);
+                        texture[index] = r;
+                        texture[index + 1] = g;
+                        texture[index + 2] = b;
+                        texture[index + 3] = a;
+                    }
+                }
+
+                // Add padding between heads
+                y_offset += head_height + head_padding;
+            }
+
+            // Add padding between layers
+            x_offset += head_width + layer_padding;
+        }
     }
 
     // Mark all textures as needing update
