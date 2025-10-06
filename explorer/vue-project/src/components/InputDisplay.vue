@@ -163,6 +163,7 @@ async function generate() {
 
     <div v-show="!hasGeneratedOnce" class="centered-message">
     <p>Explore the role of cross-attention heads in SD 1.4 <br>through visualization and interaction.</p>
+    <!-- <p>Explore the role of cross-attention heads in SD 1.4 <br>through visualization and interaction.</p> -->
     </div>
 
     <!-- <div class="first-instruction">
@@ -227,7 +228,6 @@ async function generate() {
     padding: 15px 15px;
     background-color: rgba(0, 0, 0, 0.15);
     backdrop-filter: blur(5px);
-    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
     box-shadow: 0 0 2px rgba(0,0,0,0.2);
     z-index: 1000;
     line-height: 1.4;

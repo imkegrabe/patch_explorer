@@ -20,7 +20,7 @@ export default {
       end_step: 50,
       showTimesteps: false,
       isMobile : false,
-      showHelp: false,
+      showHelp: true,
     }
   },
 
@@ -127,9 +127,9 @@ export default {
       <div v-if="showHelp" class="help-panel">
         <ol>
         <li>Generate an image.</li>
-        <li>Inspect the patches by panning and zooming.</li>
+        <li>Inspect the patches by zooming and dragging.</li>
         <li>Choose an intervention and apply it to selected patches.</li>
-        <li>Then re-generate.</li>
+        <li>Re-generate.</li>
         </ol>
       </div>
 </div>
@@ -175,7 +175,6 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     padding: 10px;
-    /* width: 150vh; */
     display: flex;
     width: 100%;
     justify-content: center;
@@ -337,7 +336,7 @@ export default {
   border-radius: 8px;
   font-size: 0.9rem;
   line-height: 1.4;
-  box-shadow: 0 4px 8px rgba(0, 255, 0, 0.3);
+  box-shadow: 0 0 4px 4px rgba(0, 255, 0, 0.5);
   z-index: 2000;
 }
 </style>

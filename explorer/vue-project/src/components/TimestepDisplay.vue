@@ -1,7 +1,7 @@
 <template>
     <div class="timestep-container">
        
-        <p style="padding: 20px;">Timesteps: </p>
+        <p style="padding: 20px;"> <b>Timesteps:</b></p>
         <Slider
             v-model="range" 
             id="timestep-slider" 
@@ -127,14 +127,22 @@ const options = ref(['2D', '3D']);
 <style>
 
 .timestep-container{
-    position: absolute;
+    position: fixed;
     display: flex;
+    left: 15px;
     flex-direction: column;
     position: fixed; 
-    bottom: 100px; 
-    left: 0%; 
+    bottom: 50px; 
     color: white;
     align-items: center;
+    background-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 10px 4px rgba(0, 255, 0, 0.5);
+    padding: 5px;
+    backdrop-filter: blur(5px);
+    border-radius: 8px;
+    padding: 8px 8px;
+    z-index: 1000;
+    color: rgb(0, 255, 0);
 }
 
 .double-slider{
@@ -144,11 +152,14 @@ const options = ref(['2D', '3D']);
 .SelectButton{
     border-radius: 10px 10px 10px 10px;
     border-color: rgb(0, 255, 0);
+    box-shadow: 0 0 10px 4px rgba(0, 255, 0, 0.5);
+    color: rgb(0, 255, 0);
 }
 
 .Slider {
     padding: 10px;
     background: rgb(0, 255, 0);
+    color: rgb(0, 255, 0);
 }
 
 .centered-message {

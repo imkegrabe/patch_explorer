@@ -82,6 +82,7 @@ export default {
 
 <template>
   <div class="intervention-container" v-if="sidebar_visible">
+    <p style="top: 5px; bottom: 10px;"> <b>Interventions:</b></p>
     <div class="intervention-group">
       <Dropdown
         v-model="selectedIntervention"
@@ -137,6 +138,8 @@ export default {
   border: 1px solid rgb(0, 255, 0) !important;
   border-radius: 6px;
   font-family: monospace;
+  font-size: 1rem;
+  top: 15px;
 }
 
 .intervention-dropdown .p-dropdown-label {

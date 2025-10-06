@@ -41,7 +41,7 @@ export default {
 </script>
 
 <template>
-  <div class="imagebar" v-if="imagebar_visible">
+  <!-- <div class="imagebar" v-if="imagebar_visible"> -->
     <div class="image-container">
       <!-- Skeleton while loading -->
       <Skeleton v-if="loading && !imageLoaded" class="loading" />
@@ -60,7 +60,7 @@ export default {
         @error="onImageError"
         :style="{ display: imageLoaded ? 'block' : 'none' }"
       />
-    </div>
+    <!-- </div> -->
   </div>
 
   <!-- Optional toggle button -->
@@ -82,6 +82,7 @@ export default {
 
 .image-container {
   right: 15px;
+  padding: 0px;
   position: relative;
   width: 256px;
   height: 256px;

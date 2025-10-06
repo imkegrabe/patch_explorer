@@ -96,48 +96,48 @@ export function init(element, global_selections) {
     setupControls(controls1);
     setupControls(controls2);
 
-    //PANNING CONTROLS
-    window.addEventListener("keydown", (event) => {
-        const panSpeed = 5; // Adjust this value for desired speed
+    // //PANNING CONTROLS
+    // window.addEventListener("keydown", (event) => {
+    //     const panSpeed = 5; // Adjust this value for desired speed
     
-        switch (event.key) {
-            case "ArrowLeft":
-                cameraActive.position.x -= panSpeed;
-                if (cameraActive === camera1) {
-                    controls1.target.x -= panSpeed;
-                } else {
-                    controls2.target.x -= panSpeed;
-                }
-                break;
-            case "ArrowRight":
-                cameraActive.position.x += panSpeed;
-                if (cameraActive === camera1) {
-                    controls1.target.x += panSpeed;
-                } else {
-                    controls2.target.x += panSpeed;
-                }
-                break;
-            case "ArrowUp":
-                cameraActive.position.y += panSpeed; // Optional: For vertical movement
-                if (cameraActive === camera1) {
-                    controls1.target.y += panSpeed;
-                } else {
-                    controls2.target.y += panSpeed;
-                }
-                break;
-            case "ArrowDown":
-                cameraActive.position.y -= panSpeed;
-                if (cameraActive === camera1) {
-                    controls1.target.y -= panSpeed;
-                } else {
-                    controls2.target.y -= panSpeed;
-                }
-                break;
-        }
+    //     switch (event.key) {
+    //         case "ArrowLeft":
+    //             cameraActive.position.x -= panSpeed;
+    //             if (cameraActive === camera1) {
+    //                 controls1.target.x -= panSpeed;
+    //             } else {
+    //                 controls2.target.x -= panSpeed;
+    //             }
+    //             break;
+    //         case "ArrowRight":
+    //             cameraActive.position.x += panSpeed;
+    //             if (cameraActive === camera1) {
+    //                 controls1.target.x += panSpeed;
+    //             } else {
+    //                 controls2.target.x += panSpeed;
+    //             }
+    //             break;
+    //         case "ArrowUp":
+    //             cameraActive.position.y += panSpeed; // Optional: For vertical movement
+    //             if (cameraActive === camera1) {
+    //                 controls1.target.y += panSpeed;
+    //             } else {
+    //                 controls2.target.y += panSpeed;
+    //             }
+    //             break;
+    //         case "ArrowDown":
+    //             cameraActive.position.y -= panSpeed;
+    //             if (cameraActive === camera1) {
+    //                 controls1.target.y -= panSpeed;
+    //             } else {
+    //                 controls2.target.y -= panSpeed;
+    //             }
+    //             break;
+    //     }
         
-        // Trigger a render when using keyboard controls
-        needsRender = true;
-    });
+    //     // Trigger a render when using keyboard controls
+    //     needsRender = true;
+    // });
     
     // State variables
     timestep_groups = [];
