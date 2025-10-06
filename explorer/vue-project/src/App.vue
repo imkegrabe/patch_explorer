@@ -5,6 +5,7 @@ import ImageDisplay from './components/ImageDisplay.vue';
 import InterventionDisplay from './components/InterventionDisplay.vue';
 import TimestepDisplay from './components/TimestepDisplay.vue';
 import { setAlphaDivisor } from './js/grids';
+import Button from 'primevue/button';
 
 export default {
   name: 'App',
@@ -19,6 +20,7 @@ export default {
       end_step: 50,
       showTimesteps: false,
       isMobile : false,
+      showHelp: false,
     }
   },
 
@@ -32,7 +34,8 @@ export default {
     ImageDisplay,
     InterventionDisplay,
     InputDisplay,
-    TimestepDisplay
+    TimestepDisplay,
+    Button,
     },
 
     methods: {
@@ -68,7 +71,7 @@ export default {
     For the best experience, please visit this site in a desktop browser. Learn more about the project
     <a href="https://patch.baulab.info" target="_blank" rel="noopener" class="mobile-note-link">
       here
-    </a>
+    </a>.
   </div>
 
 
@@ -110,7 +113,6 @@ export default {
 
     <a v-if="!isMobile" href="https://patch.baulab.info" class="info-link" title="More info">i</a>
 
-<!-- Bottom-right logo with tooltip -->
     <div class="tooltip-container built-with">
       <a href="https://nnsight.net/" target="_blank" rel="noopener">
         <img src="@/assets/nnsight_logo-3.svg" alt="Logo" class="built-with-logo" />
@@ -119,6 +121,18 @@ export default {
         Built with Patch Explorer
       </div> -->
     </div>
+
+    <div v-if="!isMobile" class="help-container">
+      <Button class="help-button" label="HELP?" @click="showHelp = !showHelp" />
+      <div v-if="showHelp" class="help-panel">
+        <ol>
+        <li>Generate an image.</li>
+        <li>Inspect the patches by panning and zooming.</li>
+        <li>Choose an intervention and apply it to selected patches.</li>
+        <li>Then re-generate.</li>
+        </ol>
+      </div>
+</div>
 
 
   </div>
@@ -173,6 +187,9 @@ export default {
   width: auto; /* Maintains the aspect ratio */
   height: 100px; /* Set a specific height for better control */
   display: block;
+  user-select: none;       /* Prevents text/image selection */
+  pointer-events: none;    /* Makes the image ignore mouse events */
+  -webkit-user-drag: none; /* Prevents image dragging in Safari/Chrome */
 }
 
 @media (max-width: 768px) {
@@ -280,5 +297,47 @@ export default {
   opacity: 1;
   pointer-events: auto;
 }
+.help-container {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 1000;
+}
 
+.help-button {
+  font-weight: bold;
+  background-color: rgb(0, 255, 0) !important;
+  color: black !important;
+  border: none;
+  top: 10px;
+  /* padding: 0.75rem 1.5rem; */
+  min-width: 100px;
+  /* font-size: 1rem; */
+  /* z-index: 1000; */
+  cursor: pointer;
+}
+.help-button span {
+  color: black !important;
+}
+
+.help-button:hover {
+  background-color: rgb(0, 220, 0);
+  transform: translateY(-2px);
+}
+.help-panel {
+  position: absolute;
+  top: 60px;
+  width: 370px; /* fixed width or adjust */
+  background-color: rgba(0,0,0,0);
+  color: rgb(0,255,0);
+  padding: 15px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  box-shadow: 0 4px 8px rgba(0, 255, 0, 0.3);
+  z-index: 2000;
+}
 </style>

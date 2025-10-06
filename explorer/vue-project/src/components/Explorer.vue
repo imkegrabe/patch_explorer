@@ -94,11 +94,12 @@ canvas {
     padding: 4px 8px;
     background: rgba(0, 0, 0, 0);
     color: rgb(0, 255, 0);
-    font-size: 20px;
+    font-size: 15px;
     border-radius: 4px;
     pointer-events: none;
     display: none;
     z-index: 1000;
+    font-weight: bold;
 }
 
 body.brush-cursor {

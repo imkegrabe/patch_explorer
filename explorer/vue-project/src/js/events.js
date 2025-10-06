@@ -170,10 +170,15 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, selection
         const hoverLabel = document.getElementById("hover-head-label")
         
         if (intersectsheads.length > 0) {
-            // console.log('hovering over head', intersectsheads[0].object)
-
             const hovered = intersectsheads[0].object;
-            hoverLabel.textContent = `${hovered.name } Click to edit.`|| "unnamed";
+        
+            hoverLabel.style.whiteSpace = "normal"; // allow HTML line breaks
+
+            if (focused.image !== null) {
+                hoverLabel.innerHTML = `Hold SHIFT to draw.<br>Click to select all.` || "unnamed";
+            } else {
+                hoverLabel.innerHTML = `<b>${hovered.name}</b><br>Click to select patches.` || "unnamed";
+            }
             hoverLabel.style.display = "block";
             hoverLabel.style.left = event.clientX + 10 + "px";
             hoverLabel.style.top = event.clientY + 10 + "px";

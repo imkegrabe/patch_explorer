@@ -145,11 +145,11 @@ async function generate() {
         emit('showTimesteps', showTimesteps.value)
         emit('newAddends', addends);
 
-    showSecondInstruction.value = true;
-    // Hide second instruction after 5 seconds
-    setTimeout(() => {
-        showSecondInstruction.value = false;
-    }, 7000);
+    // showSecondInstruction.value = true;
+    // // Hide second instruction after 5 seconds
+    // setTimeout(() => {
+    //     showSecondInstruction.value = false;
+    // }, 7000);
 
     } catch (error) {
         console.error("Generation error:", error);
@@ -161,16 +161,14 @@ async function generate() {
 
 <template>
 
-    <div v-if="!hasGeneratedOnce" class="centered-message">
-        <!-- <p>Explore the hidden layers of StableDiffusion 1.4</p> -->
-        <!-- <p>When generating images with diffusion models, we normally do not see the activation of their hidden layers.</p> -->
-        <p>Explore the role of cross-attention heads in SD 1.4 <br>through visualization and interaction.</p>
+    <div v-show="!hasGeneratedOnce" class="centered-message">
+    <p>Explore the role of cross-attention heads in SD 1.4 <br>through visualization and interaction.</p>
     </div>
 
-    <div class="first-instruction">
+    <!-- <div class="first-instruction">
         <p v-if="!hasGeneratedOnce">Start by generating an image...</p>
         <p v-else-if="showSecondInstruction">Explore the patch activations through zooming, <br> then apply an intervention on the left.</p>
-    </div>
+    </div> -->
 
     <div class="input-container">
         
@@ -199,7 +197,6 @@ async function generate() {
             :loading="isGenerating" 
         />
 
-
         <Button 
             v-if="hasGeneratedOnce" 
             class="restart-button" 
@@ -224,14 +221,21 @@ async function generate() {
     transform: translateX(-50%);
     width: auto;
     color: rgb(0, 255, 0);
-    bottom: 5px;
+    bottom: 15px;
     border-radius: 10px;
-    border: 2px solid rgb(0, 255, 0);
-    padding: 10px 15px;
-    background-color: rgba(0, 0, 0, 0.7);
+    /* border: 2px solid rgb(0, 255, 0); */
+    padding: 15px 15px;
+    background-color: rgba(0, 0, 0, 0.15);
     backdrop-filter: blur(5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
+    box-shadow: 0 0 2px rgba(0,0,0,0.2);
     z-index: 1000;
+    line-height: 1.4;
+    overflow: hidden;
+    box-shadow: 0 0 10px 4px rgba(0, 255, 0, 0.5); /* soft green glow */
+    border: none; /* remove solid border */
+    border-radius: 8px; /* optional subtle rounding */
+    height: 50px;
 }
 
 .input-group {

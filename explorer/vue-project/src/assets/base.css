@@ -38,9 +38,9 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background: #ffffff;
-    --color-background-soft: #ffffff;
-    --color-background-mute: #ffffff;
+    --color-background: #000000;
+    --color-background-soft: #111111;
+    --color-background-mute: #181818;
 
     --color-border: var(--vt-c-divider-dark-2);
     --color-border-hover: var(--vt-c-divider-dark-1);
