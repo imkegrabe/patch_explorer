@@ -204,14 +204,14 @@ async function generate() {
             :loading="isGenerating" 
         />
 
-        <Button 
+        <!-- <Button 
             v-if="hasGeneratedOnce" 
             class="restart-button" 
             label="RESET" 
             icon="pi pi-refresh" 
             @click="restart" 
             :disabled="isGenerating" 
-        />
+        /> -->
 
     </div>
 </template>
