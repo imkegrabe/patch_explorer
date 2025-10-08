@@ -98,7 +98,7 @@ export default {
       @newImageUrl="(url) => updateImage(url)" 
       @newAddends="(addends) => updateAddends(addends)"
       :globalSelections="globalSelections"
-      :host="'https://bippu.baulab.us'" 
+      :host="'https://bippu.baulab.us'"
       :interventions="[]" 
       :loading="false"  
       :temp="[]"
@@ -127,8 +127,10 @@ export default {
       <div v-if="showHelp" class="help-panel">
         <ol>
         <li>Generate an image.</li>
-        <li>Inspect the patches by zooming and dragging.</li>
-        <li>Choose an intervention and apply it to selected patches.</li>
+        <li>Inspect the patches by zooming and dragging.
+          </li>
+        <li>Choose an intervention:<br> <u>SCALING</u> amplifies patch activation. <br><u>ENCODING</u> injects another prompt.</li>
+          <li>Select patchen to intervene.</li>
         <li>Re-generate.</li>
         </ol>
       </div>
@@ -253,7 +255,7 @@ export default {
 
 .built-with {
   position: fixed;
-  bottom: 15px;
+  bottom: 5px;
   right: 15px;
   display: inline-flex;
   align-items: center;
@@ -304,8 +306,8 @@ export default {
   flex-direction: column;
   align-items: flex-start;
   z-index: 1000;
-}
 
+}
 .help-button {
   font-weight: bold;
   background-color: rgb(0, 255, 0) !important;
@@ -330,13 +332,14 @@ export default {
   position: absolute;
   top: 60px;
   width: 370px; /* fixed width or adjust */
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0,0,0,0.15);
   color: rgb(0,255,0);
-  padding: 15px 20px;
+  padding: 10px 5px;
   border-radius: 8px;
   font-size: 0.9rem;
   line-height: 1.4;
   box-shadow: 0 0 4px 4px rgba(0, 255, 0, 0.5);
   z-index: 2000;
 }
+
 </style>

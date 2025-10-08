@@ -23,8 +23,8 @@ const props = defineProps({
 const emit = defineEmits(['loading', 'newImageUrl', 'newAddends', 'update:showTimesteps', 'showTimesteps']);
 
 // Reactive state
-const prompt_value = ref("unicorn");
-const seed_value = ref(93244);
+const prompt_value = ref("unicorn in universe");
+const seed_value = ref(33);
 const isGenerating = ref(false);
 const showTimesteps = ref(false);
 const hasGeneratedOnce = ref(false);
@@ -36,7 +36,13 @@ function restart() {
 }
 
 async function generate() {
+    
     try {
+        // // defocus any previously focused image
+        // if (focused.value.image || focused.value.pixels) {
+        //     defocus(focused.value);
+        // }
+
         if (!hasGeneratedOnce.value) {
             hasGeneratedOnce.value = true;
         }
@@ -161,8 +167,8 @@ async function generate() {
 
 <template>
 
-    <div v-show="!hasGeneratedOnce" class="centered-message">
-    <p>Explore the role of cross-attention heads in SD 1.4 <br>through visualization and interaction.</p>
+    <div v-if="!hasGeneratedOnce" class="centered-message">
+    <p>Explore the hidden layers of Stable Diffusion 1.4<br>by interacting with its patches.</p>
     <!-- <p>Explore the role of cross-attention heads in SD 1.4 <br>through visualization and interaction.</p> -->
     </div>
 
@@ -174,20 +180,20 @@ async function generate() {
     <div class="input-container">
         
         <div class="input-group">
-            <label for="prompt">Prompt: </label>
+            <label for="prompt" style="user-select: none; pointer-events: none; -webkit-user-drag: none;">Prompt: </label>
             <InputText id="prompt" type="text" v-model="prompt_value" style="background-color: rgba(255, 255, 255, 0) !important;  color: rgb(0, 255, 0) !important;"/>
         </div>
 
         <div class="input-group">
-            <label for="seed">Seed: </label>
+            <label for="seed" style="user-select: none; pointer-events: none; -webkit-user-drag: none;">Seed: </label>
             <InputNumber id="seed" v-model="seed_value" :step="1" :min="0" :useGrouping="false" fluid style="background-color: rgba(255, 255, 255, 0) !important; width: 80px;  color: rgb(0, 255, 0) !important;"/>
         </div>
 
-        <div class="input-group tooltip-container">
+        <!-- <div class="input-group tooltip-container"> -->
             <Checkbox id="timesteps" v-model="showTimesteps" :binary="true" />
-            <label for="timesteps">Timesteps</label>
+            <label for="timesteps" style="user-select: none; pointer-events: none; -webkit-user-drag: none;">Timesteps</label>
             <span class="tooltip-text">Load timestep viz</span>
-        </div>
+        <!-- </div> -->
 
         <Button 
             class="generate-button" 
@@ -212,6 +218,7 @@ async function generate() {
 
 <style>
 .input-container {
+    overflow: visible;
     position: fixed;
     display: flex;
     flex-direction: row;
@@ -296,12 +303,14 @@ async function generate() {
     z-index: 999;
     pointer-events: none;
 }
+
 .tooltip-container {
   position: relative;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   cursor: help; /* show help cursor on hover */
+  z-index: 1000;
 }
 
 .tooltip-text {

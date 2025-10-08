@@ -1,168 +1,236 @@
 <template>
     <div class="timestep-container">
-       
-        <p style="padding: 20px;"> <b>Timesteps:</b></p>
+      <p style="padding: 20px;"><b>Timesteps:</b></p>
+  
+      <!-- Slider + floating labels -->
+      <div class="slider-wrapper">
         <Slider
-            v-model="range" 
-            id="timestep-slider" 
-            range 
-            :min="1"
-            :max="50"
-            :step="1"
-            orientation="vertical"
-            />
-        
-        <p style="padding: 20px;">start: {{ range[0] }} end: {{ range[1] }}</p>
-
-        <SelectButton 
-            id="view-selection" 
-            v-model="value"
-            :options="options"
-            @change="switchCamera"/>
-            
-        
-            
+          v-model="range"
+          id="timestep-slider"
+          range
+          :min="minValue"
+          :max="maxValue"
+          :step="1"
+          orientation="vertical"
+        />
+  
+        <!-- Floating labels following slider handles -->
+        <div
+          v-for="(pos, i) in handlePositions"
+          :key="i"
+          class="slider-label"
+          :style="{ bottom: pos + '%' }"
+        >
+          <div v-if="!editing[i]" @click="startEdit(i)">
+            {{ range[i] }}
+          </div>
+          <input
+            v-else
+            v-model.number="tempValues[i]"
+            @keyup.enter="applyEdit(i)"
+            @blur="applyEdit(i)"
+            class="slider-input"
+          />
+        </div>
+      </div>
+  
+      <p style="padding: 20px;"><b>View:</b></p>
+      <SelectButton
+        id="view-selection"
+        v-model="value"
+        :options="options"
+        @change="switchCamera"
+      />
     </div>
-<!-- 
-    <div v-if="show3DMessage" class="centered-message">
-    <p>3D-view loading...<br>...just for traversing the universe, no interventions possible.</p>
-    </div> -->
-
-</template>
-
-<script setup>
-import { ref, watch } from 'vue';
-import SelectButton from 'primevue/selectbutton';
-import Slider from 'primevue/slider';
-import { cameraActive, setCameraActive, timestep_groups, requestRender, forceRender } from '../js/init.js';
-
-const emit = defineEmits(['changeViewMode', 'updateTimesteps']);
-
-// the reactive vue variables
-const range = ref([1, 50]);
-
-// Function to reset the slider to default range
-function resetRange() {
-    range.value = [1, 50];
-    updateVisibility(1, 50);
-}
-
-// Make resetRange available to parent components
-defineExpose({ resetRange });
-
-// Function to update visibility with debouncing for smoother updates
-let updateTimeout = null;
-function updateVisibility(near, far) {
-    // Clear any pending timeouts
-    if (updateTimeout) {
-        clearTimeout(updateTimeout);
-    }
-    
-    // Immediately update visibility for better responsiveness
+  </template>
+  
+  <script setup>
+  import { ref, computed, watch, nextTick } from 'vue';
+  import SelectButton from 'primevue/selectbutton';
+  import Slider from 'primevue/slider';
+  import { cameraActive, setCameraActive, timestep_groups, requestRender, forceRender } from '../js/init.js';
+  
+  const emit = defineEmits(['changeViewMode', 'updateTimesteps']);
+  
+  // slider bounds
+  const minValue = 1;
+  const maxValue = 50;
+  
+  // reactive state
+  const range = ref([1, 50]);
+  
+  // computed label positions (percent along slider) — reactive to range
+  const handlePositions = computed(() =>
+    range.value.map(v => ((v - minValue) / (maxValue - minValue)) * 100)
+  );
+  
+  // inline editing state for each handle
+  const editing = ref([false, false]);
+  const tempValues = ref([range.value[0], range.value[1]]);
+  
+  function startEdit(index) {
+    // sync temp value to current range and enter edit mode
+    tempValues.value[index] = range.value[index];
+    editing.value[index] = true;
+    nextTick(() => {
+      const inputs = document.querySelectorAll('.slider-input');
+      if (inputs[index]) inputs[index].focus();
+      // select text to make typing quick
+      if (inputs[index]) inputs[index].select();
+    });
+  }
+  
+  function applyEdit(index) {
+    let newVal = parseInt(tempValues.value[index]);
+    if (isNaN(newVal)) newVal = range.value[index]; // fallback
+    newVal = Math.min(Math.max(newVal, minValue), maxValue);
+  
+    // update slider -> this will update computed positions automatically
+    range.value[index] = newVal;
+  
+    // exit edit mode
+    editing.value[index] = false;
+  
+    // ensure visualization updates immediately
+    updateVisibility(range.value[0], range.value[1]);
+  }
+  
+  // Function to reset the slider to default range
+  function resetRange() {
+    range.value = [minValue, maxValue];
+    updateVisibility(minValue, maxValue);
+  }
+  
+  // Make resetRange available to parent components
+  defineExpose({ resetRange });
+  
+  // Function to update visibility with debouncing for smoother updates
+  let updateTimeout = null;
+  function updateVisibility(near, far) {
+    if (updateTimeout) clearTimeout(updateTimeout);
+  
     if (cameraActive && timestep_groups) {
-        timestep_groups.forEach((group, index) => {
-            // Update group visibility
-
-            index += 1;         
-            const isVisible = (index >= near && index <= far);
-            
-            // Only modify the DOM if visibility changed
-            if (group.visible !== isVisible) {
-                group.visible = isVisible;
-            }
-            
-            // Add to scene if not already there
-            if (isVisible && !group.parent) {
-                cameraActive.parent.add(group);
-            }
-        });
-        
-        // Force render to see changes immediately - use direct rendering
-        forceRender();
-        
-        // Also schedule a regular render
-        requestRender();
+      timestep_groups.forEach((group, index) => {
+        // your code uses 1-based comparison, keep it consistent
+        index += 1;
+        const isVisible = index >= near && index <= far;
+  
+        if (group.visible !== isVisible) {
+          group.visible = isVisible;
+        }
+  
+        if (isVisible && !group.parent) {
+          cameraActive.parent.add(group);
+        } else if (!isVisible && group.parent) {
+          // optional: remove from scene when hidden (keeps scene smaller)
+          // group.parent.remove(group);
+        }
+      });
+  
+      // immediate and scheduled renders
+      forceRender();
+      requestRender();
     }
-    
-    // Emit the timestep values to parent component with slight delay
-    // to avoid too many events during rapid slider movement
+  
+    // Emit to parent (slightly debounced)
     updateTimeout = setTimeout(() => {
-        emit('updateTimesteps', { start_step: near - 1, end_step: far - 1 });
+      emit('updateTimesteps', { start_step: near - 1, end_step: far - 1 });
     }, 50);
-}
-
-//function to update timesteps wrt slider
-watch(range, ([near, far]) => {
+  }
+  
+  // Watch range for slider drags / programmatic changes and update viz
+  watch(range, ([near, far]) => {
     updateVisibility(near, far);
-});
-
-//function to switch between 2D and 3D
-function switchCamera() {
-    console.log("changing cam");
+  });
+  
+  // function to switch between 2D and 3D
+  function switchCamera() {
     setCameraActive(value.value);
     emit('changeViewMode', value.value);
-    
-    // Update visibility after camera switch to ensure correct state
+  
+    // ensure visibility is correct for new camera
     updateVisibility(range.value[0], range.value[1]);
-}
-
-const value = ref('2D');
-const options = ref(['2D', '3D']);
-// const range = ref([0, 100]); // Uncomment if you plan to use this
-
-// message when switching to 3D
-// const show3DMessage = ref(false);
-// watch(value, (newVal) => {
-//     if (newVal === '3D') {
-//         show3DMessage.value = true;
-//         setTimeout(() => {
-//             show3DMessage.value = false;
-//         }, 4000); // disappears after 4 seconds
-//     }
-// });
-
-
-</script>
-
-<style>
-
-.timestep-container{
+  }
+  
+  const value = ref('2D');
+  const options = ref(['2D', '3D']);
+  </script>
+  
+  <style>
+  .timestep-container {
     position: fixed;
     display: flex;
     left: 15px;
     flex-direction: column;
-    position: fixed; 
-    bottom: 50px; 
+    bottom: 50px;
     color: white;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.15);
     box-shadow: 0 0 10px 4px rgba(0, 255, 0, 0.5);
-    padding: 5px;
+    max-width: 150px;
     backdrop-filter: blur(5px);
     border-radius: 8px;
     padding: 8px 8px;
     z-index: 1000;
     color: rgb(0, 255, 0);
-}
-
-.double-slider{
+  }
+  
+  /* === Floating label slider styling === */
+  .slider-wrapper {
+    position: relative;
+    height: 120px; /* adjust to taste; shorter if you like */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .p-slider {
+    height: 100%;
+  }
+  
+  .slider-label {
     position: absolute;
-}
-
-.SelectButton{
-    border-radius: 10px 10px 10px 10px;
+    left: 20px; /* more space between handle and number */
+    transform: translateY(50%);
+    color: rgb(0, 255, 0);
+    font-weight: bold;
+    /* background: rgba(0, 0, 0, 0.6); */
+    padding: 2px 6px;
+    border-radius: 4px;
+    pointer-events: auto; /* enable clicking */
+    white-space: nowrap;
+    transition: bottom 0.1s;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .slider-input {
+    width: 44px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgb(0, 255, 0);
+    color: rgb(0, 255, 0);
+    font-weight: bold;
+    border-radius: 4px;
+    text-align: center;
+    outline: none;
+    font-size: 0.9rem;
+  }
+  
+  /* === Other existing styles === */
+  .SelectButton {
+    border-radius: 10px;
     border-color: rgb(0, 255, 0);
     box-shadow: 0 0 10px 4px rgba(0, 255, 0, 0.5);
     color: rgb(0, 255, 0);
-}
-
-.Slider {
+  }
+  
+  .Slider {
     padding: 10px;
     background: rgb(0, 255, 0);
     color: rgb(0, 255, 0);
-}
-
-.centered-message {
+  }
+  
+  .centered-message {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -176,12 +244,18 @@ const options = ref(['2D', '3D']);
     z-index: 999;
     pointer-events: none;
     animation: fadeOut 4s forwards;
-}
-
-@keyframes fadeOut {
-    0% { opacity: 1; }
-    70% { opacity: 1; }
-    100% { opacity: 0; }
-}
-
-</style>
+  }
+  
+  @keyframes fadeOut {
+    0% {
+      opacity: 1;
+    }
+    70% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  </style>
+  

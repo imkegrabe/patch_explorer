@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { onClick, setGrids, onMouseMove} from './events';
-export let camera1, camera2, cameraActive, timestep_groups, controls1, controls2, controlsActive, renderer, needsRender;
+export let camera1, camera2, cameraActive, timestep_groups, controls1, controls2, controlsActive, renderer, scene, needsRender;
 
 // Utility function to request rendering
 export function requestRender() {

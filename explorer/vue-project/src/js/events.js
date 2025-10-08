@@ -166,6 +166,20 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, selection
 
         var intersectsheads = raycaster.intersectObjects(selection_meshes, false);
 
+
+        // // focus if moving inside and nothin focussed
+        // if (focused.image == null && intersects.length > 0) {
+        //     console.log('intersects when moving over...', intersects[0].object);
+        //     focus(scene, intersects[0].object, focused);
+        // }
+
+
+        // defocus if moving outside and sth focussed
+        if (focused.image != null && intersectsheads.length < 1) {
+            defocus(focused)
+            console.log('defocus when moving out...', intersects[0].object);
+        }
+
         // this is just to show the name when hovering over head
         const hoverLabel = document.getElementById("hover-head-label")
         
@@ -177,7 +191,7 @@ export function onMouseMove(scene, renderer, camera, mouse, raycaster, selection
             if (focused.image !== null) {
                 hoverLabel.innerHTML = `Hold SHIFT to draw.<br>Click to select all.` || "unnamed";
             } else {
-                hoverLabel.innerHTML = `<b>${hovered.name}</b><br>Click to select patches.` || "unnamed";
+                hoverLabel.innerHTML = `<u>${hovered.name}</u><br>Click to select patches.` || "unnamed";
             }
             hoverLabel.style.display = "block";
             hoverLabel.style.left = event.clientX + 10 + "px";

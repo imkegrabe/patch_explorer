@@ -23,7 +23,7 @@ export function getColor(value) {
 
 let layer_padding = 20;
 let head_padding = 5;
-let timestep_padding = 10;
+let timestep_padding = 4;
 
 export function initialize(grids_by_layer, num_timesteps=50) {
     let height = 0;
@@ -78,7 +78,7 @@ export function initialize(grids_by_layer, num_timesteps=50) {
 
             mesh.position.set(head_width / 2, layer_height + head_height / 2);
             
-            const meshName = `Layer ${layer_idx} Head ${7-head_idx}`;
+            const meshName = `Layer ${layer_idx+1} Head ${8-head_idx}`;
             mesh.userData.name = meshName;
             mesh.name = meshName; // optional, helps debug
 
@@ -190,7 +190,7 @@ export function load(grids_by_layer, timestep_images) {
                         const r = value > 0 ? 255 : 0;
                         const g = value < 0 ? 255 : 0;
                         const b = 255;
-                        const a = Math.abs(value / alpha_divisor);
+                        const a = Math.abs(value*2 / alpha_divisor);
 
                         const index = rowBase + (head_x << 2);
                         texture[index] = r;
@@ -264,30 +264,30 @@ let split_padding = 0;
 
 // Splits an image Mesh into pixel Meshes and computes where to place them based on where the original image was and some padding.
 export function splitImage(image) {
-    const dropdownMsg = document.getElementById('dropdown-message');
-    if (dropdownMsg) dropdownMsg.remove();
-      // Create or show a message box
-    let existing = document.getElementById('split-image-message');
-    if (!existing) {
-        const div = document.createElement('div');
-        div.id = 'split-image-message';
-        div.innerHTML = 'Hold Shift to draw,<br>or click to select all patches at once.';
-        div.style.position = 'fixed';
-        div.style.bottom = '10px';
-        div.style.left = '10px';
-        div.style.background = 'rgba(0,0,0,0)';
-        div.style.color = 'rgb(0,255,0)';
-        div.style.padding = '6px 10px';
-        div.style.fontFamily = 'Courier, monospace';
-        div.style.fontSize = '14px';
-        div.style.borderRadius = '4px';
-        div.style.zIndex = '9999';
-        document.body.appendChild(div);
-        setTimeout(() => {
-            const el = document.getElementById('split-image-message');
-            if (el) el.remove();
-          }, 5000);
-    }
+    // const dropdownMsg = document.getElementById('dropdown-message');
+    // if (dropdownMsg) dropdownMsg.remove();
+    //   // Create or show a message box
+    // let existing = document.getElementById('split-image-message');
+    // if (!existing) {
+    //     const div = document.createElement('div');
+    //     div.id = 'split-image-message';
+    //     div.innerHTML = 'Hold Shift to draw,<br>or click to select all patches at once.';
+    //     div.style.position = 'fixed';
+    //     div.style.bottom = '10px';
+    //     div.style.left = '10px';
+    //     div.style.background = 'rgba(0,0,0,0)';
+    //     div.style.color = 'rgb(0,255,0)';
+    //     div.style.padding = '6px 10px';
+    //     div.style.fontFamily = 'Courier, monospace';
+    //     div.style.fontSize = '14px';
+    //     div.style.borderRadius = '4px';
+    //     div.style.zIndex = '9999';
+    //     document.body.appendChild(div);
+    //     setTimeout(() => {
+    //         const el = document.getElementById('split-image-message');
+    //         if (el) el.remove();
+    //       }, 5000);
+    // }
 
     let pixels = image_to_pixels(image);
 
